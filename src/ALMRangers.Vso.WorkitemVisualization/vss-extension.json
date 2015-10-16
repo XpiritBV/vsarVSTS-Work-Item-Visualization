@@ -1,0 +1,63 @@
+﻿{
+  "manifestVersion": 1,
+  "id": "almrangers-vsoextensions-WorkitemVisualization",
+  "version": "1.0.0",
+  "name": "Workitem Visualization",
+  "description": "Visualize work items, how they relate to each other, code, tests, test results, builds and external artifacts.",
+  "publisher": "alm-rangers-taavik",
+    "scopes": [ "vso.work","vso.code", "vso.test", "vso.profile" ],
+    "baseUri": "https://test-workitemvisualization-almrangers-vsoextensions.azurewebsites.net/",
+    "icons": {
+      "wide": "images/treeviz_wide_icon.png",
+      "default": "images/treeviz_short_icon.png"
+    },
+    "categories": [
+      "Productivity"
+    ],
+     "contributions": [
+        {
+          "id": "almrangers.WorkitemVisualization",
+          "type": "ms.vss-web.hub",
+          "description": "Adds a 'Workitem Visualization' hub to the Work hub group.",
+          "targets": [
+            "ms.vss-work-web.work-hub-group"
+          ],
+          "properties": {
+            "name": "Visualize",
+            "order": 99,
+            "uri": "WorkitemVisualization.html"
+          }
+        },
+      {
+        "id": "almrangers.WorkitemVisualization.visualize",
+        "type": "ms.vss-web.action",
+        "description": "Run in visualize hub action",
+        "targets": [
+          "ms.vss-work-web.backlog-item-menu"
+        ],
+        "properties": {
+          "text": "Visualize",
+          "title": "Visualize this workitem",
+          "icon": "images/VisualizationSmall.png",
+          "group": "actions",
+          "uri": "VisualizeWitAction.html"
+        }
+      },
+      {
+        "id": "almrangers.WorkitemVisualization.findWitDialog",
+        "type": "ms.vss-web.control",
+        "targets": [ ".controls" ],
+        "properties": {
+          "uri": "findWitDialog.html"
+        }
+      },
+      {
+        "id": "almrangers.WorkitemVisualization.addEditHighlightDialog",
+        "type": "ms.vss-web.control",
+        "targets": [ ".controls" ],
+        "properties": {
+          "uri": "addEditHighlight.html"
+        }
+      }
+     ]
+}

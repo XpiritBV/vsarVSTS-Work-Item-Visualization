@@ -1,0 +1,98 @@
+﻿.gshHeader {
+  border-color: #eaa68d;
+  font-size: 14;
+  margin-bottom: 19;
+}
+
+.icon-zoom-100 {
+    background: url("../images/Zoom100Percent.png") no-repeat !important;
+}
+
+.icon-zoom-out {
+    background: url("../images/zoom out.png") no-repeat !important;
+}
+
+.icon-zoom-in {
+    background: url("../images/zoom in.png") no-repeat !important;
+}
+
+.icon-fit-to {
+    background: url("../images/FitTo.png") no-repeat !important;
+}
+
+.icon-left-to-right {
+    background: url("../images/LeftToRight.png") no-repeat !important;
+}
+
+.icon-right-to-left {
+    background: url("../images/RightToLeft.png") no-repeat !important;
+}
+
+.icon-top-to-bottom {
+    background: url("../images/TopToBottom.png") no-repeat !important;
+}
+
+.icon-bottom-to-top {
+    background: url("../images/BottomToTop.png") no-repeat !important;
+}
+
+.icon-force-directed {
+    background: url("../images/ForceDirected.png") no-repeat !important;
+}
+
+.icon-connector-curved {
+    background: url("../images/CurvedConnector.png") no-repeat !important;
+}
+
+.icon-connector-straight {
+    background: url("../images/StraightConnector.png") no-repeat !important;
+}
+
+.icon-connector-right-angle {
+    background: url("../images/RightAngleConnector.png") no-repeat !important;
+}
+
+.icon-graph-tree {
+    background: url("../images/TreeGraphType.png") no-repeat !important;
+}
+
+.icon-graph-directed {
+    background: url("../images/DirectedGraphType.png") no-repeat !important;
+}
+
+.icon-legend-pane {
+    background: url("../images/LegendPane.png") no-repeat !important;
+}
+
+.icon-find {
+    background: url("../images/Zoom100Percent.png") no-repeat !important;
+}
+
+.icon-minimap {
+    background: url("../images/map-magnify-icon.png") no-repeat !important;
+}
+
+/* These are for the button and drop down menu behaviors */
+.myIcons {
+    height: 16px;
+    width: 16px;
+    background-image: url("../images/TFS-Icons.png");
+}
+
+.ie9 img[src*=".svg"] {
+  width: 100%; 
+}
+/* 2 */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {
+  img[src*=".svg"] {
+    width: 100%; 
+  }
+}
+
+        #cy {
+          height: 100%;
+          width: 100%;
+          position: absolute;
+          left: 0;
+          top: 100px;
+        }

@@ -1,0 +1,36 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Find Workitem</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="css/app.css" type="text/css" />
+    <script src="sdk/scripts/VSS.SDK.js"></script>
+    <script src="scripts/jquery/jquery-2.1.1.min.js"></script>
+</head>
+<body>
+
+<script>
+    VSS.init({
+        explicitNotifyLoaded: true,
+        setupModuleLoader: true,
+        moduleLoaderConfig: {
+            paths: {
+                "Scripts/App/cy": "scripts/app/cy/"
+            }
+        }
+    });
+    VSS.require(["Scripts/App/cy/findWitDialog"], function(app) {
+        VSS.register("almrangers.WorkitemVisualization.findWitDialog", function(context) {
+            return new app.FindWitDialog(context);
+        });
+        VSS.notifyLoadSucceeded();
+    });
+</script>
+<div id="message"></div>
+
+<div id="loader">
+    <label for="WitIdToSearch">Search work item</label>
+    <input type="text" id="WitIdToSearch" placeholder="Enter work item id" title="Enter work item id"/>
+</div>
+</body>
+</html>

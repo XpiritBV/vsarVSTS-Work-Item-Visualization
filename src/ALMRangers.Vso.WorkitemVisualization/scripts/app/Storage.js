@@ -1,7 +1,21 @@
-﻿define(["require", "exports",
+﻿/*---------------------------------------------------------------------
+// <copyright file="StateModelVisualization.js">
+//    This code is licensed under the MIT License.
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// </copyright>
+ // <summary>
+ //   Part of the State Model Visualization VSO extension by the
+ //     ALM Rangers. The main application flow and logic.
+ //  </summary>
+//---------------------------------------------------------------------*/
+
+define(["require", "exports",
 "TFS/WorkItemTracking/Services", "VSS/Service", "TFS/WorkItemTracking/RestClient", "TFS/Core/RestClient", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient",
 "TFS/WorkItemTracking/Contracts", "TFS/VersionControl/Contracts",
-"Scripts/App/cy/Services"],
+"Scripts/App/Services"],
 function (require, exports, Tfs_Wit_Service, VSS_Service, Tfs_Wit_Client, Tfs_Core_Client, Tfs_Git_Client, Tfs_Tfvc_Client, Tfs_Wit_Contracts, Tfs_VC_Contracts, Services) {
     var VsoStoreService = (function () {
         function VsoStoreService() {

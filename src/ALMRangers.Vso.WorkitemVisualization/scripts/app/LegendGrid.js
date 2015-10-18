@@ -1,4 +1,18 @@
-﻿var __extends = this.__extends || function (d, b) {
+﻿/*---------------------------------------------------------------------
+// <copyright file="StateModelVisualization.js">
+//    This code is licensed under the MIT License.
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// </copyright>
+ // <summary>
+ //   Part of the State Model Visualization VSO extension by the
+ //     ALM Rangers. The main application flow and logic.
+ //  </summary>
+//---------------------------------------------------------------------*/
+
+var __extends = this.__extends || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
@@ -10,7 +24,7 @@
 //Gray:  #808080
 
 define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
-    "VSS/Controls", "VSS/Controls/Common", "VSS/Controls/Grids", "Scripts/App/cy/WorkitemVisualizationGraph"],
+    "VSS/Controls", "VSS/Controls/Common", "VSS/Controls/Grids", "Scripts/App/WorkitemVisualizationGraph"],
     function (require, exports, Core, VSS_HOST, UIControls, CommonControls, Grids, WorkItemVisualizationGraph) {
     /**
      *   This object will be draw the work item grid.

@@ -1,17 +1,36 @@
-﻿define(["require", "exports", "Scripts/App/cy/MainMenu"], function (require, exports, MainMenu) {
+﻿/*---------------------------------------------------------------------
+// <copyright file="StateModelVisualization.js">
+//    This code is licensed under the MIT License.
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+// </copyright>
+ // <summary>
+ //   Part of the State Model Visualization VSO extension by the
+ //     ALM Rangers. The main application flow and logic.
+ //  </summary>
+//---------------------------------------------------------------------*/
+
+//TODO: Tooltip support
+//TODO: Highlight node
+//TODO: Highlight background, border
+//TODO: Context Menu on right click
+
+define(["require", "exports"], function (require, exports) {
     var WorkitemVisualizationGraph = (function() {
         
         var _navigator = null;
         var _container = null;
         var _expandNodeCallback = null;
 
-        function WorkitemVisualizationGraph(container) {
+        function WorkitemVisualizationGraph(container, cytoscape) {
             var self = this;
             _container = container;
+            self.direction = 'LR';
+            self.cy = null;
+            self.cytoscape = cytoscape;
         }
-
-        WorkitemVisualizationGraph.prototype.cy = null;
-        WorkitemVisualizationGraph.prototype.direction = 'LR';
 
         WorkitemVisualizationGraph.prototype.setExpandNodeCallback = function (callback) {
             var self = this;
@@ -20,8 +39,10 @@
 
         WorkitemVisualizationGraph.prototype.create = function (nodes, edges, callback) {
             var self = this;
-            _container.cytoscape({
-                style: cytoscape.stylesheet()
+            //_container.cytoscape({
+            self.cytoscape({
+                container: _container[0],
+                style: self.cytoscape.stylesheet()
                     .selector('node')
                     .css({
                         'shape': 'rectangle',
@@ -127,7 +148,7 @@
                     //});
 
 
-                    $(document).one('contextmenu', function (e) {
+                    $(document).on('contextmenu', function (e) {
                         e.preventDefault();
                     });
                 }
@@ -148,8 +169,10 @@
             var location = vsoContext.host.uri;
 
             if (category === "Commit") {
+                //TODO: Cant we use and store the remote url of commit?
                 location += "/_git/" + vsoContext.project.name + "/commit/" + id;
             } else {
+                //TODO: Cant we use and store the remote url of changeset - if exists?
                 location += "/" + vsoContext.project.name + "/_versionControl/changeset/" + id;
             }
 
@@ -166,8 +189,10 @@
                 var path = node.data("path");
                 var commitId = node.data("commitId");
                 //This means it's a git file
+                //TODO: Cant we use and store the remote url of commit?
                 location += "/_git/" + vsoContext.project.name + "/commit/" + commitId + "#path=" + path + "&_a=contents";
             } else {
+                //TODO: Cant we use and store the remote url of changeset - if exists?
                 //It's a tfvc file
                 var origId = node.data("origId");
                 var changesetId = node.data("changesetId");
@@ -463,5 +488,5 @@
         }
         return WorkitemVisualizationGraph;
     })();
-    exports.graph = new WorkitemVisualizationGraph($("#cy"));
+    exports.graph = new WorkitemVisualizationGraph($("#cy"), cytoscape);
 });

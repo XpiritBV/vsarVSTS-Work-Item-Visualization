@@ -1,4 +1,21 @@
-﻿<!DOCTYPE html>
+﻿<!--
+ //---------------------------------------------------------------------
+ // <copyright file="app.html">
+ //    This code is licensed under the MIT License.
+ //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ //    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ // </copyright>
+ // <summary>
+ //   Part of the State Model Visualization VSO extension by the
+ //     ALM Rangers.  This file displays the main view of State Model Visualization.
+ //  </summary>
+ //---------------------------------------------------------------------
+-->
+
+
+<!DOCTYPE html>
 <html>
 <head>
     <title>Find Workitem</title>
@@ -7,29 +24,28 @@
     <script src="sdk/scripts/VSS.SDK.js"></script>
 </head>
 <body>
-
-<script>
-    VSS.init({
-        explicitNotifyLoaded: true,
-        setupModuleLoader: true,
-        moduleLoaderConfig: {
-            paths: {
-                "Scripts/App/cy": "scripts/app/cy/"
-            }
-        }
-    });
-    VSS.require(["Scripts/App/cy/findWitDialog"], function(app) {
-        VSS.register("almrangers.WorkitemVisualization.findWitDialog", function(context) {
-            return new app.FindWitDialog(context);
-        });
-        VSS.notifyLoadSucceeded();
-    });
-</script>
 <div id="message"></div>
 
 <div id="loader">
     <label for="WitIdToSearch">Search work item</label>
     <input type="text" id="WitIdToSearch" placeholder="Enter work item id" title="Enter work item id"/>
 </div>
+    <script>
+    VSS.init({
+        explicitNotifyLoaded: true,
+        setupModuleLoader: true,
+        moduleLoaderConfig: {
+            paths: {
+                "Scripts/App": "scripts/app/"
+            }
+        }
+    });
+    VSS.require(["Scripts/App/findWitDialog"], function(app) {
+        VSS.register("almrangers.WorkitemVisualization.findWitDialog", function(context) {
+            return new app.FindWitDialog(context);
+        });
+        VSS.notifyLoadSucceeded();
+    });
+    </script>
 </body>
 </html>

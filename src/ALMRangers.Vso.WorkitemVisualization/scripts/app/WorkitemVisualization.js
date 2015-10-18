@@ -37,8 +37,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                 mainMenu = Controls.Enhancement.enhance(MainMenu.ItemsView, $(".hub-view"), {});
                 legendMenu = Controls.Enhancement.enhance(LegendMenu.ItemsView, $(".hub-view"), {});
                 
-                graph.setExpandNodeCallback(self.expandNode);
-                mainMenu.setLoadWorkItemGraphCallback(self.loadInitialItem);
+                graph.setExpandNodeCallback(self.expandNode.bind(this));
+                mainMenu.setLoadWorkItemGraphCallback(self.loadInitialItem.bind(this));
 
                 function loadLinkTypes(witLinkTypes) {
                     linkTypes = witLinkTypes;
@@ -52,7 +52,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                         var id = parseInt(param[1]);
 
                         //Get workitem and load it into the graph
-                        storage.getWorkItem(id, self.loadInitialItem);
+                        storage.getWorkItem(id, self.loadInitialItem.bind(self));
                     }
                 }
 
@@ -169,27 +169,27 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
 
                 switch (id.substring(0, 1)) {
                     case "W":
-                        storage.getWorkItemWithLinks(originalId, self.addWorkitem);
+                        storage.getWorkItemWithLinks(originalId, self.addWorkitem.bind(this));
                         break;
                     case "C":
-                        storage.getChangesetWorkitems(originalId, self.addChangesetWorkitems, { id: originalId });
-                        storage.getChangesetChanges(originalId, self.addChangesetChanges, { id: originalId });
+                        storage.getChangesetWorkitems(originalId, self.addChangesetWorkitems.bind(this), { id: originalId });
+                        storage.getChangesetChanges(originalId, self.addChangesetChanges.bind(this), { id: originalId });
                         break;
                     case "G":
                         var repo = node.data("repo");
-                        storage.getCommitChanges({ id: originalId, repo: repo }, self.addCommitChanges);
+                        storage.getCommitChanges({ id: originalId, repo: repo }, self.addCommitChanges.bind(this));
                         break;
                     case "F":
                         {
                             var objectType = node.data("objectType");
                             if (objectType === "File") {
                                 //This is tfvc
-                                storage.getTfvcFileLinks(originalId, self.addTfvcFileLinks, { id: id, origId: originalId });
+                                storage.getTfvcFileLinks(originalId, self.addTfvcFileLinks.bind(this), { id: id, origId: originalId });
                             } else {
                                 //This is git
                                 var repo = node.data("repo");
                                 var path = node.data("path");
-                                storage.getGitFileLinks(repo, path, self.addGitFileLinks, { repo: repo, id: id, origId: originalId });
+                                storage.getGitFileLinks(repo, path, self.addGitFileLinks.bind(this), { repo: repo, id: id, origId: originalId });
                             }
                             break;
                         }
@@ -250,18 +250,18 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                                 var link = graph.createNodeEdgeData("W" + id, "C" + tempId[0], self.getLinkTypeName(wit.relations[i].rel));
                                 //Process the changsets now. All information is already available as we only 
                                 //use the changeset id
-                                storage.getChangesetDetails(tempId[0], self.addChangesetNode, link);
+                                storage.getChangesetDetails(tempId[0], self.addChangesetNode.bind(this), link);
 
                             } else if (changeType === "Commit") {
                                 var commitInfo = tempId[0].split("%2f");
                                 var link = graph.createNodeEdgeData("W" + id, "G" + commitInfo[2], self.getLinkTypeName(wit.relations[i].rel));
 
-                                storage.getCommitDetails(commitInfo[2], commitInfo[1], self.addCommitNode, { commitId: commitInfo[2], repo: commitInfo[1], edge: link });
+                                storage.getCommitDetails(commitInfo[2], commitInfo[1], self.addCommitNode.bind(this), { commitId: commitInfo[2], repo: commitInfo[1], edge: link });
                             }
                         }
                     } //end for
 
-                    storage.getWorkItems(workItemIdArray, self.addWitNodes, { id: "W" + wit.id, edges: workItemLinksArray });
+                    storage.getWorkItems(workItemIdArray, self.addWitNodes.bind(this), { id: "W" + wit.id, edges: workItemLinksArray });
                 }
             }
 
@@ -278,7 +278,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                     workItemLinksArray.push(link);
                 }
 
-                storage.getWorkItems(workItemIdArray, self.addWitNodes, { id: "C" + id, edges: workItemLinksArray });
+                storage.getWorkItems(workItemIdArray, self.addWitNodes.bind(this), { id: "C" + id, edges: workItemLinksArray });
             }
 
             WorkitemVisualization.prototype.addChangesetChanges = function (changes, data) {

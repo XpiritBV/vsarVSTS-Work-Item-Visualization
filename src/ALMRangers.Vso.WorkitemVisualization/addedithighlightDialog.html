@@ -5,7 +5,6 @@
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="css/app.css" type="text/css" />
     <script src="sdk/scripts/VSS.SDK.js"></script>
-    <script src="scripts/jquery/jquery-2.1.1.min.js"></script>
 </head>
 <body>
 
@@ -19,7 +18,7 @@
             }
         }
     });
-    VSS.require(["Scripts/App/cy/addEditHighlight"], function (app) {
+    VSS.require(["Scripts/App/cy/addEditHighlightDialog"], function (app) {
         VSS.register("almrangers.WorkitemVisualization.addEditHighlightDialog", function (context) {
             return new app.addEditHighlightDialog(context);
         });

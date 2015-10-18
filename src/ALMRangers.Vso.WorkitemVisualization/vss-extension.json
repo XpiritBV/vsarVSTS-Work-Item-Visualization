@@ -56,7 +56,7 @@
         "type": "ms.vss-web.control",
         "targets": [ ".controls" ],
         "properties": {
-          "uri": "addEditHighlight.html"
+          "uri": "addEditHighlightDialog.html"
         }
       }
      ]

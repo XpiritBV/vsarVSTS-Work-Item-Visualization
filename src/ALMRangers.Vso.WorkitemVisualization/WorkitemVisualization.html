@@ -1,4 +1,21 @@
-﻿<!DOCTYPE html>
+﻿<!--
+ //---------------------------------------------------------------------
+ // <copyright file="app.html">
+ //    This code is licensed under the MIT License.
+ //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ //    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ // </copyright>
+ // <summary>
+ //   Part of the State Model Visualization VSO extension by the
+ //     ALM Rangers.  This file displays the main view of State Model Visualization.
+ //  </summary>
+ //---------------------------------------------------------------------
+-->
+
+
+<!DOCTYPE html>
 <html>
 <head>
     <title></title>
@@ -9,7 +26,7 @@
     <script src="scripts/cytoscape/cytoscape.js"></script>
     <script src="scripts/cytoscape/dagre.js"></script>
     <script src="scripts/cytoscape/cytoscape.js-navigator.js"></script>
-    <script src="scripts/app/cy/CyWorkitemVisualization.js"></script>
+    <!--<script src="scripts/app/CyWorkitemVisualization.js"></script>-->
 </head>
 <body>
 <div class="hub-view explorer">
@@ -25,11 +42,11 @@
                 </div>
                 <div class="pivot-hub-content" style="width: 100%; height: 100%;">
                     <div class=" main-content" style="width: 100%; height: 100%;">
-                        <div class="filters" id="main-filters">
+                        <!--<div class="filters" id="main-filters">
                             <div title="layout" class="select pivot-filter enhance layout-filter">
 
                             </div>
-                        </div>
+                        </div>-->
                         <div class="toolbar hub-pivot-toolbar">
                         </div>
                         <div id="message"></div>
@@ -62,6 +79,31 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    VSS.init({
+        // Our extension will explicitly notify the host when we're done loading
+        explicitNotifyLoaded: true,
 
+        // We are using some VSO APIs, so we will need the module loader to load them in
+        usePlatformScripts: true,
+        usePlatformStyles: true
+            , setupModuleLoader: true,
+        moduleLoaderConfig: {
+            paths: {
+                "Scripts/App": "/scripts/app/"
+            }
+        }
+
+    });
+
+        // Wait for the SDK to be initialized
+    VSS.ready(function () {
+        VSS.require(["Scripts/App/WorkitemVisualization"], function (app) {
+            app.witviz.start();
+            VSS.notifyLoadSucceeded();
+        });
+    });
+
+</script>
 </body>
 </html>

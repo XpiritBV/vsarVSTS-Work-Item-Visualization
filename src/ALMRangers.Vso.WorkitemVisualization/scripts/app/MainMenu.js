@@ -7,7 +7,7 @@
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
  // <summary>
- //   Part of the State Model Visualization VSO extension by the
+ //   Part of the Work Item Visualization VSO extension by the
  //     ALM Rangers. The main application flow and logic.
  //  </summary>
 //---------------------------------------------------------------------*/
@@ -75,29 +75,29 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
             var subItems2 = [];
 
 
-            subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right" });
-            subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom" });
+            subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
+            subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
 
-            items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap", disabled: true });
-
-            items.push({ separator: true });
-
-            items.push({ id: "zoom-in", text: "Zoom In", title: "Zoom In", showText: false, icon: "icon-zoom-in", disabled: true });
-            items.push({ id: "zoom-out", text: "Zoom Out", title: "Zoom Out", showText: false, icon: "icon-zoom-out", disabled: true });
-            items.push({ id: "zoom-100", text: "Zoom 100%", title: "Zoom to 100%", showText: false, icon: "icon-zoom-100", disabled: true });
-            items.push({ id: "fit-to", text: "Fit to screen", title: "Fit to screen", showText: false, icon: "icon-fit-to", disabled: true });
+            items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap-witviz", disabled: true });
 
             items.push({ separator: true });
 
-            items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right", disabled: true, childItems: subItems2 });
+            items.push({ id: "zoom-in", text: "Zoom In", title: "Zoom In", showText: false, icon: "icon-zoom-in-witviz", disabled: true });
+            items.push({ id: "zoom-out", text: "Zoom Out", title: "Zoom Out", showText: false, icon: "icon-zoom-out-witviz", disabled: true });
+            items.push({ id: "zoom-100", text: "Zoom 100%", title: "Zoom to 100%", showText: false, icon: "icon-zoom-100-witviz", disabled: true });
+            items.push({ id: "fit-to", text: "Fit to screen", title: "Fit to screen", showText: false, icon: "icon-fit-to-witviz", disabled: true });
+
+            items.push({ separator: true });
+
+            items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
 
             items.push({ separator: true });
 
 
-            items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane", disabled: false, cssClass: "right-align" });
-            items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find", disabled: false, cssClass: "right-align" });
+            items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
+            items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
 
-            items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-document", disabled: true });
+            items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
 
             return items;
         };
@@ -273,9 +273,7 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                 });
             });
         }
-
-
-
+        
         ItemsView.prototype._toggleLegendPane = function () {
             var legendPane = $("#legend-pane");
 

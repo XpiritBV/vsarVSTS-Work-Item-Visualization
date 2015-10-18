@@ -1,79 +1,67 @@
-﻿.gshHeader {
-  border-color: #eaa68d;
-  font-size: 14;
-  margin-bottom: 19;
+﻿ /*---------------------------------------------------------------------
+ // <copyright file="app.css">
+ //    This code is licensed under the MIT License.
+ //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
+ //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
+ //    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+ //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ // </copyright>
+ // <summary>
+ //   Part of the Work Item Visualization VSO extension by the
+ //     ALM Rangers.  This file defines CSS styling for the application.
+ //  </summary>
+ //---------------------------------------------------------------------*/
+
+.icon-zoom-100-witviz {
+    background-image: url("/images/Refresh.png");
+    background-repeat:  no-repeat !important;
+    background-size: 16px 16px;
 }
 
-.icon-zoom-100 {
-    background: url("../images/Zoom100Percent.png") no-repeat !important;
+.icon-zoom-out-witviz {
+    background-image: url("/images/Zoom_ZoomOut.png");
+    background-repeat:  no-repeat !important;
+    background-size: 16px 16px;
 }
 
-.icon-zoom-out {
-    background: url("../images/zoom out.png") no-repeat !important;
+.icon-zoom-in-witviz {
+    background-image: url("/images/Zoom_ZoomIn.png");
+    background-repeat:  no-repeat !important;
+    background-size: 16px 16px;
 }
 
-.icon-zoom-in {
-    background: url("../images/zoom in.png") no-repeat !important;
-}
-
-.icon-fit-to {
+.icon-fit-to-witviz {
     background: url("../images/FitTo.png") no-repeat !important;
 }
 
-.icon-left-to-right {
+.icon-left-to-right-witviz {
     background: url("../images/LeftToRight.png") no-repeat !important;
 }
 
-.icon-right-to-left {
-    background: url("../images/RightToLeft.png") no-repeat !important;
-}
-
-.icon-top-to-bottom {
+.icon-top-to-bottom-witviz {
     background: url("../images/TopToBottom.png") no-repeat !important;
 }
 
-.icon-bottom-to-top {
-    background: url("../images/BottomToTop.png") no-repeat !important;
-}
-
-.icon-force-directed {
-    background: url("../images/ForceDirected.png") no-repeat !important;
-}
-
-.icon-connector-curved {
-    background: url("../images/CurvedConnector.png") no-repeat !important;
-}
-
-.icon-connector-straight {
-    background: url("../images/StraightConnector.png") no-repeat !important;
-}
-
-.icon-connector-right-angle {
-    background: url("../images/RightAngleConnector.png") no-repeat !important;
-}
-
-.icon-graph-tree {
-    background: url("../images/TreeGraphType.png") no-repeat !important;
-}
-
-.icon-graph-directed {
-    background: url("../images/DirectedGraphType.png") no-repeat !important;
-}
-
-.icon-legend-pane {
+.icon-legend-pane-witviz {
     background: url("../images/LegendPane.png") no-repeat !important;
 }
 
-.icon-find {
+.icon-find-witviz {
     background: url("../images/Zoom100Percent.png") no-repeat !important;
 }
 
-.icon-minimap {
+.icon-minimap-witviz {
     background: url("../images/map-magnify-icon.png") no-repeat !important;
 }
 
+.icon-export-witviz {
+    background-image: url("/images/Export.png");
+    background-repeat:  no-repeat !important;
+    background-size: 16px 16px;
+}
+
 /* These are for the button and drop down menu behaviors */
-.myIcons {
+.myIcons-witviz {
     height: 16px;
     width: 16px;
     background-image: url("../images/TFS-Icons.png");
@@ -89,10 +77,10 @@
   }
 }
 
-        #cy {
-          height: 100%;
-          width: 100%;
-          position: absolute;
-          left: 0;
-          top: 100px;
-        }
+#cy {
+  height: 100%;
+  width: 100%;
+  position: absolute;
+  left: 0;
+  top: 100px;
+}

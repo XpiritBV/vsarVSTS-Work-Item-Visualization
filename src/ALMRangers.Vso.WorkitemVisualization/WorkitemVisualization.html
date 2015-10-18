@@ -1,6 +1,6 @@
 ﻿<!--
  //---------------------------------------------------------------------
- // <copyright file="app.html">
+ // <copyright file="WorkitemVisualization.html">
  //    This code is licensed under the MIT License.
  //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
  //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
@@ -9,7 +9,7 @@
  // </copyright>
  // <summary>
  //   Part of the Work Item Visualization VSO extension by the
- //     ALM Rangers.  This file displays the main view of State Model Visualization.
+ //     ALM Rangers.  This file displays the main view of Work Item Visualization.
  //  </summary>
  //---------------------------------------------------------------------
 -->
@@ -42,24 +42,16 @@
                 </div>
                 <div class="pivot-hub-content" style="width: 100%; height: 100%;">
                     <div class=" main-content" style="width: 100%; height: 100%;">
-                        <!--<div class="filters" id="main-filters">
-                            <div title="layout" class="select pivot-filter enhance layout-filter">
-
-                            </div>
-                        </div>-->
                         <div class="toolbar hub-pivot-toolbar">
                         </div>
                         <div id="message"></div>
-                        <!--<div id="workItemDiagram" style="width: 100%; height: 100%; background-color: white;"></div>
-                        <div id="minimap" style="border: 1px solid blue; border-image: none; left: 10px; top: 80px; width: 200px; height: 100px; position: absolute; z-index: 900; background-color: aliceblue; display: none"></div>-->
                         <div id="cy" class="cy"></div>
                         <div id="cytoscape-navigator" class="cytoscape-navigator" style="display: none">
                             <canvas></canvas>
                             <div class="cytoscape-navigatorView"></div>
                             <div class="cytoscape-navigatorOverlay"></div>
                         </div>
-                        <!--<div id="myImages"></div>-->
-                        <div id="witViz-tooltip" style="display: none; z-index: 9998"></div>
+                        <!--<div id="witViz-tooltip" style="display: none; z-index: 9998"></div>-->
                     </div>
                 </div>
             </div>
@@ -85,8 +77,6 @@
         explicitNotifyLoaded: true,
 
         // We are using some VSO APIs, so we will need the module loader to load them in
-        //usePlatformScripts: true,
-        //usePlatformStyles: true,
             setupModuleLoader: true,
             moduleLoaderConfig: {
             paths: {

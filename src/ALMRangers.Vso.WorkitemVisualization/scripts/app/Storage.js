@@ -8,7 +8,7 @@
 // </copyright>
  // <summary>
  //   Part of the Work Item Visualization VSO extension by the
- //     ALM Rangers. The main application flow and logic.
+ //     ALM Rangers. The communication logic with VSO REST clients.
  //  </summary>
 //---------------------------------------------------------------------*/
 

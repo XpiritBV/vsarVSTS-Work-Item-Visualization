@@ -8,7 +8,7 @@
 // </copyright>
  // <summary>
  //   Part of the Work Item Visualization VSO extension by the
- //     ALM Rangers. The main application flow and logic.
+ //     ALM Rangers. The logic related to Cytoscape graph api to visualize data.
  //  </summary>
 //---------------------------------------------------------------------*/
 

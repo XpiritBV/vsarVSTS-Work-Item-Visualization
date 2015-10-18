@@ -8,7 +8,7 @@
 // </copyright>
  // <summary>
  //   Part of the Work Item Visualization VSO extension by the
- //     ALM Rangers. The main application flow and logic.
+ //     ALM Rangers. The application logic for finding work item by id dialog view.
  //  </summary>
 //---------------------------------------------------------------------*/
 

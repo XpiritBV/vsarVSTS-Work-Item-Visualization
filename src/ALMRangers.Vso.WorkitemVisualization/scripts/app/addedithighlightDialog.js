@@ -8,7 +8,7 @@
 // </copyright>
  // <summary>
  //   Part of the Work Item Visualization VSO extension by the
- //     ALM Rangers. The main application flow and logic.
+ //     ALM Rangers. The application logic for add or edit highlight dialog view.
  //  </summary>
 //---------------------------------------------------------------------*/
 

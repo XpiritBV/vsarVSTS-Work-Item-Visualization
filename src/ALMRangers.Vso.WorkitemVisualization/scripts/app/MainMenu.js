@@ -20,8 +20,8 @@ var __extends = this.__extends || function (d, b) {
 };
 
 define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Common", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage"],
-    function (require, exports, Core, VSS_HOST, Controls, MenuControls, CommonControls, WorkitemVisualizationGraph, Storage) {
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Common", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage"],
+    function (require, exports, Core, VSS_HOST, Controls, MenuControls, CommonControls, Splitter, WorkitemVisualizationGraph, Storage) {
 
     var ItemsView = (function (_super) {
         __extends(ItemsView, _super);
@@ -29,7 +29,6 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
         function ItemsView(options) {
             _super.call(this, options);
             this._menu = null;
-            ItemsView.prototype._graph = null;
             this._graph = WorkitemVisualizationGraph.graph;
         }
 
@@ -61,8 +60,11 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                 items: this._createToolbarItems()
             });
             MenuControls.menuManager.attachExecuteCommand(Core.delegate(this, this._onToolbarItemClick));
-            _splitter = Controls.Enhancement.ensureEnhancement(CommonControls.Splitter, $(".right-hub-splitter"));
+            //var splitterOptions = { initialSize : 250, minWidth : 250, maxWidth: 500, fixedSide : "right" };
+            _splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
+            //_splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), splitterOptions);
             
+            //_splitter.collapse();
             _splitter.noSplit();
             _splitterPaneOnOff = "off";
         };
@@ -252,7 +254,7 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
             var self = this;
             var opts = {
                 width: 200,
-                height: 200,
+                height: 125,
                 cancelText: "Cancel",
                 okText: "Find",
                 getDialogResult : function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },

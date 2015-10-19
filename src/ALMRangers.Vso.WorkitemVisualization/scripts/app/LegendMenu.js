@@ -67,8 +67,8 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
             legendGrid.ReApplyLegend();
         }
 
-        ItemsView.prototype.ApplyLegendToNode = function (key) {
-            legendGrid.ApplyLegendToNode(key);
+        ItemsView.prototype.ApplyLegendToNode = function (node) {
+            legendGrid.ApplyLegendToNode(node);
         }
 
         /*

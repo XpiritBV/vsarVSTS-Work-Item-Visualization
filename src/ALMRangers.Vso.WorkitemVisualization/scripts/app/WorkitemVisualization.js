@@ -203,13 +203,15 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
             WorkitemVisualization.prototype.addCommitNode = function (commit, data) {
                 var self = this;
                 var node = graph.createCommitNodeData(commit, data.repo);
-                graph.addElement(node, data.edge);
+                var elements = graph.addElement(node, data.edge);
+                elements.each(self.highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addChangesetNode = function (cs, edge) {
                 var self = this;
                 var node = graph.createChangesetNodeData(cs);
-                graph.addElement(node, edge);
+                var elements = graph.addElement(node, edge);
+                elements.each(self.highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addWitNodes = function (wits, data) {
@@ -221,10 +223,16 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                     newNodes.push(nodeData);
                 }
 
-                graph.addElements(newNodes, data.edges);
+                var elements = graph.addElements(newNodes, data.edges);
+                elements.each(self.highlightNewNode);
             }
 
-            //TODO: Look to batch the element adding
+            WorkitemVisualization.prototype.highlightNewNode = function (i, ele) {
+                if (ele.isNode()) {
+                    legendMenu.ApplyLegendToNode(ele);
+                }
+            }
+
             //This is called when the incremented node is a work item
             WorkitemVisualization.prototype.addWorkitem = function (wit) {
                 var self = this;
@@ -296,7 +304,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                     edges.push(edge);
                 }
 
-                graph.addElements(nodes, edges);
+                var elements = graph.addElements(nodes, edges);
+                elements.each(highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addCommitChanges = function (commit, data) {
@@ -311,7 +320,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                     edges.push(edge);
                 }
 
-                graph.addElements(nodes, edges);
+                var elements = graph.addElements(nodes, edges);
+                elements.each(highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addGitFileLinks = function (commits, data) {
@@ -335,7 +345,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                     edges.push(edge);
                 }
 
-                graph.addElements(nodes, edges);
+                var elements = graph.addElements(nodes, edges);
+                elements.each(highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addTfvcFileLinks = function (changesets, data) {
@@ -345,7 +356,6 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
 
                 for (var i = 0; i < changesets.length; i++) {
 
-                    //TODO: test this or use data.repo
                     var newNode = graph.createChangesetNodeData(changesets[i]);
                     nodes.push(newNode);
 
@@ -354,7 +364,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                     edges.push(edge);
                 }
 
-                graph.addElements(nodes, edges);
+                var elements = graph.addElements(nodes, edges);
+                elements.each(highlightNewNode);
             }
 
 

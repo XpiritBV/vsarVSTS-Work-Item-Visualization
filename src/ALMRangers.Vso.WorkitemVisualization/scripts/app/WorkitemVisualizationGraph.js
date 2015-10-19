@@ -90,10 +90,9 @@ define(["require", "exports"], function (require, exports) {
                     self.cy.maxZoom(5);
                     //self.cy.elements().unselectify();
                     self.cy.userZoomingEnabled(false);
-                    self.cy.boxSelectionEnabled(true);
+                    //self.cy.boxSelectionEnabled(true);
                     self.cy.zoom(0.8);
 
-                    //TODO: unbinding necessary when graph is recreated
                     self.cy.on('tap', 'node', function (e) {
                         e.preventDefault();
 
@@ -278,7 +277,8 @@ define(["require", "exports"], function (require, exports) {
                 state: witState,
                 workItemType: witType,
                 bgImage: this.getNodeBackgroundImage(witType ),
-                assignedTo: assigned
+                assignedTo: assigned,
+                url : wit.url
             };
             return { group: 'nodes', data: newNode };
         }
@@ -295,7 +295,8 @@ define(["require", "exports"], function (require, exports) {
                 bgImage: this.getNodeBackgroundImage("Changeset"),
                 author: cs.author.displayName,
                 createdDate: d.toLocaleString(),
-                comment: cs.comment
+                comment: cs.comment,
+                url: cs.url
             }
             return { group: 'nodes', data: newNode };
         }
@@ -314,7 +315,8 @@ define(["require", "exports"], function (require, exports) {
                 bgImage: this.getNodeBackgroundImage("Changeset"),
                 author: commit.author.name,
                 createdDate: d.toLocaleString(),
-                comment: commit.comment
+                comment: commit.comment,
+                url : commit.remoteUrl
             }
             return { group: 'nodes', data: newNode };
         }
@@ -384,17 +386,18 @@ define(["require", "exports"], function (require, exports) {
             var edges = new Array();
             nodes.push(node);
             edges.push(edge);
-            this.addElements(nodes, edges);
+            return this.addElements(nodes, edges);
         }
 
         WorkitemVisualizationGraph.prototype.addElements = function (nodes, edges) {
-            var elements = new Array();
             var self = this;
+            var newElements = self.cy.collection(); 
+            var elements = new Array();
+
 
             for (var i = 0; i < nodes.length; i++) {
                 var node = self.cy.getElementById(nodes[i].data.origId);
                 if (node.empty()) {
-                    //self.cy.add(node);
                     elements.push(nodes[i]);
                 }
             }
@@ -413,16 +416,16 @@ define(["require", "exports"], function (require, exports) {
                 if (tmpEdges.empty()) {
                     tmpEdges = self.cy.edges("#" + reverseEdgeId);
                     if (tmpEdges.empty()) {
-                        //self.cy.add(edge);
                         elements.push(edges[j]);
                     }
                 }
             }
             
             if (elements.length > 0) {
-                self.cy.add(elements);
+                newElements = self.cy.add(elements);
                 self.refreshLayout();
             }
+            return newElements;
         }
 
         WorkitemVisualizationGraph.prototype.refreshLayout = function () {

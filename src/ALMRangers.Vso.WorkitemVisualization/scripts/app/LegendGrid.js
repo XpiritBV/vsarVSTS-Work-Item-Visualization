@@ -299,37 +299,26 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
             }
         }
 
-        //LegendGrid.prototype.ApplyLegendToNode = function (nodeKey) {
-        //    //Find the node
-        //    var n = workItemDiagram.findNodeForKey(nodeKey);
-        //    if (this._gridData != null) {
-        //        for (var i = 0; i < this._gridData.length; i++) {
-        //            node = this._gridData[i][2];
-        //            if ((n.data["workItemType"] == node.Field) || (n.data["category"] == node.Field) || (n.data["state"] == node.Field) || (n.data["assignedTo"] == node.Field) || (n.data["outcome"] == node.Field)) {
-        //                if (node.BackgroundApply) {
-        //                    n.findObject("background").fill = node.Background;
-        //                }
-        //                if (node.TextApply) {
-        //                    var n1, n2, n3, n4, n5;
-        //                    n1 = n.findObject("text1");
-        //                    n2 = n.findObject("text2");
-        //                    n3 = n.findObject("text3");
-        //                    n4 = n.findObject("text4");
-        //                    n5 = n.findObject("text5");
-
-        //                    if (n1 != null) { n1.stroke = node.Text; }
-        //                    if (n2 != null) { n2.stroke = node.Text; }
-        //                    if (n3 != null) { n3.stroke = node.Text; }
-        //                    if (n4 != null) { n4.stroke = node.Text; }
-        //                    if (n5 != null) { n5.stroke = node.Text; }
-        //                }
-        //                if (node.StrokeApply) {
-        //                    n.findObject("background").stroke = node.Stroke;
-        //                }
-        //            }
-        //        }
-        //    }
-        //}
+        LegendGrid.prototype.ApplyLegendToNode = function (graphNode) {
+            //Find the node
+            var n = graphNode;//workItemDiagram.findNodeForKey(nodeKey);
+            if (this._gridData != null) {
+                for (var i = 0; i < this._gridData.length; i++) {
+                    var node = this._gridData[i][2];
+                    if ((n.data("workItemType") === node.Field) || (n.data("category") === node.Field) || (n.data("state") === node.Field) || (n.data("assignedTo") === node.Field) || (n.data("outcome") === node.Field)) {
+                        if (node.BackgroundApply) {
+                            n.style("overlay-color", node.Background);
+                        }
+                        if (node.TextApply) {
+                            n.style("color", node.Text);
+                        }
+                        if (node.StrokeApply) {
+                            n.style("border-color", node.Stroke);
+                        }
+                    }
+                }
+            }
+        }
 
         /**
          *   Applies a legend to the diagram

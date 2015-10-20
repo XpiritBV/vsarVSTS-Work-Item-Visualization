@@ -16,7 +16,7 @@
     ],
      "contributions": [
         {
-          "id": "almrangers.WorkitemVisualization",
+          "id": "work-item-visualization",
           "type": "ms.vss-web.hub",
           "description": "Adds a 'Workitem Visualization' hub to the Work hub group.",
           "targets": [
@@ -29,7 +29,7 @@
           }
         },
       {
-        "id": "almrangers.WorkitemVisualization.visualize",
+        "id": "visualize-work-item",
         "type": "ms.vss-web.action",
         "description": "Run in visualize hub action",
         "targets": [
@@ -38,13 +38,30 @@
         "properties": {
           "text": "Visualize",
           "title": "Visualize this workitem",
-          "icon": "images/VisualizationSmall.png",
+          "icon": "images/treeviz_short_icon.png",
           "group": "actions",
-          "uri": "VisualizeWitAction.html"
+          "uri": "VisualizeWitContextMenu.html"
+        }
+      },
+       {
+        "id": "visualize-work-item-button",
+        "type": "ms.vss-web.action",
+        "description": "Visualize work item",
+        "targets": [
+          "ms.vss-work-web.work-item-toolbar-menu"
+        ],
+        "properties": {
+          "text": "Visualize",
+          "title": "Visualize this workitem",
+          "toolbarText" :  "Visualize",
+          "icon": "images/treeviz_short_icon.png",
+          "group": "actions",
+          "uri": "VisualizeWitButton.html",
+          "registeredObjectId": "visualize-work-item-button"
         }
       },
       {
-        "id": "almrangers.WorkitemVisualization.findWitDialog",
+        "id": "work-item-visualization-find-wit-dialog",
         "type": "ms.vss-web.control",
         "targets": [ ".controls" ],
         "properties": {
@@ -52,7 +69,7 @@
         }
       },
       {
-        "id": "almrangers.WorkitemVisualization.addEditHighlightDialog",
+        "id": "work-item-visualization-add-edit-highlight-dialog",
         "type": "ms.vss-web.control",
         "targets": [ ".controls" ],
         "properties": {

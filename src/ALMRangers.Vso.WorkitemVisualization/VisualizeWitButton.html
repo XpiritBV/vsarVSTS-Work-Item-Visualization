@@ -1,0 +1,50 @@
+﻿<!--
+ //---------------------------------------------------------------------
+ // <copyright file="VisualizeWitAction.html">
+ //    This code is licensed under the MIT License.
+ //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ //    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ // </copyright>
+ // <summary>
+ //   Part of the Work Item Visualization VSO extension by the
+ //     ALM Rangers.  This file displays the Visualize element in context menu of backlog.
+ //  </summary>
+ //---------------------------------------------------------------------
+-->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8"/>
+    <script src="sdk/scripts/VSS.SDK.js"></script>
+</head>
+<body>
+    
+    <script>
+      VSS.init();
+
+      var visualizeOnWorkitemForm = (function () {
+          "use strict";
+          return {
+              // This is a callback that gets invoked when a user clicks the newly contributed menu item
+              // The actionContext parameter contains context data surrounding the circumstances of this
+              // action getting invoked.
+              execute: function (actionContext) {
+                  // Get the Web Context to create the uri to navigate to
+                  var vsoContext = VSS.getWebContext();
+                  var extensionContext = VSS.getExtensionContext();
+                  var workitemId = actionContext.workItemId;
+                  // Navigate to the new View Assoicated Work Items hub.  fabrikam.build is the namespace of the app and build.items is the id of the hub.
+                  window.parent.location.href = vsoContext.host.uri + "/" + vsoContext.project.name + "/_apps/hub/" + extensionContext.publisherId + "." + extensionContext.extensionId + ".work-item-visualization/?id=" + workitemId;
+              }
+          };
+      }());
+
+      VSS.register("visualize-work-item-button", visualizeOnWorkitemForm);
+    </script>
+</body>
+</html>

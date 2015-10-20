@@ -40,7 +40,7 @@
         }
     });
     VSS.require(["Scripts/App/findWitDialog"], function(app) {
-        VSS.register("almrangers.WorkitemVisualization.findWitDialog", function(context) {
+        VSS.register("work-item-visualization-find-wit-dialog", function (context) {
             return new app.FindWitDialog(context);
         });
         VSS.notifyLoadSucceeded();

@@ -274,9 +274,9 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                 title: dialogTitle
             };
             VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
-                dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".almrangers.WorkitemVisualization.addEditHighlightDialog", opts).then(function (dialog) {
+                dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-add-edit-highlight-dialog", opts).then(function (dialog) {
                     dialog.updateOkButton(true);
-                    dialog.getContributionInstance("almrangers.WorkitemVisualization.addEditHighlightDialog").then(function (ci) {
+                    dialog.getContributionInstance("work-item-visualization-add-edit-highlight-dialog").then(function (ci) {
                         addEditHighlightDialog = ci;
                         addEditHighlightDialog.start({ workItemTypeArray: workItemTypeArray, categoryArray: categoryArray, stateArray: stateArray, editNode : self._nodeBeingEdited, tempSample : tempSample });
                     }, function (err) {
@@ -301,7 +301,7 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
 
         LegendGrid.prototype.ApplyLegendToNode = function (graphNode) {
             //Find the node
-            var n = graphNode;//workItemDiagram.findNodeForKey(nodeKey);
+            var n = graphNode;
             if (this._gridData != null) {
                 for (var i = 0; i < this._gridData.length; i++) {
                     var node = this._gridData[i][2];

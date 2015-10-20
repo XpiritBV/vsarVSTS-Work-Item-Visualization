@@ -28,7 +28,7 @@
       VSS.init();
 
       // Use an IIFE to create an object that satisfies the IContributedMenuSource contract
-      var menuContributionHandler = (function () {
+      var visualizeOnContextMenu = (function () {
          "use strict";
          return {
              // This is a callback that gets invoked when a user clicks the newly contributed menu item
@@ -40,13 +40,12 @@
                  var extensionContext = VSS.getExtensionContext();
                  var workitemId = actionContext.workItemIds[0];
                  // Navigate to the new View Assoicated Work Items hub.  fabrikam.build is the namespace of the app and build.items is the id of the hub.
-                 window.parent.location.href = vsoContext.host.uri + "/" + vsoContext.project.name + "/_apps/hub/" + extensionContext.publisherId + "." + extensionContext.extensionId + ".almrangers.WorkitemVisualization/?id=" + workitemId;
+                 window.parent.location.href = vsoContext.host.uri + "/" + vsoContext.project.name + "/_apps/hub/" + extensionContext.publisherId + "." + extensionContext.extensionId + ".work-item-visualization/?id=" + workitemId;
              }
          };
-     }());
+      }());
 
-     // Associate the menuContributionHandler object with the "myAction" menu contribution from the manifest.
-      VSS.register("almrangers.WorkitemVisualization.visualize", menuContributionHandler);
+      VSS.register("visualize-work-item", visualizeOnContextMenu);
     </script>
 </body>
 </html>

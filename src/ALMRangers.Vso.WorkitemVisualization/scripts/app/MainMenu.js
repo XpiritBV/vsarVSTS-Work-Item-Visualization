@@ -264,9 +264,9 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                 title: "Find work item"
             };
             VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
-                dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".almrangers.WorkitemVisualization.findWitDialog", opts).then(function (dialog) {
+                dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
                     dialog.updateOkButton(true);
-                    dialog.getContributionInstance("almrangers.WorkitemVisualization.findWitDialog").then(function (ci) {
+                    dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
                         findWorkItemDialog = ci;
                         findWorkItemDialog.start();
                     }, function (err) {

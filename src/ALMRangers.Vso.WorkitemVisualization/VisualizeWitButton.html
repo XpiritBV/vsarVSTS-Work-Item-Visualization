@@ -35,11 +35,28 @@
               // action getting invoked.
               execute: function (actionContext) {
                   // Get the Web Context to create the uri to navigate to
-                  var vsoContext = VSS.getWebContext();
                   var extensionContext = VSS.getExtensionContext();
-                  var workitemId = actionContext.workItemId;
                   // Navigate to the new View Assoicated Work Items hub.  fabrikam.build is the namespace of the app and build.items is the id of the hub.
-                  window.parent.location.href = vsoContext.host.uri + "/" + vsoContext.project.name + "/_apps/hub/" + extensionContext.publisherId + "." + extensionContext.extensionId + ".work-item-visualization/?id=" + workitemId;
+
+                  var widthPercentage = 80;
+                  var heightPercentage =  75;
+
+                  var newWidth = parseInt((window.screen.width / 100 * widthPercentage).toString());
+                  var newHeight = parseInt((window.screen.height / 100 * heightPercentage).toString());
+
+                  var opts = {
+                      width: newWidth,
+                      height: newHeight,
+                      title: "Visualize Work Item",
+                      buttons: null
+                  };
+                  var contributionConfig = 
+                      {
+                          action: actionContext
+                      };
+                  VSS.getService(VSS.ServiceIds.Dialog).then(function(dlg) {
+                      dlg.openDialog(extensionContext.publisherId + "." + extensionContext.extensionId + ".work-item-visualization-dialog", opts, contributionConfig);
+                  });
               }
           };
       }());

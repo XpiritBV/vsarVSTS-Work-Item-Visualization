@@ -5,61 +5,56 @@
   "name": "Workitem Visualization",
   "description": "Visualize work items, how they relate to each other, code, tests, test results, builds and external artifacts.",
   "publisher": "alm-rangers-taavik",
-    "scopes": [ "vso.work","vso.code", "vso.test", "vso.profile" ],
-    "baseUri": "https://test-workitemvisualization-almrangers-vsoextensions.azurewebsites.net/",
-    "icons": {
-      "wide": "images/treeviz_wide_icon.png",
-      "default": "images/treeviz_short_icon.png"
-    },
-    "categories": [
-      "Productivity"
-    ],
-     "contributions": [
-        {
-          "id": "work-item-visualization",
-          "type": "ms.vss-web.hub",
-          "description": "Adds a 'Workitem Visualization' hub to the Work hub group.",
-          "targets": [
-            "ms.vss-work-web.work-hub-group"
-          ],
-          "properties": {
-            "name": "Visualize",
-            "order": 99,
-            "uri": "WorkitemVisualization.html"
-          }
-        },
-       {
-        "id": "visualize-work-item-button",
-        "type": "ms.vss-web.action",
-        "description": "Visualize work item",
-        "targets": [
-          "ms.vss-work-web.work-item-toolbar-menu"
-        ],
-        "properties": {
-          "text": "Visualize",
-          "title": "Visualize this workitem",
-          "toolbarText" :  "Visualize",
-          "icon": "images/treeviz_short_icon_16x16.png",
-          "group": "actions",
-          "uri": "VisualizeWitButton.html",
-          "registeredObjectId": "visualize-work-item-button"
-        }
-      },
-      {
-        "id": "work-item-visualization-find-wit-dialog",
+  "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
+  "baseUri": "https://test-workitemvisualization-almrangers-vsoextensions.azurewebsites.net/",
+  "icons": {
+    "wide": "images/treeviz_wide_icon.png",
+    "default": "images/treeviz_short_icon.png"
+  },
+  "categories": [
+    "Productivity"
+  ],
+  "contributions": [
+          {
+        "id": "work-item-visualization-dialog",
         "type": "ms.vss-web.control",
         "targets": [ ".controls" ],
         "properties": {
-          "uri": "findWitDialog.html"
+          "uri": "WorkitemVisualization.html"
         }
       },
-      {
-        "id": "work-item-visualization-add-edit-highlight-dialog",
-        "type": "ms.vss-web.control",
-        "targets": [ ".controls" ],
-        "properties": {
-          "uri": "addEditHighlightDialog.html"
-        }
+    {
+      "id": "visualize-work-item-button",
+      "type": "ms.vss-web.action",
+      "description": "Visualize work item",
+      "targets": [
+        "ms.vss-work-web.work-item-toolbar-menu"
+      ],
+      "properties": {
+        "text": "Visualize",
+        "title": "Visualize this workitem",
+        "toolbarText": "Visualize",
+        "icon": "images/treeviz_short_icon_16x16.png",
+        "group": "actions",
+        "uri": "VisualizeWitButton.html",
+        "registeredObjectId": "visualize-work-item-button"
       }
-     ]
+    },
+    {
+      "id": "work-item-visualization-find-wit-dialog",
+      "type": "ms.vss-web.control",
+      "targets": [ ".controls" ],
+      "properties": {
+        "uri": "findWitDialog.html"
+      }
+    },
+    {
+      "id": "work-item-visualization-add-edit-highlight-dialog",
+      "type": "ms.vss-web.control",
+      "targets": [ ".controls" ],
+      "properties": {
+        "uri": "addEditHighlightDialog.html"
+      }
+    }
+  ]
 }

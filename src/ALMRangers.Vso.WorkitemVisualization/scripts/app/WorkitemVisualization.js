@@ -34,6 +34,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
 
             WorkitemVisualization.prototype.start = function () {
                 var self = this;
+
                 mainMenu = Controls.Enhancement.enhance(MainMenu.ItemsView, $(".hub-view"), {});
                 legendMenu = Controls.Enhancement.enhance(LegendMenu.ItemsView, $(".hub-view"), {});
                 
@@ -43,17 +44,10 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                 function loadLinkTypes(witLinkTypes) {
                     linkTypes = witLinkTypes;
 
-                    // get everything after the ?
-                    var queryString = window.location.search.substring(1);
-
-                    if (queryString !== "") {
-                        //Get the ID and value (which will be in querystringparams[0])
-                        var param = queryString.split("=");
-                        var id = parseInt(param[1]);
-
-                        //Get workitem and load it into the graph
-                        storage.getWorkItem(id, self.loadInitialItem.bind(self));
-                    }
+                    //Get workitem and load it into the graph
+                    var workItemId = VSS.getConfiguration().action.workItemId;
+                    if (workItemId)
+                        storage.getWorkItem(workItemId, self.loadInitialItem.bind(self));
                 }
 
                 //Load link types for the use during the application lifetime. Starts the application flow.

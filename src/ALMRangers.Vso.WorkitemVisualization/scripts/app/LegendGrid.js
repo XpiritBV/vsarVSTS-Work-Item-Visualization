@@ -173,9 +173,9 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
             var node = this._gridData[index][2];
 
             //Reset the node to the default
-            node.Background = "#ffffff";
+            node.Background = "#fff";
             node.BackgroundApply = true;
-            node.Stroke = "#808080";
+            node.Stroke = "#000";
             node.StrokeApply = true;
             node.Text = "#000000";
             node.TextApply = true;
@@ -306,14 +306,26 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                 for (var i = 0; i < this._gridData.length; i++) {
                     var node = this._gridData[i][2];
                     if ((n.data("workItemType") === node.Field) || (n.data("category") === node.Field) || (n.data("state") === node.Field) || (n.data("assignedTo") === node.Field) || (n.data("outcome") === node.Field)) {
-                        if (node.BackgroundApply) {
-                            n.style("overlay-color", node.Background);
-                        }
-                        if (node.TextApply) {
-                            n.style("color", node.Text);
-                        }
-                        if (node.StrokeApply) {
-                            n.style("border-color", node.Stroke);
+
+                        //if (node.BackgroundApply) {
+                        //    n.style("overlay-color", node.Background);
+                        //}
+                        //if (node.TextApply) {
+                        //    n.style("color", node.Text);
+                        //}
+                        //if (node.StrokeApply) {
+                        //    n.style("border-color", node.Stroke);
+                        //}
+                        var content = n.data("content");
+                        if (n.data("category") === "Work Item") {
+                            var image = this._graph.getWitBackground(n.data("workItemType"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
+                            n.data("bgImage", image);
+                            //n.style("background-image", image);
+
+                        } else {
+                            var image = this._graph.getArtifactBackground(n.data("category"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
+                            n.data("bgImage", image);
+                            //n.style("background-image", image);
                         }
                     }
                 }
@@ -325,20 +337,31 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
          */
         LegendGrid.prototype._applyLegend = function(node) {
             //Update the graph only if the graph has been created
-            if (WorkItemVisualizationGraph.graph.cy != null) {
+            if (WorkItemVisualizationGraph.graph.isGraphLoaded()) {
                 //Get the nodes and loop through them
-                var nodes = WorkItemVisualizationGraph.graph.cy.nodes();
+                var nodes = WorkItemVisualizationGraph.graph.getAllNodes();
                 for (var i = 0; i < nodes.length; i++) {
                     var n = nodes[i];
                     if ((n.data("workItemType") === node.Field) || (n.data("category") === node.Field) || (n.data("state") === node.Field) || (n.data("assignedTo") === node.Field) || (n.data("outcome") === node.Field)) {
-                        if (node.BackgroundApply) {
-                            n.style("overlay-color", node.Background);
-                        }
-                        if (node.TextApply) {
-                            n.style("color", node.Text);
-                        }
-                        if (node.StrokeApply) {
-                            n.style("border-color", node.Stroke);
+                        //if (node.BackgroundApply) {
+                        //    n.style("overlay-color", node.Background);
+                        //}
+                        //if (node.TextApply) {
+                        //    n.style("color", node.Text);
+                        //}
+                        //if (node.StrokeApply) {
+                        //    n.style("border-color", node.Stroke);
+                        //}
+                        var content = n.data("content");
+                        if (n.data("category") === "Work Item") {
+                            var image = this._graph.getWitBackground(n.data("workItemType"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
+                            n.data("bgImage", image);
+                            //n.style("background-image", image);
+
+                        } else {
+                            var image = this._graph.getArtifactBackground(n.data("category"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
+                            n.data("bgImage", image);
+                            //n.style("background-image", image);
                         }
                     }
                 }

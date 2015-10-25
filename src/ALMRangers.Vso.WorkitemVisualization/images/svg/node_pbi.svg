@@ -1,7 +1,0 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<!-- PBI -->
-<svg xmlns="http://www.w3.org/2000/svg" width="200px" height="80px">
-  <rect x="0" y="0" width="200px" height="80px" fill="white" stroke="black">
-  </rect>
-  <rect width="10px" height="80px" fill="rgb(0, 156, 204)" x="0" y="0"></rect>
-</svg>

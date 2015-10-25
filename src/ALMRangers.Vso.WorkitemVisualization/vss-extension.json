@@ -28,21 +28,6 @@
             "uri": "WorkitemVisualization.html"
           }
         },
-      {
-        "id": "visualize-work-item",
-        "type": "ms.vss-web.action",
-        "description": "Run in visualize hub action",
-        "targets": [
-          "ms.vss-work-web.backlog-item-menu"
-        ],
-        "properties": {
-          "text": "Visualize",
-          "title": "Visualize this workitem",
-          "icon": "images/treeviz_short_icon.png",
-          "group": "actions",
-          "uri": "VisualizeWitContextMenu.html"
-        }
-      },
        {
         "id": "visualize-work-item-button",
         "type": "ms.vss-web.action",
@@ -54,7 +39,7 @@
           "text": "Visualize",
           "title": "Visualize this workitem",
           "toolbarText" :  "Visualize",
-          "icon": "images/treeviz_short_icon.png",
+          "icon": "images/treeviz_short_icon_16x16.png",
           "group": "actions",
           "uri": "VisualizeWitButton.html",
           "registeredObjectId": "visualize-work-item-button"

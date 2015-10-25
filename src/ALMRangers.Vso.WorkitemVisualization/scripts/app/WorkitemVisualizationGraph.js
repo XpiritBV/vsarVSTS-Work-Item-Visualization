@@ -23,6 +23,10 @@ define(["require", "exports"], function (require, exports) {
         var _navigator = null;
         var _container = null;
         var _expandNodeCallback = null;
+        var defaultBackgroundColor = "#fff";
+        var defaultBorderColor = "#000";
+        var defaultTextColor = "#000";
+        var graphLoaded = false;
 
         function WorkitemVisualizationGraph(container, cytoscape) {
             var self = this;
@@ -39,25 +43,17 @@ define(["require", "exports"], function (require, exports) {
 
         WorkitemVisualizationGraph.prototype.create = function (nodes, edges, callback) {
             var self = this;
-            //_container.cytoscape({
             self.cytoscape({
                 container: _container[0],
                 style: self.cytoscape.stylesheet()
                     .selector('node')
                     .css({
                         'shape': 'rectangle',
-                        'width': '200px',
+                        'width': '210px',
                         'height': '80px',
-                        'content': 'data(content)',
-                        'text-valign': 'center',
-                        'color': 'black',
                         'background-image': 'data(bgImage)',
-                        'background-width': '200px',
-                        'background-height': '80px',
-                        //'background-image': "data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='200px' height='75px'%3E%3Crect x='0' y='0' width='200px' height='75px' fill='white' stroke='black'%3E%3C/rect%3E%3Crect width='15px' height='75px' fill='blue' x='0' y='0'%3E%3C/rect%3E%3C/svg%3E",
-                        'text-wrap': 'wrap',
-                        'font-family': 'Segoe UI,Tahoma,Arial,Verdana',
-                        'font-size': '12px'
+                        'background-width': '210px',
+                        'background-height': '80px'
                     })
                     .selector('edge')
                     .css({
@@ -68,14 +64,11 @@ define(["require", "exports"], function (require, exports) {
                         'content': 'data(name)',
                         'text-opacity': '0.5',
                         'control-point-step-size': 100
-                        //'curve-style': 'haystack'
                     }),
                 layout: {
                     name: 'dagre',
                     rankDir: self.direction,
                     minLen: function (edge) { return 5; }
-                    //animate: true, // whether to transition the node positions
-                    //animationDuration: 500 // duration of animation in ms if enabled
                 },
                 elements: {
                     nodes: nodes,
@@ -85,12 +78,11 @@ define(["require", "exports"], function (require, exports) {
                 ready: function () {
                     window.cy = this;
                     self.cy = this;
+                    graphLoaded = true;
 
                     self.cy.minZoom(0.1);
                     self.cy.maxZoom(5);
-                    //self.cy.elements().unselectify();
                     self.cy.userZoomingEnabled(false);
-                    //self.cy.boxSelectionEnabled(true);
                     self.cy.zoom(0.8);
 
                     self.cy.on('tap', 'node', function (e) {
@@ -100,13 +92,10 @@ define(["require", "exports"], function (require, exports) {
                         if (expanded === null || expanded === undefined || expanded !== true) {
                             _expandNodeCallback(e.cyTarget);
                         }
-                        
-                        //alert('left click node' + e.cyTarget.id());
                     });
 
                     callback();
                     cy.on('cxttap', 'node', function (e) {
-                    //cy.$('node').one('cxttap', function(e) {
                         e.preventDefault();
 
                         var category = e.cyTarget.data("category");
@@ -122,7 +111,6 @@ define(["require", "exports"], function (require, exports) {
                                 self.openFile(e.cyTarget);
                                 break;
                         }
-                        //alert('right click node' + e.cyTarget.id());
                     });
 
                     //cy.on('mouseover', 'node', function (e) {
@@ -178,9 +166,9 @@ define(["require", "exports"], function (require, exports) {
             window.open(location, "_blank");
         }
         WorkitemVisualizationGraph.prototype.openFile = function (node) {
+            //BUG: If commit or file is from different project, then it would not go to right location!
             var objectType = node.data("objectType");
             //Full path
-            //https://jeff.visualstudio.com/DefaultCollection/_git/PersonSearch/commit/8ed5b88cc494dadab411ad37fb597f54f4da6ecf#path=%2FMyPeopleSearch%2FViews%2FDetailPage.xaml&_a=contents
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri;
 
@@ -188,14 +176,13 @@ define(["require", "exports"], function (require, exports) {
                 var path = node.data("path");
                 var commitId = node.data("commitId");
                 //This means it's a git file
-                //TODO: Cant we use and store the remote url of commit?
+                //TODO: Cant we use and store the remote url of commit? 
                 location += "/_git/" + vsoContext.project.name + "/commit/" + commitId + "#path=" + path + "&_a=contents";
             } else {
                 //TODO: Cant we use and store the remote url of changeset - if exists?
                 //It's a tfvc file
                 var origId = node.data("origId");
                 var changesetId = node.data("changesetId");
-                //https://jeff.visualstudio.com/DefaultCollection/WorkItemVisualizations/_versionControl/changeset/84#path=%24%2FWorkItemVisualizations%2FConsoleApplication1%2FConsoleApplication1%2FMyNewClass.cs&_a=contents
                 location += "/" + vsoContext.project.name + "/_versionControl/changeset/" + changesetId + "#path=" + origId + "&_a=contents";
             }
 
@@ -257,6 +244,14 @@ define(["require", "exports"], function (require, exports) {
             }
         }
 
+        WorkitemVisualizationGraph.prototype.getAllNodes = function () {
+            return this.cy.nodes();
+        }
+
+        WorkitemVisualizationGraph.prototype.isGraphLoaded = function () {
+            return graphLoaded;
+        }
+
         WorkitemVisualizationGraph.prototype.createWitNodeData = function (wit) {
             var assigned = "";
             if (wit.fields["System.AssignedTo"] != null) {
@@ -265,34 +260,32 @@ define(["require", "exports"], function (require, exports) {
             var witState = wit.fields["System.State"];
             var witType = wit.fields["System.WorkItemType"];
             var title = wit.fields["System.Title"];
-            var partialTitle = title.substring(0, title.length > 20 ? 20 : title.length);
-            //TODO: cap the length, combine the title thing
-            var content = witType + "\n" + wit.id + " " + partialTitle + "\n" + witState;
+            var witText = this.getWitText(wit.id, title, witState, witType, assigned);
             var newNode = {
                 id: "W" + wit.id,
                 origId: wit.id,
                 category: "Work Item",
-                content: content,
+                content: witText,
                 title: title,
                 state: witState,
                 workItemType: witType,
-                bgImage: this.getNodeBackgroundImage(witType ),
+                bgImage: this.getWitBackground(witType, witText),
                 assignedTo: assigned,
-                url : wit.url
+                url: wit.url
             };
             return { group: 'nodes', data: newNode };
         }
 
         WorkitemVisualizationGraph.prototype.createChangesetNodeData = function (cs) {
+            var category = "Changeset";
             var d = new Date(cs.createdDate);
-            //TODO: cap the length, combine the title thing
-            var content = "Changeset" + "\n" + id + " " + d.toLocaleString() + "\n" + cs.author.displayName;
+            var cardText = this.getArtifactText(category, cs.changesetId, d.toLocaleString(), cs.author.displayName);
             var newNode = {
-                id: "C" + id,
-                origId: id,
-                category: "Changeset",
-                content: content,
-                bgImage: this.getNodeBackgroundImage("Changeset"),
+                id: "C" + cs.changesetId,
+                origId: cs.changesetId,
+                category: category,
+                content: cardText,
+                bgImage: this.getArtifactBackground(category, cardText),
                 author: cs.author.displayName,
                 createdDate: d.toLocaleString(),
                 comment: cs.comment,
@@ -302,17 +295,17 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.createCommitNodeData = function (commit, repo) {
+            var category = "Commit";
             var d = new Date(commit.author.date);
-            //TODO: cap the length, combine the title thing
-            var content = "Commit" + "\n" + commit.commitId.substring(0, 6) + "..." + d.toLocaleString() + "\n" + commit.author.name;
+            var cardText = this.getArtifactText(category, commit.commitId, d.toLocaleString(), commit.author.name);
             var newNode = {
                 id: "G" + commit.commitId,
                 origId: commit.commitId,
                 repo: repo,
-                category: "Commit",
-                content: content,
+                category: category,
+                content: cardText,
                 shortId: commit.commitId.substring(0, 6) + "...",
-                bgImage: this.getNodeBackgroundImage("Changeset"),
+                bgImage: this.getArtifactBackground(category, cardText),
                 author: commit.author.name,
                 createdDate: d.toLocaleString(),
                 comment: commit.comment,
@@ -322,23 +315,23 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.createFileNodeData = function (change, changesetId) {
-            //TODO: cap the length, combine the title thing
-            //TODO: NOT HANGLING FOLDERS!
+            var category = "File";
+            var fileName = change.item.path.substring(change.item.path.lastIndexOf('/') + 1);
             var find = '/';
             var re = new RegExp(find, 'g');
-            var fileKey = "F" + change.item.path.replace(find,"");
+            var fileKey = "F" + change.item.path.replace(re,"");
             //Create the node
-            var content = "File" + "\n" + change.item.path.substring(change.item.path.lastIndexOf('/') + 1) + "\n" + changesetId;
+            var cardText = this.getArtifactText(category, fileName, change.changeType, "");
             var newNode = {
                 id: fileKey,
                 origId: change.item.path,
                 changesetId: changesetId,
-                category: "File",
+                category: category,
                 objectType: "File",
-                file: change.item.path.substring(change.item.path.lastIndexOf('/') + 1),
+                file: fileName,
                 changeType: change.changeType,
-                bgImage: this.getNodeBackgroundImage("File"),
-                content: content
+                bgImage: this.getArtifactBackground(category, cardText),
+                content: cardText
             };
 
             return { group: 'nodes', data: newNode };
@@ -347,23 +340,25 @@ define(["require", "exports"], function (require, exports) {
         WorkitemVisualizationGraph.prototype.createCommitFileNodeData = function (change, data) {
             //TODO: cap the length, combine the title thing
             //TODO: NOT HANGLING FOLDERS!
+            var category = "File";
+            var fileName = change.item.path.substring(change.item.path.lastIndexOf('/') + 1);
             var find = '/';
             var re = new RegExp(find, 'g');
             var fileKey = "F" + change.item.path.replace(re, "");
-            var content = "File" + "\n" + change.item.path.substring(change.item.path.lastIndexOf('/') + 1) + "\n" + data.id.substring(0, 18) + "...";
+            var cardText = this.getArtifactText(category, fileName, change.changeType, "");
             //Create the node
             var newNode = {
                 id: fileKey,
                 origId: change.item.url,
                 repo: data.repo,
                 commitId: data.id,
-                category: "File",
+                category: category,
                 objectType: change.item.gitObjectType,
-                file: change.item.path.substring(change.item.path.lastIndexOf('/') + 1),
+                file: fileName,
                 path: change.item.path,
                 changeType: change.changeType,
-                bgImage: this.getNodeBackgroundImage("File"),
-                content: content
+                bgImage: this.getArtifactBackground(category, cardText),
+                content: cardText
             };
 
             return { group: 'nodes', data: newNode };
@@ -449,46 +444,102 @@ define(["require", "exports"], function (require, exports) {
             return png64;
         }
 
-        WorkitemVisualizationGraph.prototype.getNodeBackgroundImage = function (type) {
-            //TODO: Generate the SVG data in XML and based on profile colors in the future
-            var bgImage = "data:image/svg+xml;base64,";//"url(/images/svg/";
+        //TODO: Cache!
+        var witTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path fill="backgroundColor" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="witColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
+        var witTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">textId</tspan><tspan x="76">textTitle1</tspan>  <tspan x="16" dy="16">textTitle2</tspan>  <tspan x="16" dy="16">textAssignedTo</tspan> <tspan x="16" dy="16">textState</tspan></text>';
+        WorkitemVisualizationGraph.prototype.getWitBackground = function (type, cardText, backgroundColor, borderColor, textColor) {
+            if (backgroundColor == undefined) backgroundColor = defaultBackgroundColor;
+            if (borderColor == undefined) borderColor = defaultBorderColor;
+            if (textColor == undefined) textColor = defaultTextColor;
+
+            var witColor = "";
             switch (type) {
                 case "Product Backlog Item":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjMDA5Q0NDIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#009CCC";
                     break;
                 case "Task":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#F2CB1D";
                     break;
                 case "Test Case":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRkZBNTAwIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#FF9D00";
                     break;
                 case "Bug":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjQ0MyOTNEIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#CC293D";
                     break;
                 case "Impediment":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRkY5RDAwIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#CC293D";
                     break;
                 case "Feature":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjNzczQjkzIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#773B93";
                     break;
                 case "Test Suite":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRkY5RDAwIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#009CCC";
                     break;
                 case "Test Plan":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRkY5RDAwIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#773B93";
                     break;
-                case "Changeset":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
-                    break;
-                case "File":
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSJvbGl2ZSIgZD0iTTAgMGgxMHY4MEgweiIvPjwvc3ZnPg==";
+                case "Epic":
+                    witColor = "#FF7B00";
                     break;
                 default:
-                    bgImage += "PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMDAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMDB2ODBIMHoiLz48cGF0aCBmaWxsPSIjQ0MyOTNEIiBkPSJNMCAwaDEwdjgwSDB6Ii8+PC9zdmc+";
+                    witColor = "#F2CB1D";
             }
 
-            return bgImage;
+            var witBg = witTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
+                                .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/witColor/g, witColor);
+            
+            return "data:image/svg+xml;base64," + Base64.encode(witBg) + ";";
         }
+
+        WorkitemVisualizationGraph.prototype.getWitText = function (id, title, state, type, assignedTo) {
+            var textTitle1 = title.substring(0, title.length > 23 ? 23 : title.length);
+            var textTitle2 = "";
+            if (title.length > 23) {
+                textTitle2 = title.substring(23, title.length - 23 > 32 ? 23+32 : title.length);
+            }
+
+            var witText = witTextTemplate.replace(/textTitle1/g, textTitle1).replace(/textTitle2/g, textTitle2)
+                                        .replace(/textAssignedTo/g, assignedTo).replace(/textState/g, state)
+                                        .replace(/textId/g, id);
+
+            return witText;
+        }
+
+        //TODO: Cache!
+        var artifactTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path fill="backgroundColor" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="cardColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
+        var artifactTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">artifactType</tspan> <tspan x="16" dy="16">artifactId</tspan> <tspan x="16" dy="16">artifactDate</tspan> <tspan x="16" dy="16">artifactAssignedTo</tspan></text>';
+        WorkitemVisualizationGraph.prototype.getArtifactBackground = function (type, cardText, backgroundColor, borderColor, textColor) {
+            if (backgroundColor == undefined) backgroundColor = defaultBackgroundColor;
+            if (borderColor == undefined) borderColor = defaultBorderColor;
+            if (textColor == undefined) textColor = defaultTextColor;
+
+            var cardColor = "";
+            switch (type) {
+                case "Commit":
+                case "Changeset":
+                    cardColor = "#000000";
+                    break;
+                case "File":
+                    cardColor = "#D6CE95";
+                    break;
+                default:
+                    cardColor = "#F2CB1D";
+            }
+
+
+            var cardBg = artifactTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
+                                        .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/cardColor/g, cardColor);
+
+            return "data:image/svg+xml;base64," + Base64.encode(cardBg) + ";";
+        }
+
+        WorkitemVisualizationGraph.prototype.getArtifactText = function (type, artifactId, createdDate, assignedTo) {
+            var cardText = artifactTextTemplate.replace(/artifactType/g, type).replace(/artifactId/g, artifactId)
+                                    .replace(/artifactDate/g, createdDate).replace(/artifactAssignedTo/g, assignedTo);
+
+            return cardText;
+        }
+
         return WorkitemVisualizationGraph;
     })();
     exports.graph = new WorkitemVisualizationGraph($("#cy"), cytoscape);

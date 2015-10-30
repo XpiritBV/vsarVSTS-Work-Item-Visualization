@@ -12,7 +12,6 @@
  //  </summary>
 //---------------------------------------------------------------------*/
 
-//TODO: Add bugs / pbis for this
 //TODO: Highlight path to selected node
 //TODO: Highlight elements that are being added
 
@@ -55,88 +54,6 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
 
                 // Notify the parent frame that the host has been loaded
                 VSS.notifyLoadSucceeded();
-
-                ////Highlighting code
-                //var highlightColor = "red";
-
-                //// When a Link is selected, highlight it and both connected Nodes.
-                //function linkSelectionChanged(link) {
-                //    if (link.isSelected) {
-                //        highlightLink(link, highlightColor);
-                //        highlightNode(link.fromNode, highlightColor);
-                //        highlightNode(link.toNode, highlightColor);
-                //    } else {
-                //        highlightLink(link);
-                //        highlightNode(link.fromNode);
-                //        highlightNode(link.toNode);
-                //    }
-                //}
-
-                //// Highlight a Link by changing its Shape.stroke and strokeWidth.
-                //function highlightLink(link, color) {
-                //    if (link === null) return;
-                //    var shape = link.findObject("LINKSHAPE");
-                //    if (shape === null) return;
-                //    if (color !== undefined) {
-                //        if (!shape.previousStroke) shape.previousStroke = shape.stroke;
-                //        shape.strokeWidth = 2;
-                //        shape.stroke = color;
-                //    } else { // restore previous color
-                //        shape.strokeWidth = 1;
-                //        if (!shape.previousStroke == null) {
-                //            shape.stroke = shape.previousStroke;
-                //        } else {
-                //            shape.stroke = "black";
-                //        }
-                //    }
-                //}
-
-                //// When a Node is selected, show the selection and highlight all connected Links and Nodes.
-                //function nodeSelectionChanged(node) {
-                //    var shape = node.findObject("background");
-                //    if (shape === null) return;
-                //    if (node.isSelected) {
-                //        // indicate selected node by changing fill color
-                //        if (!shape.previousFill) shape.previousFill = shape.fill;
-                //        shape.fill = "yellow";
-                //        // use highlight color
-                //        highlightNode(node, highlightColor);
-                //        highlightConnectedNodes(node, highlightColor);
-                //    } else { // restore previous colors
-                //        shape.fill = shape.previousFill;
-                //        highlightNode(node);
-                //        highlightConnectedNodes(node);
-                //    }
-                //}
-
-                //// Highlight a Node by changing its Shape.stroke.
-                //function highlightNode(node, color) {
-                //    if (node === null) return;
-                //    var shape = node.findObject("background");
-                //    if (shape === null) return;
-                //    if (color !== undefined) {
-                //        if (!shape.previousStroke) shape.previousStroke = shape.stroke;
-                //        shape.stroke = color;
-                //    } else { // restore previous color
-                //        if (!shape.previousStroke == null) {
-                //            shape.stroke = shape.previousStroke;
-                //        } else {
-                //            shape.stroke = "black";
-                //        }
-                //    }
-                //}
-
-                //function highlightConnectedNodes(node, color) {
-                //    if (node === null) return;
-                //    var lit = node.findLinksConnected();
-                //    while (lit.next()) {
-                //        highlightLink(lit.value, color);
-                //    }
-                //    var nit = node.findNodesConnected();
-                //    while (nit.next()) {
-                //        highlightNode(nit.value, color);
-                //    }
-                //}
             }
 
             WorkitemVisualization.prototype.loadInitialItem = function (wit) {

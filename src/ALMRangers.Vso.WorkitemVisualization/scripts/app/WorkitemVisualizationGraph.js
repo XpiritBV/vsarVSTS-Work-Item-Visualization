@@ -13,8 +13,6 @@
 //---------------------------------------------------------------------*/
 
 //TODO: Tooltip support
-//TODO: Highlight node
-//TODO: Highlight background, border
 //TODO: Context Menu on right click
 
 define(["require", "exports"], function (require, exports) {
@@ -338,8 +336,6 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.createCommitFileNodeData = function (change, data) {
-            //TODO: cap the length, combine the title thing
-            //TODO: NOT HANGLING FOLDERS!
             var category = "File";
             var fileName = change.item.path.substring(change.item.path.lastIndexOf('/') + 1);
             var find = '/';
@@ -438,13 +434,12 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.exportImage = function () {
-            //TODO: ISSUE WITH CORS
+            //TODO: ISSUE WITH CORS in IE
             var self = this;
             var png64 = self.cy.png({ full: true });
             return png64;
         }
 
-        //TODO: Cache!
         var witTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path fill="backgroundColor" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="witColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
         var witTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">textId</tspan><tspan x="76">textTitle1</tspan>  <tspan x="16" dy="16">textTitle2</tspan>  <tspan x="16" dy="16">textAssignedTo</tspan> <tspan x="16" dy="16">textState</tspan></text>';
         WorkitemVisualizationGraph.prototype.getWitBackground = function (type, cardText, backgroundColor, borderColor, textColor) {
@@ -488,8 +483,6 @@ define(["require", "exports"], function (require, exports) {
             var witBg = witTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
                                 .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/witColor/g, witColor);
             
-            //return "data:image/svg+xml;base64," + btoa(witBg);
-            //return "data:image/svg+xml;charset=utf8," + encodeURI(witBg)+";";
             if (window.btoa) {
                 //To make sure all UTF8 characters work
                 return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(witBg)));
@@ -538,8 +531,6 @@ define(["require", "exports"], function (require, exports) {
             var cardBg = artifactTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
                                         .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/cardColor/g, cardColor);
 
-            //return "data:image/svg+xml;base64," + Base64.encode(cardBg);
-            //return "data:image/svg+xml;charset=utf8," + encodeURI(cardBg)+";";
             if (window.btoa) {
                 //To make sure all UTF8 characters work
                 return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(cardBg)));

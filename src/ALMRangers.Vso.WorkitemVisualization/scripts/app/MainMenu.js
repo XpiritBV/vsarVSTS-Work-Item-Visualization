@@ -17,11 +17,11 @@ var __extends = this.__extends || function (d, b) {
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
-};
+}; 
 
 define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Common", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage"],
-    function (require, exports, Core, VSS_HOST, Controls, MenuControls, CommonControls, Splitter, WorkitemVisualizationGraph, Storage) {
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Common", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs"],
+    function (require, exports, Core, VSS_HOST, Controls, MenuControls, CommonControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs) {
 
     var ItemsView = (function (_super) {
         __extends(ItemsView, _super);
@@ -226,6 +226,13 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
         };
 
         ItemsView.prototype._exportGraph = function () {
+            var self = this;
+            if (self.detectIE()) {
+                var options = { title: "Can not export in IE.", content: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers."};
+                ModalDialogs.show(ModalDialogs.ModalDialog, options);
+                return;
+            }
+
             var d = new Date();
             var witType = "";
             var witId = "";
@@ -247,6 +254,30 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
             newDocument.write("</body></html>");
             newDocument.close();
         };
+
+         /**
+         * detect IE
+         * returns version of IE or false, if browser is not Internet Explorer
+         */
+        ItemsView.prototype.detectIE = function() {
+            var ua = window.navigator.userAgent;
+
+            var msie = ua.indexOf('MSIE ');
+            if (msie > 0) {
+                // IE 10 or older => return version number
+                return parseInt(ua.substring(msie + 5, ua.indexOf('.', msie)), 10);
+            }
+
+            var trident = ua.indexOf('Trident/');
+            if (trident > 0) {
+                // IE 11 => return version number
+                var rv = ua.indexOf('rv:');
+                return parseInt(ua.substring(rv + 3, ua.indexOf('.', rv)), 10);
+            }
+
+            // other browser
+            return false;
+        }
 
         ItemsView.prototype._findWorkItem = function () {
             var vsoStore = new Storage.VsoStoreService();

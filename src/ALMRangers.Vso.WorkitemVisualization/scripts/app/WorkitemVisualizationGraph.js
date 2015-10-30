@@ -488,7 +488,15 @@ define(["require", "exports"], function (require, exports) {
             var witBg = witTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
                                 .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/witColor/g, witColor);
             
-            return "data:image/svg+xml;base64," + Base64.encode(witBg) + ";";
+            //return "data:image/svg+xml;base64," + btoa(witBg);
+            //return "data:image/svg+xml;charset=utf8," + encodeURI(witBg)+";";
+            if (window.btoa) {
+                //To make sure all UTF8 characters work
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(witBg)));
+            } else {
+                //For IE9 and below
+                return "data:image/svg+xml;base64," + Base64.encode(unescape(encodeURIComponent(witBg)));
+            }
         }
 
         WorkitemVisualizationGraph.prototype.getWitText = function (id, title, state, type, assignedTo) {
@@ -530,7 +538,15 @@ define(["require", "exports"], function (require, exports) {
             var cardBg = artifactTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
                                         .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/cardColor/g, cardColor);
 
-            return "data:image/svg+xml;base64," + Base64.encode(cardBg) + ";";
+            //return "data:image/svg+xml;base64," + Base64.encode(cardBg);
+            //return "data:image/svg+xml;charset=utf8," + encodeURI(cardBg)+";";
+            if (window.btoa) {
+                //To make sure all UTF8 characters work
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(cardBg)));
+            } else {
+                //For IE9 and below
+                return "data:image/svg+xml;base64," + Base64.encode(unescape(encodeURIComponent(cardBg)));
+            }
         }
 
         WorkitemVisualizationGraph.prototype.getArtifactText = function (type, artifactId, createdDate, assignedTo) {

@@ -1,0 +1,715 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+	<meta charset="utf-8" />
+</head>
+<body>
+
+</body>
+</html>
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <meta charset="utf-8" />
+    <link href="css/cytoscape.js-navigator.css" rel="stylesheet" />
+    <script src="scripts/jquery-2.1.1.min.js"></script>
+    <script src="scripts/cytoscape/cytoscape.js"></script>
+    <script src="scripts/cytoscape/dagre.js"></script>
+    <script src="scripts/cytoscape/cytoscape.js-navigator.js"></script>
+    <style>
+        body {
+            font: 14px helvetica neue, helvetica, arial, sans-serif;
+        }
+
+        #cy {
+            height: 100%;
+            width: 100%;
+            position: absolute;
+            left: 0;
+            top: 0;
+        }
+    </style>
+</head>
+<body>
+    <!--<div><object data="images/node_background.svg" type="image/svg+xml" width="500" height="500" /></div>-->
+    <div id="cy" class="cy"></div>
+    <div id="cytoscape-navigator" class="cytoscape-navigator">
+        <canvas></canvas>
+        <div class="cytoscape-navigatorView"></div>
+        <div class="cytoscape-navigatorOverlay"></div>
+    </div>
+    <script type="text/javascript">
+        $(function () { // on dom ready
+
+            var defaultBackgroundColor = "#fff";
+            var defaultBorderColor = "#000";
+            var defaultTextColor = "#000";
+
+            //TODO: Cache!
+            var witTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path fill="backgroundColor" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="witColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
+            var witTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">textId</tspan><tspan x="76">textTitle1</tspan>  <tspan x="16" dy="16">textTitle2</tspan>  <tspan x="16" dy="16">textAssignedTo</tspan> <tspan x="16" dy="16">textState</tspan></text>';
+            var getWitBackground = function (type, cardText, backgroundColor, borderColor, textColor) {
+                if (backgroundColor == undefined) backgroundColor = defaultBackgroundColor;
+                if (borderColor == undefined) borderColor = defaultBorderColor;
+                if (textColor == undefined) textColor = defaultTextColor;
+
+                var witColor = "";
+                switch (type) {
+                    case "Product Backlog Item":
+                        witColor = "#009CCC";
+                        break;
+                    case "Task":
+                        witColor = "#F2CB1D";
+                        break;
+                    case "Test Case":
+                        witColor = "#FF9D00";
+                        break;
+                    case "Bug":
+                        witColor = "#CC293D";
+                        break;
+                    case "Impediment":
+                        witColor = "#CC293D";
+                        break;
+                    case "Feature":
+                        witColor = "#773B93";
+                        break;
+                    case "Test Suite":
+                        witColor = "#009CCC";
+                        break;
+                    case "Test Plan":
+                        witColor = "#773B93";
+                        break;
+                    case "Epic":
+                        witColor = "#FF7B00";
+                        break;
+                    default:
+                        witColor = "#F2CB1D";
+                }
+
+                var witBg = witTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
+                                    .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/witColor/g, witColor);
+
+                //return "data:image/svg+xml," + encodeURI(witBg);
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(witBg)));
+            }
+
+            var getWitText = function (id, title, state, type, assignedTo) {
+                var textTitle1 = title.substring(0, title.length > 23 ? 23 : title.length);
+                var textTitle2 = "";
+                if (title.length > 23) {
+                    textTitle2 = title.substring(23, title.length - 23 > 32 ? 23 + 32 : title.length);
+                }
+
+                var witText = witTextTemplate.replace(/textTitle1/g, textTitle1).replace(/textTitle2/g, textTitle2)
+                                            .replace(/textAssignedTo/g, assignedTo).replace(/textState/g, state)
+                                            .replace(/textId/g, id);
+
+                return witText;
+            }
+
+            //TODO: Cache!
+            var artifactTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path fill="backgroundColor" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="cardColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
+            var artifactTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">artifactType</tspan> <tspan x="16" dy="16">artifactId</tspan> <tspan x="16" dy="16">artifactDate</tspan> <tspan x="16" dy="16">artifactAssignedTo</tspan></text>';
+            var getArtifactBackground = function (type, cardText, backgroundColor, borderColor, textColor) {
+                if (backgroundColor == undefined) backgroundColor = defaultBackgroundColor;
+                if (borderColor == undefined) borderColor = defaultBorderColor;
+                if (textColor == undefined) textColor = defaultTextColor;
+
+                var cardColor = "";
+                switch (type) {
+                    case "Commit":
+                    case "Changeset":
+                        cardColor = "#000000";
+                        break;
+                    case "File":
+                        cardColor = "#D6CE95";
+                        break;
+                    default:
+                        cardColor = "#F2CB1D";
+                }
+
+
+                var cardBg = artifactTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
+                                            .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/cardColor/g, cardColor);
+
+                if (window.btoa) {
+                    //To make sure all UTF8 characters work
+                    return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(cardBg)));
+                } else {
+                    
+                }
+
+                //return "data:image/svg+xml," + encodeURI(cardBg);
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(cardBg)));//btoa(unescape(encodeURIComponent(str)))
+            }
+
+            var getArtifactText = function (type, artifactId, createdDate, assignedTo) {
+                var cardText = artifactTextTemplate.replace(/artifactType/g, type).replace(/artifactId/g, artifactId)
+                                        .replace(/artifactDate/g, createdDate).replace(/artifactAssignedTo/g, assignedTo);
+
+                return cardText;
+            }
+
+
+            var elements = {
+                edges: [
+                    {
+                        data: {
+                            id: "W292-W291",
+                            name: "Parent",
+                            source: "W292",
+                            target: "W291"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W292-W294",
+                            name: "Child",
+                            source: "W292",
+                            target: "W294"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W292-W295",
+                            name: "Child",
+                            source: "W292",
+                            target: "W295"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W292-W304",
+                            name: "Child",
+                            source: "W292",
+                            target: "W304"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W292-W305",
+                            name: "Child",
+                            source: "W292",
+                            target: "W305"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W292-W306",
+                            name: "Child",
+                            source: "W292",
+                            target: "W306"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W291-W293",
+                            name: "Child",
+                            source: "W291",
+                            target: "W293"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W291-W333",
+                            name: "Child",
+                            source: "W291",
+                            target: "W333"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W291-C328",
+                            name: "Artifact Link",
+                            source: "W291",
+                            target: "C328"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W291-Gf27d408b000fa8f1ebc21e6b4b8f88393fdd5bc9",
+                            name: "Artifact Link",
+                            source: "W291",
+                            target: "Gf27d408b000fa8f1ebc21e6b4b8f88393fdd5bc9"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W296",
+                            name: "Tested By",
+                            source: "W293",
+                            target: "W296"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W303",
+                            name: "Child",
+                            source: "W293",
+                            target: "W303"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W307",
+                            name: "Child",
+                            source: "W293",
+                            target: "W307"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W308",
+                            name: "Child",
+                            source: "W293",
+                            target: "W308"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W309",
+                            name: "Child",
+                            source: "W293",
+                            target: "W309"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W310",
+                            name: "Child",
+                            source: "W293",
+                            target: "W310"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W311",
+                            name: "Child",
+                            source: "W293",
+                            target: "W311"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W312",
+                            name: "Child",
+                            source: "W293",
+                            target: "W312"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W313",
+                            name: "Child",
+                            source: "W293",
+                            target: "W313"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W314",
+                            name: "Child",
+                            source: "W293",
+                            target: "W314"
+                        }
+                    },
+                    {
+                        data: {
+                            id: "W293-W315",
+                            name: "Child",
+                            source: "W293",
+                            target: "W315"
+                        }
+                    }
+                ],
+                nodes: [
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjMDA5Q0NDIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjI5MjwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5NeSBQQkkgLSBUYXNrczwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+PC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiA8dHNwYW4geD0iMTYiIGR5PSIxNiI+TmV3PC90c3Bhbj48L3RleHQ+PC9zdmc+;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">292</tspan><tspan x="76">My PBI - Tasks</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">New</tspan></text>',
+                            expanded: true,
+                            id: "W292",
+                            origId: 292,
+                            state: "New",
+                            title: "My PBI - Tasks",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/292",
+                            workItemType: "Product Backlog Item"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjNzczQjkzIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjI5MTwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5NeSBjb29sIGZlYXR1cmU8L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+PC90c3Bhbj4gPHRzcGFuIHg9IjE2IiBkeT0iMTYiPkluIFByb2dyZXNzPC90c3Bhbj48L3RleHQ+PC9zdmc+;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">291</tspan><tspan x="76">My cool feature</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">In Progress</tspan></text>',
+                            expanded: true,
+                            id: "W291",
+                            origId: 291,
+                            state: "In Progress",
+                            title: "My cool feature",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/291",
+                            workItemType: "Feature"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjI5NDwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5UYXNrIDEgd2l0aCBhdHRhY2htZW50IDwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+YW5kIHBpY3R1cmU8L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">294</tspan><tspan x="76">Task 1 with attachment </tspan>  <tspan x="16" dy="16">and picture</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W294",
+                            origId: 294,
+                            state: "To Do",
+                            title: "Task 1 with attachment and picture",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/294",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjI5NTwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5FbXB0eSB0YXNrPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">295</tspan><tspan x="76">Empty task</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W295",
+                            origId: 295,
+                            state: "To Do",
+                            title: "Empty task",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/295",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMwNDwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5UaGlzIGlzIHRoZSB0aXRsZSAyPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">304</tspan><tspan x="76">This is the title 2</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W304",
+                            origId: 304,
+                            state: "To Do",
+                            title: "This is the title 2",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/304",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMwNTwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5UaGlzIGlzIHRoZSB0aXRsZSAyPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">305</tspan><tspan x="76">This is the title 2</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W305",
+                            origId: 305,
+                            state: "To Do",
+                            title: "This is the title 2",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/305",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMwNjwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5UaGlzIGlzIHRoZSB0aXRsZSAzPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">306</tspan><tspan x="76">This is the title 3</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W306",
+                            origId: 306,
+                            state: "To Do",
+                            title: "This is the title 3",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/306",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjMDA5Q0NDIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjI5MzwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5NeSBQQkkgLSBUZXN0IENhc2VzPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5OZXc8L3RzcGFuPjwvdGV4dD48L3N2Zz4=;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">293</tspan><tspan x="76">My PBI - Test Cases</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">New</tspan></text>',
+                            expanded: true,
+                            id: "W293",
+                            origId: 293,
+                            state: "New",
+                            title: "My PBI - Test Cases",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/293",
+                            workItemType: "Product Backlog Item"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjMDA5Q0NDIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMzMzwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5OZXcgUEJJPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5OZXc8L3RzcGFuPjwvdGV4dD48L3N2Zz4=;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">333</tspan><tspan x="76">New PBI</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">New</tspan></text>',
+                            id: "W333",
+                            origId: 333,
+                            state: "New",
+                            title: "New PBI",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/333",
+                            workItemType: "Product Backlog Item"
+                        }
+                    },
+                    {
+                        data: {
+                            author: "Taavi Koosaar",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPkNoYW5nZXNldDwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij4zMjg8L3RzcGFuPiA8dHNwYW4geD0iMTYiIGR5PSIxNiI+4oCOMjAxNeKAji3igI4wNeKAji3igI4xM+KAjiDigI4wMOKAjjrigI4xMuKAjjrigI4xNDwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UYWF2aSBLb29zYWFyPC90c3Bhbj48L3RleHQ+PC9zdmc+;",
+                            category: "Changeset",
+                            comment: "removed broken test proj",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">Changeset</tspan> <tspan x="16" dy="16">328</tspan> <tspan x="16" dy="16">‎2015‎-‎05‎-‎13‎ ‎00‎:‎12‎:‎14</tspan> <tspan x="16" dy="16">Taavi Koosaar</tspan></text>',
+                            createdDate: "‎2015‎-‎05‎-‎13‎ ‎00‎:‎12‎:‎14",
+                            id: "C328",
+                            origId: 328,
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/tfvc/changesets/328"
+                        }
+                    },
+                    {
+                        data: {
+                            author: "Taavi Koosaar",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjMDAwMDAwIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPkNvbW1pdDwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5mMjdkNDA4YjAwMGZhOGYxZWJjMjFlNmI0YjhmODgzOTNmZGQ1YmM5PC90c3Bhbj4gPHRzcGFuIHg9IjE2IiBkeT0iMTYiPuKAjjIwMTXigI4t4oCOMTDigI4t4oCOMDnigI4g4oCOMjHigI464oCOMjbigI464oCOMTI8L3RzcGFuPiA8dHNwYW4geD0iMTYiIGR5PSIxNiI+VGFhdmkgS29vc2FhcjwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Commit",
+                            comment: "Related Work Items: #291, #294",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">Commit</tspan> <tspan x="16" dy="16">f27d408b000fa8f1ebc21e6b4b8f88393fdd5bc9</tspan> <tspan x="16" dy="16">‎2015‎-‎10‎-‎09‎ ‎21‎:‎26‎:‎12</tspan> <tspan x="16" dy="16">Taavi Koosaar</tspan></text>',
+                            createdDate: "‎2015‎-‎10‎-‎09‎ ‎21‎:‎26‎:‎12",
+                            id: "Gf27d408b000fa8f1ebc21e6b4b8f88393fdd5bc9",
+                            origId: "f27d408b000fa8f1ebc21e6b4b8f88393fdd5bc9",
+                            repo: "bc49bd72-460f-4bf6-bfb4-305be4a2d48e",
+                            shortId: "f27d40...",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_git/Taavik-Git/commit/f27d408b000fa8f1ebc21e6b4b8f88393fdd5bc9"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRkY5RDAwIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjI5NjwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5UQzogb24gdGhlIHdlYjwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+PC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiA8dHNwYW4geD0iMTYiIGR5PSIxNiI+RGVzaWduPC90c3Bhbj48L3RleHQ+PC9zdmc+;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">296</tspan><tspan x="76">TC: on the web</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">Design</tspan></text>',
+                            id: "W296",
+                            origId: 296,
+                            state: "Design",
+                            title: "TC: on the web",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/296",
+                            workItemType: "Test Case"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMwMzwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5hIHZlcnkgbG9uZyB0aXRsZSBmb3IgdDwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+aGUgdGFzayBzbyBpIHdvdWxkIGtub3cgd2hhdCBpIHM8L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">303</tspan><tspan x="76">a very long title for t</tspan>  <tspan x="16" dy="16">he task so i would know what i s</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W303",
+                            origId: 303,
+                            state: "To Do",
+                            title: "a very long title for the task so i would know what i should do or not do or whatever else is important in this task to do or not to do , you know?",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/303",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMwNzwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5LdW1taXR1cyBrdW1taXRhcyBrdW1taTwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+a3V0ZWdhIGt1bW11dGlzPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiA8dHNwYW4geD0iMTYiIGR5PSIxNiI+VG8gRG88L3RzcGFuPjwvdGV4dD48L3N2Zz4=;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">307</tspan><tspan x="76">Kummitus kummitas kummi</tspan>  <tspan x="16" dy="16">kutega kummutis</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W307",
+                            origId: 307,
+                            state: "To Do",
+                            title: "Kummitus kummitas kummikutega kummutis",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/307",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMwODwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5LdW1taXR1cyBrdW1taXRhcyBrdW1taTwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+a3V0ZWdhIGt1bW11dGlzPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiA8dHNwYW4geD0iMTYiIGR5PSIxNiI+VG8gRG88L3RzcGFuPjwvdGV4dD48L3N2Zz4=;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">308</tspan><tspan x="76">Kummitus kummitas kummi</tspan>  <tspan x="16" dy="16">kutega kummutis</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W308",
+                            origId: 308,
+                            state: "To Do",
+                            title: "Kummitus kummitas kummikutega kummutis",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/308",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMwOTwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5LdW1taXR1cyBrdW1taXRhcyBrdW1taTwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+a3V0ZWdhIGt1bW11dGlzPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiA8dHNwYW4geD0iMTYiIGR5PSIxNiI+VG8gRG88L3RzcGFuPjwvdGV4dD48L3N2Zz4=;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">309</tspan><tspan x="76">Kummitus kummitas kummi</tspan>  <tspan x="16" dy="16">kutega kummutis</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W309",
+                            origId: 309,
+                            state: "To Do",
+                            title: "Kummitus kummitas kummikutega kummutis",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/309",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMxMDwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5Bbm5hIMO1bHUgw7xsZSDDnGxvIMO1ZSDDtWxhPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">310</tspan><tspan x="76">Anna õlu üle Ülo õe õla</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W310",
+                            origId: 310,
+                            state: "To Do",
+                            title: "Anna õlu üle Ülo õe õla",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/310",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMxMTwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5Bbm5hIMO1bHUgw7xsZSDDnGxvIMO1ZSDDtWxhPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">311</tspan><tspan x="76">Anna õlu üle Ülo õe õla</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W311",
+                            origId: 311,
+                            state: "To Do",
+                            title: "Anna õlu üle Ülo õe õla",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/311",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMxMjwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5Bbm5hIMO1bHUgw7xsZSDDnGxvIMO1ZSDDtWxhPC90c3Bhbj4gIDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij48L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">312</tspan><tspan x="76">Anna õlu üle Ülo õe õla</tspan>  <tspan x="16" dy="16"></tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W312",
+                            origId: 312,
+                            state: "To Do",
+                            title: "Anna õlu üle Ülo õe õla",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/312",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMxMzwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5OYXJpIHZvb2RpIG1vb2RpIHZvb2RpIDwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+dmlpZGkgdm9vZGkgcG9vZGk8L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">313</tspan><tspan x="76">Nari voodi moodi voodi </tspan>  <tspan x="16" dy="16">viidi voodi poodi</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W313",
+                            origId: 313,
+                            state: "To Do",
+                            title: "Nari voodi moodi voodi viidi voodi poodi",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/313",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            __proto__: {},
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMxNDwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5OYXJpIHZvb2RpIG1vb2RpIHZvb2RpIDwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+dmlpZGkgdm9vZGkgcG9vZGk8L3RzcGFuPiAgPHRzcGFuIHg9IjE2IiBkeT0iMTYiPjwvdHNwYW4+IDx0c3BhbiB4PSIxNiIgZHk9IjE2Ij5UbyBEbzwvdHNwYW4+PC90ZXh0Pjwvc3ZnPg==;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">314</tspan><tspan x="76">Nari voodi moodi voodi </tspan>  <tspan x="16" dy="16">viidi voodi poodi</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W314",
+                            origId: 314,
+                            state: "To Do",
+                            title: "Nari voodi moodi voodi viidi voodi poodi",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/314",
+                            workItemType: "Task"
+                        }
+                    },
+                    {
+                        data: {
+                            assignedTo: "",
+                            bgImage: "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHdpZHRoPSIyMTAiIGhlaWdodD0iODAiPjxwYXRoIGZpbGw9IiNmZmYiIHN0cm9rZT0iIzAwMCIgZD0iTTAgMGgyMTB2ODBIMHoiLz48cGF0aCBmaWxsPSIjRjJDQjFEIiBkPSJNMCAwaDZ2ODBIMHoiLz48dGV4dCB5PSIyMCIgZm9udC1zaXplPSIxMnB4IiBmb250LWZhbWlseT0iU2Vnb2UgVUksVGFob21hLEFyaWFsLFZlcmRhbmEiIGZpbGw9IiMwMDAiPjx0c3BhbiB4PSIxNiIgZm9udC13ZWlnaHQ9ImJvbGQiPjMxNTwvdHNwYW4+PHRzcGFuIHg9Ijc2Ij5QYWdhbmEgdmFuYSB2YW5hcGFnYW5hIDwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+dGFnYXZhcmFyYXRhczwvdHNwYW4+ICA8dHNwYW4geD0iMTYiIGR5PSIxNiI+PC90c3Bhbj4gPHRzcGFuIHg9IjE2IiBkeT0iMTYiPlRvIERvPC90c3Bhbj48L3RleHQ+PC9zdmc+;",
+                            category: "Work Item",
+                            content: '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">315</tspan><tspan x="76">Pagana vana vanapagana </tspan>  <tspan x="16" dy="16">tagavararatas</tspan>  <tspan x="16" dy="16"></tspan> <tspan x="16" dy="16">To Do</tspan></text>',
+                            id: "W315",
+                            origId: 315,
+                            state: "To Do",
+                            title: "Pagana vana vanapagana tagavararatas",
+                            url: "https://melborp.visualstudio.com/DefaultCollection/_apis/wit/workItems/315",
+                            workItemType: "Task"
+                        }
+                    }
+                ]
+            };
+
+            for (var i = 0; i < elements.nodes.length; i++) {
+                var node = elements.nodes[i].data;
+
+                node.bgImage = getWitBackground(node.workItemType, node.content);
+            }
+
+        var cy = cytoscape({
+            container: document.getElementById('cy'),
+            /*
+            512'%3E%3Cpath
+
+            %3Csvg xmlns='http://www.w3.org/2000/svg' width='200px' height='75px'%3E%3Crect x='0' y='0' width='200px' height='75px' fill='white' stroke='black'%3E%3C/rect%3E%3Crect width='25px' height='75px' fill='blue' x='0' y='0'%3E%3C/rect%3E%3C/svg%3E
+            */
+
+            style: cytoscape.stylesheet()
+                .selector('node')
+                    .css({
+                        'shape': 'rectangle',
+                        'width': '210px',
+                        'height': '80px',
+                        'background-image': 'data(bgImage)',
+                        'background-width': '210px',
+                        'background-height': '80px'
+                    })
+                    .selector('edge')
+                    .css({
+                        'source-arrow-shape': 'circle',
+                        'target-arrow-shape': 'triangle',
+                        'line-color': '#ddd',
+                        'target-arrow-color': '#ddd',
+                        'content': 'data(name)',
+                        'text-opacity': '0.5',
+                        'control-point-step-size': 100
+                    })
+            ,
+
+            elements: elements,
+
+            layout: {
+                name: 'dagre',
+                rankDir: 'LR',
+                minLen: function(edge) { return 5; }
+            }
+        });
+        cy.zoom(1);
+
+        cy.on('tap', 'node', function (e) {
+            e.preventDefault();
+            alert('left click node' + e.cyTarget.id());
+        });
+
+        cy.on('cxttap', 'node', function (e) {
+            e.preventDefault();
+            alert('right click node' + e.cyTarget.id());
+        });
+
+        $(document).on('contextmenu', function (e) {
+            e.preventDefault();
+        });
+
+        $('#cy').cytoscapeNavigator({
+            // options go here
+            container: $('#cytoscape-navigator')
+        });
+
+    }); // on dom ready
+    
+
+    </script>
+
+
+</body>
+</html>

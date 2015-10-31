@@ -263,17 +263,18 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                 tempSample = "";
             }
 
-            var addEditHighlightDialog;
-            var opts = {
-                width: 440,
-                height: 265,
-                cancelText: "Cancel",
-                okText: "Save",
-                getDialogResult: function () { return addEditHighlightDialog ? addEditHighlightDialog.getData() : null },
-                okCallback: saveHighlight,
-                title: dialogTitle
-            };
+
             VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
+                var addEditHighlightDialog;
+                var opts = {
+                    width: 440,
+                    height: 265,
+                    cancelText: "Cancel",
+                    okText: "Save",
+                    getDialogResult: function () { return addEditHighlightDialog ? addEditHighlightDialog.getData() : null },
+                    okCallback: saveHighlight,
+                    title: dialogTitle
+                };
                 dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-add-edit-highlight-dialog", opts).then(function (dialog) {
                     dialog.updateOkButton(true);
                     dialog.getContributionInstance("work-item-visualization-add-edit-highlight-dialog").then(function (ci) {

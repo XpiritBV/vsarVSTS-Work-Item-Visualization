@@ -280,23 +280,25 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
         }
 
         ItemsView.prototype._findWorkItem = function () {
-            var vsoStore = new Storage.VsoStoreService();
-            var findWorkItemDialog; 
             var self = this;
-            var opts = {
-                width: 200,
-                height: 125,
-                cancelText: "Cancel",
-                okText: "Find",
-                getDialogResult : function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },
-                okCallback: function (result) {
-                    vsoStore.getWorkItem(result.id, _loadWorkItemGraphCallback);
-                },
-                title: "Find work item"
-            };
+            var vsoStore = new Storage.VsoStoreService();
+
             VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
+                var findWorkItemDialog;
+
+                var opts = {
+                    width: 200,
+                    height: 125,
+                    cancelText: "Cancel",
+                    okText: "Find",
+                    getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },
+                    okCallback: function (result) {
+                        vsoStore.getWorkItem(result.id, _loadWorkItemGraphCallback);
+                    },
+                    title: "Find work item"
+                };
+
                 dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
-                    dialog.updateOkButton(true);
                     dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
                         findWorkItemDialog = ci;
                         findWorkItemDialog.start();

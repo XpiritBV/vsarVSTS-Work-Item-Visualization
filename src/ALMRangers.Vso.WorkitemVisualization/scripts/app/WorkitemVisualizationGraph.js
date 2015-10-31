@@ -496,7 +496,14 @@ define(["require", "exports"], function (require, exports) {
             var textTitle1 = title.substring(0, title.length > 23 ? 23 : title.length);
             var textTitle2 = "";
             if (title.length > 23) {
-                textTitle2 = title.substring(23, title.length - 23 > 32 ? 23+32 : title.length);
+                //Make sure that we dont split words
+                var lastEmptySpaceInText1 = textTitle1.lastIndexOf(" ");
+                if (title.charAt(24) !== " " && lastEmptySpaceInText1 !== -1) {
+                    textTitle1 = textTitle1.substring(0, lastEmptySpaceInText1);
+                }
+
+
+                textTitle2 = title.substring(textTitle1.length, title.length - textTitle1.length - 1 > 32 ? textTitle1.length - 1 + 32 : title.length);
             }
 
             var witText = witTextTemplate.replace(/textTitle1/g, textTitle1).replace(/textTitle2/g, textTitle2)

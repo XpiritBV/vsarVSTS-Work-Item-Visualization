@@ -228,7 +228,7 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
         ItemsView.prototype._exportGraph = function () {
             var self = this;
             if (self.detectIE()) {
-                var options = { buttons: null, title: "Can not export in IE.", contentText: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers."};
+                var options = { buttons: null, title: "Can not export in IE", contentText: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers."};
                 ModalDialogs.show(ModalDialogs.ModalDialog, options);
                 return;
             }

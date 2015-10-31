@@ -493,20 +493,29 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.getWitText = function (id, title, state, type, assignedTo) {
-            var textTitle1 = title.substring(0, title.length > 23 ? 23 : title.length);
-            var textTitle2 = "";
-            if (title.length > 23) {
-                //Make sure that we dont split words
-                var lastEmptySpaceInText1 = textTitle1.lastIndexOf(" ");
-                if (title.charAt(24) !== " " && lastEmptySpaceInText1 !== -1) {
-                    textTitle1 = textTitle1.substring(0, lastEmptySpaceInText1);
+            var words = title.split(" ");
+            var line = "";
+            var lines = new Array();
+            for (var i = 0; i < words.length; i++) {
+                //See how long the combination will be
+                var t = line + words[i];
+                
+                if (
+                        (t.length > 23 && lines.length === 0) //line 1
+                        || (t.length > 32 && lines.length > 0) //other lines
+                    ) {
+                    //store the current value as line
+                    lines.push(line);
+                    //start the new line
+                    line = words[i];
+                    continue;
                 }
 
-
-                textTitle2 = title.substring(textTitle1.length, title.length - textTitle1.length - 1 > 32 ? textTitle1.length - 1 + 32 : title.length);
+                //continue adding words to line
+                line += words[i] + " ";
             }
 
-            var witText = witTextTemplate.replace(/textTitle1/g, textTitle1).replace(/textTitle2/g, textTitle2)
+            var witText = witTextTemplate.replace(/textTitle1/g, lines[0]).replace(/textTitle2/g, lines.length > 1 ? lines[1] : "")
                                         .replace(/textAssignedTo/g, assignedTo).replace(/textState/g, state)
                                         .replace(/textId/g, id);
 

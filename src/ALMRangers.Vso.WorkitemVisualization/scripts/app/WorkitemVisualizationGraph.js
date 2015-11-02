@@ -510,6 +510,10 @@ define(["require", "exports"], function (require, exports) {
                     line = words[i];
                     continue;
                 }
+                else if (title.length === t.length) {
+                    lines.push(line);
+                    continue;
+                }
 
                 //continue adding words to line
                 line += words[i] + " ";

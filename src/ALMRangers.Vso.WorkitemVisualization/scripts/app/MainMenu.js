@@ -299,6 +299,8 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                 };
 
                 dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
+                    //TODO: this should be disabled when content becomes empty and enabled again. 
+                    dialog.updateOkButton(true);
                     dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
                         findWorkItemDialog = ci;
                         findWorkItemDialog.start();

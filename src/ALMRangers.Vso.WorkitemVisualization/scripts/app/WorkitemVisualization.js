@@ -172,7 +172,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                                 storage.getChangesetDetails(tempId[0], self.addChangesetNode.bind(this), link);
 
                             } else if (changeType === "Commit") {
-                                var commitInfo = tempId[0].split("%2f");
+                                var commitInfo = tempId[0].toLowerCase().split("%2f");
                                 var link = graph.createNodeEdgeData("W" + id, "G" + commitInfo[2], self.getLinkTypeName(wit.relations[i].rel));
 
                                 storage.getCommitDetails(commitInfo[2], commitInfo[1], self.addCommitNode.bind(this), { commitId: commitInfo[2], repo: commitInfo[1], edge: link });

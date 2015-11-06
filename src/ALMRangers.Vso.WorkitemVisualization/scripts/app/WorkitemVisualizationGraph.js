@@ -493,6 +493,17 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.getWitText = function (id, title, state, type, assignedTo) {
+
+            var trim = function(str) {
+                if (str.trim) {
+                    return str.trim();
+                } else {
+                    return str.replace(/^\s+|\s+$/gm, '');
+                }
+            }
+
+            title = trim(title);
+
             var words = title.split(" ");
             var line = "";
             var lines = new Array();
@@ -511,6 +522,7 @@ define(["require", "exports"], function (require, exports) {
                     continue;
                 }
                 else if (title.length === t.length) {
+                    line += words[i] + " ";
                     lines.push(line);
                     continue;
                 }

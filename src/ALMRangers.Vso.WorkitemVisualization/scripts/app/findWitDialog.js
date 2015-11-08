@@ -27,20 +27,25 @@ define(
             var self = this;
             self.context = context;
             self.messenger = new Services.messageService();
+            self.callbacks = [];
         }
         FindWitDialog.prototype.start = function () {
             var self = this;
             $("#WitIdToSearch").on("change", function () {
-                if ($("#WitIdToSearch").val() !== "")
-                    self.updateOkButton(true);
-                if ($("#WitIdToSearch").val() === "")
-                    self.updateOkButton(false);
+                var containsText = $("#WitIdToSearch").val() !== "";
+                for (var i = 0; i < self.callbacks.length; i++) {
+                    self.callbacks[i](containsText);
+                }
             });
         };
 
         FindWitDialog.prototype.getSearchedId = function() {
             var searchedId = $("#WitIdToSearch").val();
             return { id : searchedId };
+        };
+
+        FindWitDialog.prototype.attachFormChanged = function (callback) {
+            this.callbacks.push(callback);
         };
         return FindWitDialog;
     })(Dialogs.ModalDialog);

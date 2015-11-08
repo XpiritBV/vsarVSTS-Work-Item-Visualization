@@ -493,7 +493,7 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.getWitText = function (id, title, state, type, assignedTo) {
-
+            //Currently 2 lines supprted,  later on will make the node size dynamic (with min defined) and then can show all of it
             var trim = function(str) {
                 if (str.trim) {
                     return str.trim();

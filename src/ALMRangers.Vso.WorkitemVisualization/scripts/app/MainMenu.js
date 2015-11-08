@@ -304,6 +304,9 @@ define(["require", "exports", "VSS/Utils/Core", "VSS/Host",
                     dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
                         findWorkItemDialog = ci;
                         findWorkItemDialog.start();
+                        findWorkItemDialog.attachFormChanged(function (containsText) {
+                            dialog.updateOkButton(containsText);
+                        });
                     }, function (err) {
                         alert(err.message);
                     });

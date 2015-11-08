@@ -8,21 +8,21 @@
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
   "baseUri": "https://test-workitemvisualization-almrangers-vsoextensions.azurewebsites.net/",
   "icons": {
-    "wide": "images/treeviz_wide_icon.png",
-    "default": "images/treeviz_short_icon.png"
+    "wide": "images/WitVizWideIcon.png",
+    "default": "images/WitVizShortIcon.png"
   },
   "categories": [
     "Productivity"
   ],
   "contributions": [
-          {
-        "id": "work-item-visualization-dialog",
-        "type": "ms.vss-web.control",
-        "targets": [ ".controls" ],
-        "properties": {
-          "uri": "WorkitemVisualization.html"
-        }
-      },
+    {
+      "id": "work-item-visualization-dialog",
+      "type": "ms.vss-web.control",
+      "targets": [ ".controls" ],
+      "properties": {
+        "uri": "WorkitemVisualization.html"
+      }
+    },
     {
       "id": "visualize-work-item-button",
       "type": "ms.vss-web.action",
@@ -55,6 +55,40 @@
       "properties": {
         "uri": "addEditHighlightDialog.html"
       }
+    }
+  ],
+  "files": [
+    {
+      "path": "css",
+      "addressable": true
+    },
+    {
+      "path": "images",
+      "addressable": true
+    },
+    {
+      "path": "scripts",
+      "addressable": true
+    },
+    {
+      "path": "sdk",
+      "addressable": true
+    },
+    {
+      "path": "addedithighlightDialog.html",
+      "addressable": true
+    },
+    {
+      "path": "findWitDialog.html",
+      "addressable": true
+    },
+    {
+      "path": "VisualizeWitButton.html",
+      "addressable": true
+    },
+    {
+      "path": "WorkitemVisualization.html", 
+      "addressable":  true
     }
   ]
 }

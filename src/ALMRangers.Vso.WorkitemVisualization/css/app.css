@@ -13,19 +13,19 @@
  //---------------------------------------------------------------------*/
 
 .icon-zoom-100-witviz {
-    background-image: url("/images/Reset_Zoom.png");
+    background-image: url("/images/ResetZoom.png");
     background-repeat:  no-repeat !important;
     background-size: 16px 16px;
 }
 
 .icon-zoom-out-witviz {
-    background-image: url("/images/Zoom_ZoomOut.png");
+    background-image: url("/images/ZoomZoomOut.png");
     background-repeat:  no-repeat !important;
     background-size: 16px 16px;
 }
 
 .icon-zoom-in-witviz {
-    background-image: url("/images/Zoom_ZoomIn.png");
+    background-image: url("/images/ZoomZoomIn.png");
     background-repeat:  no-repeat !important;
     background-size: 16px 16px;
 }

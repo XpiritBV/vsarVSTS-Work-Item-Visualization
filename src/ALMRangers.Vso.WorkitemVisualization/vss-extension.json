@@ -1,12 +1,11 @@
 ﻿{
   "manifestVersion": 1,
   "id": "almrangers-vsoextensions-WorkitemVisualization",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "name": "Workitem Visualization",
   "description": "Visualize work items, how they relate to each other, code, tests, test results, builds and external artifacts.",
   "publisher": "alm-rangers-taavik",
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
-  "baseUri": "https://test-workitemvisualization-almrangers-vsoextensions.azurewebsites.net/",
   "icons": {
     "wide": "images/WitVizWideIcon.png",
     "default": "images/WitVizShortIcon.png"
@@ -57,6 +56,11 @@
       }
     }
   ],
+  "content": {
+    "license": {
+      "path": "MIT-LICENSE.txt"
+    }
+  },
   "files": [
     {
       "path": "css",

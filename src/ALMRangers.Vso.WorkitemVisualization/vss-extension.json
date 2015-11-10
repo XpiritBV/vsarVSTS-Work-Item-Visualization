@@ -2,9 +2,9 @@
   "manifestVersion": 1,
   "id": "almrangers-vsoextensions-WorkitemVisualization",
   "version": "1.1.0",
-  "name": "Workitem Visualization",
+  "name": "Work Item Visualization",
   "description": "Visualize work items, how they relate to each other, code, tests, test results, builds and external artifacts.",
-  "publisher": "alm-rangers-taavik",
+  "publisher": "taavi-koosaar",
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
   "icons": {
     "wide": "images/WitVizWideIcon.png",
@@ -33,7 +33,7 @@
         "text": "Visualize",
         "title": "Visualize this workitem",
         "toolbarText": "Visualize",
-        "icon": "images/treeviz_short_icon_16x16.png",
+        "icon": "images/WitVizShortIcon-16x16.png",
         "group": "actions",
         "uri": "VisualizeWitButton.html",
         "registeredObjectId": "visualize-work-item-button"

@@ -31,13 +31,13 @@
 </div>
     <script>
     VSS.init({
-        explicitNotifyLoaded: true,
-        setupModuleLoader: true,
-        moduleLoaderConfig: {
-            paths: {
-                "Scripts/App": "scripts/app/"
-            }
-        }
+        explicitNotifyLoaded: true//,
+        //setupModuleLoader: true,
+        //moduleLoaderConfig: {
+        //    paths: {
+        //        "Scripts/App": "scripts/app"
+        //    }
+        //}
     });
     VSS.require(["Scripts/App/findWitDialog"], function(app) {
         VSS.register("work-item-visualization-find-wit-dialog", function (context) {

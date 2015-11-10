@@ -3,7 +3,7 @@
   "id": "almrangers-vsoextensions-WorkitemVisualization",
   "version": "1.1.0",
   "name": "Workitem Visualization",
-  "description": "Visualize work items, how they relate to each other, code, tests, test results, builds and external artifacts.",
+  "description": "Visualize relationships between work items from within the work item form.",
   "publisher": "alm-rangers-taavik",
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
   "icons": {
@@ -11,8 +11,31 @@
     "default": "images/WitVizShortIcon.png"
   },
   "categories": [
-    "Productivity"
+    "Plan and Track"
   ],
+  "screenshots": [
+    {
+      "path": "screenshots/screen1.png"
+    },
+    {
+      "path": "screenshots/screen2.png"
+    }
+  ],
+   "links": {
+    "home": {
+        "uri": "http://aka.ms/vsoext10"
+    },
+    "support": {
+        "uri": "http://aka.ms/vsarcontact"
+    },
+    "issues": {
+        "uri": "http://aka.ms/vsoext10"
+    }
+  },
+  "branding": {
+    "color": "rgb(220, 235, 252)",
+    "theme": "light"
+  },
   "contributions": [
     {
       "id": "work-item-visualization-dialog",
@@ -58,7 +81,7 @@
   ],
   "content": {
     "license": {
-      "path": "MIT-LICENSE.txt"
+      "path": "licence.txt"
     }
   },
   "files": [
@@ -91,7 +114,11 @@
       "addressable": true
     },
     {
-      "path": "WorkitemVisualization.html", 
+      "path": "WorkitemVisualization.html",
+      "addressable": true
+    },
+    {
+      "path": "ThirdPartyNotice.txt", 
       "addressable":  true
     }
   ]

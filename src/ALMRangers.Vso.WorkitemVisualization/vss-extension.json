@@ -11,7 +11,7 @@
     "default": "images/WitVizShortIcon.png"
   },
   "categories": [
-    "Plan and Track"
+    "Plan and track"
   ],
   "screenshots": [
     {
@@ -81,7 +81,7 @@
   ],
   "content": {
     "license": {
-      "path": "licence.txt"
+      "path": "License.txt"
     }
   },
   "files": [

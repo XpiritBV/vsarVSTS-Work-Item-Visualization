@@ -7,11 +7,16 @@
   "publisher": "taavi-koosaar",
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
   "icons": {
-    "wide": "images/WitVizWideIcon.png",
     "default": "images/WitVizShortIcon.png"
   },
   "categories": [
     "Plan and track"
+  ],
+  "tags": [
+    "work item",
+    "relationship relationships",
+    "link links",
+    "visualize visualization"
   ],
   "screenshots": [
     {
@@ -21,15 +26,15 @@
       "path": "screenshots/screen2.png"
     }
   ],
-   "links": {
+  "links": {
     "home": {
-        "uri": "http://aka.ms/vsoext10"
+      "uri": "http://aka.ms/vsoext10"
     },
     "support": {
-        "uri": "http://aka.ms/vsarcontact"
+      "uri": "http://aka.ms/vsarcontact"
     },
     "issues": {
-        "uri": "http://aka.ms/vsoext10"
+      "uri": "http://aka.ms/vsoext10"
     }
   },
   "branding": {
@@ -80,6 +85,9 @@
     }
   ],
   "content": {
+    "details": {
+      "path": "overview.md"
+    },
     "license": {
       "path": "License.txt"
     }

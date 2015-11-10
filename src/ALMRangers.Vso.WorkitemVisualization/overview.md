@@ -25,7 +25,6 @@ The **Work Item Visualization** extension allows you to visualize relationships 
 
 **Known Issues**
 
-- Highlight only applied to text color (Background, border does not work).
 - Export does not work in IE due to IE SVG Security Error (CORS issue).
 - No way to collapse nodes yet.
 - Inter team project commits / changesets and files will not navigate correctly, because current project is taken from context.

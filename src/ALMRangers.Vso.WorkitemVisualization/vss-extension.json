@@ -122,12 +122,17 @@
       "addressable": true
     },
     {
-      "path": "WorkitemVisualization.html", 
+      "path": "WorkitemVisualization.html",
       "addressable": true
     },
     {
-      "path": "ThirdPartyNotice.txt", 
-      "addressable":  true
+      "path": "ThirdPartyNotice.txt",
+      "addressable": true
     }
-  ]
+  ],
+    "targets": [
+        {
+            "id": "Microsoft.VisualStudio.Services"
+        }
+    ]
 }

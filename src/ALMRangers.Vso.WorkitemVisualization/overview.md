@@ -4,7 +4,7 @@ The **Work Item Visualization** extension allows you to visualize relationships 
 **How to use**
 
 - Basic
-	2. Connect to your team project.
+	1. Connect to your team project.
 	2. Select **WORK**.
 	3. Navigate to a backlog.
 	4. If you are using the classic WI item form, select **Visualize** on the toolbar. Otherwise click on **...** and select **Visualize**.

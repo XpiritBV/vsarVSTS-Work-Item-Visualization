@@ -33,4 +33,4 @@ The **Work Item Visualization** extension allows you to visualize relationships 
 
 To learn more about developing an extension for Visual Studio Online, see the [overview of extensions](https://www.visualstudio.com/en-us/integrate/extensions/overview).
 
-[Third Party Notice](https://marketplace.visualstudio.com/items/alm-rangers.almrangers-vsoextensions-WorkitemVisualization/ThirdPartyNotice.txt).
+[Third Party Notice](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/alm-rangers/extension/almrangers-vsoextensions-WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt).

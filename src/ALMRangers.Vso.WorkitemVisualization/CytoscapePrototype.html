@@ -96,13 +96,52 @@
             }
 
             var getWitText = function (id, title, state, type, assignedTo) {
-                var textTitle1 = title.substring(0, title.length > 23 ? 23 : title.length);
-                var textTitle2 = "";
-                if (title.length > 23) {
-                    textTitle2 = title.substring(23, title.length - 23 > 32 ? 23 + 32 : title.length);
+                //Currently 2 lines supprted,  later on will make the node size dynamic (with min defined) and then can show all of it
+                var trim = function (str) {
+                    if (!str) {
+                        return "";
+                    }
+                    if (str.trim) {
+                        return str.trim();
+                    } else {
+                        return str.replace(/^\s+|\s+$/gm, '');
+                    }
                 }
 
-                var witText = witTextTemplate.replace(/textTitle1/g, textTitle1).replace(/textTitle2/g, textTitle2)
+                title = trim(title);
+
+                var words = title.split(" ");
+                var line = "";
+                var lines = new Array();
+                for (var i = 0; i < words.length; i++) {
+                    //See how long the combination will be
+                    var t = line + words[i];
+
+                    //first line is shorter - 23 char
+                    if (t.length > 23 && lines.length === 0) {
+                        //store the current value as line
+                        lines.push(line);
+                        //start the new line
+                        line = "";
+                    }
+                    //all other lines are longer - 32char
+                    else if (t.length > 32 && lines.length > 0) {
+                        //store the current value as line
+                        lines.push(line);
+                        //start the new line
+                        line = "";
+                    }
+
+                    //continue adding words to line
+                    line += words[i] + " ";
+
+                    //if its the last word, push the line
+                    if (i + 1 === words.length) {
+                        lines.push(line);
+                    }
+                }
+
+                var witText = witTextTemplate.replace(/textTitle1/g, lines[0]).replace(/textTitle2/g, lines.length > 1 ? lines[1] : "")
                                             .replace(/textAssignedTo/g, assignedTo).replace(/textState/g, state)
                                             .replace(/textId/g, id);
 
@@ -643,7 +682,7 @@
             for (var i = 0; i < elements.nodes.length; i++) {
                 var node = elements.nodes[i].data;
 
-                node.bgImage = getWitBackground(node.workItemType, node.content);
+                node.bgImage = getWitBackground(node.workItemType, getWitText(node.origId, node.title, node.state, node.workItemType, node.assignedTo));
             }
 
         var cy = cytoscape({

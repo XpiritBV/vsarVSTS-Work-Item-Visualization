@@ -4,7 +4,8 @@
   "version": "1.1.0",
   "name": "Work Item Visualization",
   "description": "Visualize relationships between work items from within the work item form.",
-  "publisher": "taavi-koosaar",
+  "public": true,
+  "publisher": "alm-rangers",
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
   "icons": {
     "default": "images/WitVizShortIcon.png"

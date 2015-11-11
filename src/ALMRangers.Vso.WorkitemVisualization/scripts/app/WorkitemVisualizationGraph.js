@@ -494,7 +494,10 @@ define(["require", "exports"], function (require, exports) {
 
         WorkitemVisualizationGraph.prototype.getWitText = function (id, title, state, type, assignedTo) {
             //Currently 2 lines supprted,  later on will make the node size dynamic (with min defined) and then can show all of it
-            var trim = function(str) {
+            var trim = function (str) {
+                if (!str) {
+                    return "";
+                }
                 if (str.trim) {
                     return str.trim();
                 } else {
@@ -510,25 +513,29 @@ define(["require", "exports"], function (require, exports) {
             for (var i = 0; i < words.length; i++) {
                 //See how long the combination will be
                 var t = line + words[i];
-                
-                if (
-                        (t.length > 23 && lines.length === 0) //line 1
-                        || (t.length > 32 && lines.length > 0) //other lines
-                    ) {
+
+                //first line is shorter - 23 char
+                if (t.length > 23 && lines.length === 0) {
                     //store the current value as line
                     lines.push(line);
                     //start the new line
-                    line = words[i];
-                    continue;
+                    line = "";
                 }
-                else if (title.length === t.length) {
-                    line += words[i] + " ";
+                    //all other lines are longer - 32char
+                else if (t.length > 32 && lines.length > 0) {
+                    //store the current value as line
                     lines.push(line);
-                    continue;
+                    //start the new line
+                    line = "";
                 }
 
                 //continue adding words to line
                 line += words[i] + " ";
+
+                //if its the last word, push the line
+                if (i + 1 === words.length) {
+                    lines.push(line);
+                }
             }
 
             var witText = witTextTemplate.replace(/textTitle1/g, lines[0]).replace(/textTitle2/g, lines.length > 1 ? lines[1] : "")

@@ -1,11 +1,11 @@
 ﻿{
   "manifestVersion": 1,
-  "id": "almrangers-vsoextensions-WorkitemVisualization",
+  "id": "WorkItemVisualization",
   "version": "1.1.0",
   "name": "Work Item Visualization",
   "description": "Visualize relationships between work items from within the work item form.",
   "public": true,
-  "publisher": "alm-rangers",
+  "publisher": "ms-devlabs",
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ],
   "icons": {
     "default": "images/WitVizShortIcon.png"

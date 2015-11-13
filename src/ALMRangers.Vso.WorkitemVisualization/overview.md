@@ -1,4 +1,3 @@
-
 The **Work Item Visualization** extension allows you to visualize relationships between work items from within the work item form. See how they relate to each other, as well as code, tests, test results, builds and external artifacts.
 
 **How to use**
@@ -14,8 +13,8 @@ The **Work Item Visualization** extension allows you to visualize relationships 
 - Zoom
 	1. Click on **Zoom In**, **Zoom Out**, **Zoom to original** size or **Fit To** icons on the toolbar above the visualization.
 - Highlight
-	1. Click on the (**highlight**) icon on the right. A pane will expand.
-	2. Click to add **highlight**. A modal dialog will open to add.
+	1. Click on the **Toggle Legend Pane** icon on the right. A pane will expand.
+	2. Click on **add highlight**. A modal dialog will open to add.
 	3. Select Work Item Type, Feature, and enter color (ie. red) in text color. 
 	4. **Save** and you will notice highlights of text on the graph.
 - Toggle
@@ -33,4 +32,4 @@ The **Work Item Visualization** extension allows you to visualize relationships 
 
 To learn more about developing an extension for Visual Studio Online, see the [overview of extensions](https://www.visualstudio.com/en-us/integrate/extensions/overview).
 
-[Third Party Notice](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/alm-rangers/extension/almrangers-vsoextensions-WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt).
+Notices for certain third party software included in this extension are provided here: [Third Party Notice](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/alm-rangers/extension/almrangers-vsoextensions-WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt).

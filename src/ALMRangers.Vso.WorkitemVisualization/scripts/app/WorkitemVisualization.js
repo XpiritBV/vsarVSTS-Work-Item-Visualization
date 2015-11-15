@@ -63,6 +63,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                     legendMenu.EnableAddItem(true);
 
                     var node = graph.findById("W" + wit.id);
+                    legendMenu.ApplyLegendToNode(node);
                     self.expandNode(node);
                 }
 
@@ -216,7 +217,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                 }
 
                 var elements = graph.addElements(nodes, edges);
-                elements.each(highlightNewNode);
+                elements.each(self.highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addCommitChanges = function (commit, data) {
@@ -232,7 +233,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                 }
 
                 var elements = graph.addElements(nodes, edges);
-                elements.each(highlightNewNode);
+                elements.each(self.highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addGitFileLinks = function (commits, data) {
@@ -257,7 +258,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                 }
 
                 var elements = graph.addElements(nodes, edges);
-                elements.each(highlightNewNode);
+                elements.each(self.highlightNewNode);
             }
 
             WorkitemVisualization.prototype.addTfvcFileLinks = function (changesets, data) {
@@ -276,7 +277,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Contro
                 }
 
                 var elements = graph.addElements(nodes, edges);
-                elements.each(highlightNewNode);
+                elements.each(self.highlightNewNode);
             }
 
 

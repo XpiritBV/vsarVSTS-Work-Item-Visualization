@@ -61,12 +61,14 @@ define(["require", "exports"], function (require, exports) {
                         'target-arrow-color': '#ddd',
                         'content': 'data(name)',
                         'text-opacity': '0.5',
-                        'control-point-step-size': 100
+                        'control-point-step-size': 100,
+                        'font-size': '14px',
+                        'font-family': 'Segoe UI,Tahoma,Arial,Verdana'
                     }),
                 layout: {
                     name: 'dagre',
                     rankDir: self.direction,
-                    minLen: function (edge) { return 5; }
+                    minLen: function (edge) { return 4; }
                 },
                 elements: {
                     nodes: nodes,
@@ -81,7 +83,7 @@ define(["require", "exports"], function (require, exports) {
                     self.cy.minZoom(0.1);
                     self.cy.maxZoom(5);
                     self.cy.userZoomingEnabled(false);
-                    self.cy.zoom(0.8);
+                    self.cy.zoom(1);
 
                     self.cy.on('tap', 'node', function (e) {
                         e.preventDefault();
@@ -93,7 +95,8 @@ define(["require", "exports"], function (require, exports) {
                     });
 
                     callback();
-                    cy.on('cxttap', 'node', function (e) {
+
+                    var onRightClick = function(e) {
                         e.preventDefault();
 
                         var category = e.cyTarget.data("category");
@@ -109,6 +112,10 @@ define(["require", "exports"], function (require, exports) {
                                 self.openFile(e.cyTarget);
                                 break;
                         }
+                    }
+
+                    self.cy.on('cxttap', 'node', function (e) {
+                        onRightClick(e);
                     });
 
                     //cy.on('mouseover', 'node', function (e) {
@@ -155,7 +162,7 @@ define(["require", "exports"], function (require, exports) {
 
             if (category === "Commit") {
                 //TODO: Cant we use and store the remote url of commit?
-                location += "/_git/" + vsoContext.project.name + "/commit/" + id;
+                location = node.data("url");  //+= "/_git/" + vsoContext.project.name + "/commit/" + id;
             } else {
                 //TODO: Cant we use and store the remote url of changeset - if exists?
                 location += "/" + vsoContext.project.name + "/_versionControl/changeset/" + id;
@@ -315,7 +322,7 @@ define(["require", "exports"], function (require, exports) {
         WorkitemVisualizationGraph.prototype.createFileNodeData = function (change, changesetId) {
             var category = "File";
             var fileName = change.item.path.substring(change.item.path.lastIndexOf('/') + 1);
-            var find = '/';
+            var find = '[/$]';
             var re = new RegExp(find, 'g');
             var fileKey = "F" + change.item.path.replace(re,"");
             //Create the node
@@ -338,7 +345,7 @@ define(["require", "exports"], function (require, exports) {
         WorkitemVisualizationGraph.prototype.createCommitFileNodeData = function (change, data) {
             var category = "File";
             var fileName = change.item.path.substring(change.item.path.lastIndexOf('/') + 1);
-            var find = '/';
+            var find = '[/$]';
             var re = new RegExp(find, 'g');
             var fileKey = "F" + change.item.path.replace(re, "");
             var cardText = this.getArtifactText(category, fileName, change.changeType, "");
@@ -425,7 +432,7 @@ define(["require", "exports"], function (require, exports) {
                     {
                         name: 'dagre',
                         rankDir: self.direction,
-                        minLen: function (edge) { return 5; },
+                        minLen: function (edge) { return 4; },
                         fit: false,
                         animate: true,
                         animationDuration: 500,
@@ -487,8 +494,7 @@ define(["require", "exports"], function (require, exports) {
                 //To make sure all UTF8 characters work
                 return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(witBg)));
             } else {
-                //For IE9 and below
-                return "data:image/svg+xml;base64," + Base64.encode(unescape(encodeURIComponent(witBg)));
+                return "";
             }
         }
 
@@ -575,7 +581,7 @@ define(["require", "exports"], function (require, exports) {
                 return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(cardBg)));
             } else {
                 //For IE9 and below
-                return "data:image/svg+xml;base64," + Base64.encode(unescape(encodeURIComponent(cardBg)));
+                return "";
             }
         }
 

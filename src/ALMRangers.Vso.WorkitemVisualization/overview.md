@@ -30,6 +30,6 @@ The **Work Item Visualization** extension allows you to visualize relationships 
 
 **Learn more about this extension**
 
-To learn more about developing an extension for Visual Studio Team Services, see the [overview of extensions](https://www.visualstudio.com/en-us/integrate/extensions/overview).
+To learn more about developing an extension for Visual Studio Online, see the [overview of extensions](https://www.visualstudio.com/en-us/integrate/extensions/overview).
 
 Notices for certain third party software included in this extension are provided here: [Third Party Notice](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/ms-devlabs/extension/WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt).

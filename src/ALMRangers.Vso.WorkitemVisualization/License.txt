@@ -1,5 +1,5 @@
 
-Work Item Visualization Extension for Visual Studio Team Services
+Work Item Visualization Extension for Visual Studio Online
 
 The MIT License (MIT)
 

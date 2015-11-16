@@ -1,35 +1,50 @@
-The **Work Item Visualization** extension allows you to visualize relationships between work items from within the work item form. See how they relate to each other, as well as code, tests, test results, builds and external artifacts.
+## Visualize work item relationships ##
 
-**How to use**
+In Visual Studio Online you can add, edit and display work items in query results and various boards. With this extension you can visualize these work items from within the work item form. You can visually see how work items relate to each other, as well as code, tests, test results, builds and external artifacts.
 
-- Basic
-	1. Connect to your team project.
-	2. Select **WORK**.
-	3. Navigate to a backlog.
-	4. If you are using the classic WI item form, select **Visualize** on the toolbar. Otherwise click on **...** and select **Visualize**.
+![Visualize](images/image1.png)
+
+## Zoom in and out of your chart ##
+Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to zoom in and out of your visualization and focus on the important detail.
+
+![Zoom](images/image2.png)
+
+## Highlight what's important ##
+Use colors to highlight important work item types within your visualization.
+
+![Highlight](images/image3.png)
+
+## Orientate your chart ##
+Switch the orientation of your chart between `horizontal` and `vertical` view.
+
+![Orient](images/image4.png)
+
+## Export for offline viewing ##
+Export your chart visualization for offline viewing or printing.
+
+![Export](images/image5.png)
+
+## Quick steps to get started ##
+
+- **Visualize**
+	1. Select a work item. 
+		- If you are using the classic WI item form, select `Visualize` on the toolbar. Otherwise click on `...` and select `Visualize`.
 		- Visualization dialog will open up with the selected work item and its direct links expanded.
-	6. **Left Click** on the card on the graph, it will expand its links.
-	8. **Right click** on a card on the graph, it will open the item in new window.
-- Zoom
-	1. Click on **Zoom In**, **Zoom Out**, **Zoom to original** size or **Fit To** icons on the toolbar above the visualization.
-- Highlight
-	1. Click on the **Toggle Legend Pane** icon on the right. A pane will expand.
-	2. Click on **add highlight**. A modal dialog will open to add.
-	3. Select Work Item Type, Feature, and enter color (ie. red) in text color. 
-	4. **Save** and you will notice highlights of text on the graph.
-- Toggle
-	1. Toggle the tree to be **Top to Bottom** or **Left to Right** o toolbar.
-- Export
-	1. Export the visualization in Chrome, Firefox, or Edge. See known issues below for IE.
+	1. Left click on the card on the graph to expand its links.
+	1. Right click on a card on the graph to open the item in a new window.
+	1. Click on `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To icons` on the toolbar to re-size.
+- **Highlight**
+	1. Click on the `Toggle Legend Pane` icon on the right. A pane will expand.
+	2. Click on `add highlight`. A modal dialog will open to add.
+	3. Select `Work Item Type`, `Feature`, and enter `color` (ie. red) in text color. 
+	4. Click `Save` to apply the highlighting.
 
-**Known Issues**
-
-- Export does not work in IE due to IE SVG Security Error (CORS issue).
-- No way to collapse nodes yet.
-- Inter team project commits / changesets and files will not navigate correctly, because current project is taken from context.
-
-**Learn more about this extension**
-
-To learn more about developing an extension for Visual Studio Online, see the [overview of extensions](https://www.visualstudio.com/en-us/integrate/extensions/overview).
+> **Known Issues**
+> 
+> - Export does not work in IE due to IE SVG Security Error (CORS issue).
+> - No way to collapse nodes yet.
+> - Inter team project commits / changesets and files will not navigate correctly, because current project is taken from context.
 
 Notices for certain third party software included in this extension are provided here: [Third Party Notice](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/ms-devlabs/extension/WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt).
+
+> Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.

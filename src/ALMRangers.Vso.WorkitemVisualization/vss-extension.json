@@ -19,15 +19,7 @@
     "link links",
     "visualize visualization"
   ],
-  "screenshots": [
-    {
-      "path": "screenshots/screen1.png"
-    },
-    {
-      "path": "screenshots/screen2.png"
-    }
-  ],
-  "links": {
+    "links": {
     "home": {
       "uri": "http://aka.ms/vsoext10"
     },

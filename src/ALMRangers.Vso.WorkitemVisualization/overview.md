@@ -1,6 +1,6 @@
 ## Visualize work item relationships ##
 
-In Visual Studio Online you can add, edit and display work items in query results and various boards. With this extension you can visualize these work items from within the work item form. 
+In Visual Studio Team Services you can add, edit and display work items in query results and various boards. With this extension you can visualize these work items from within the work item form. 
 
 ![Visualize](images/image1.png)
 

@@ -1,34 +1,38 @@
 ## Visualize work item relationships ##
 
-In Visual Studio Online you can add, edit and display work items in query results and various boards. With this extension you can visualize these work items from within the work item form. You can visually see how work items relate to each other, as well as code, tests, test results, builds and external artifacts.
+In Visual Studio Online you can add, edit and display work items in query results and various boards. With this extension you can visualize these work items from within the work item form. 
 
 ![Visualize](images/image1.png)
 
-## Zoom in and out of your chart ##
-Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to zoom in and out of your visualization and focus on the important detail.
+### Drill-down in your chart and even visualize commits ###
 
-![Zoom](images/image2.png)
+You can visually see how work items relate to each other, as well as code, tests, test results, builds and external artifacts. Even drill into your commits to explore the changeset details.
 
-## Highlight what's important ##
+![Commit](images/image4.png)
+
+### Highlight what's important ###
 Use colors to highlight important work item types within your visualization.
 
 ![Highlight](images/image3.png)
 
-## Orientate your chart ##
-Switch the orientation of your chart between `horizontal` and `vertical` view.
+### Focus on what's important ###
+Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to zoom in and out of your chart. Switch the orientation of your chart between `horizontal` and `vertical` view.
 
-![Orient](images/image4.png)
+![Orient](images/image2.png)
 
-## Export for offline viewing ##
+### Export for offline viewing ###
 Export your chart visualization for offline viewing or printing.
 
 ![Export](images/image5.png)
 
 ## Quick steps to get started ##
 
+![Orient](images/image6.png)
+
 - **Visualize**
 	1. Select a work item. 
-		- If you are using the classic WI item form, select `Visualize` on the toolbar. Otherwise click on `...` and select `Visualize`.
+		- If you are using the classic WI item form, select `Visualize` on the toolbar.
+		- Otherwise click on `...` and select `Visualize`.
 		- Visualization dialog will open up with the selected work item and its direct links expanded.
 	1. Left click on the card on the graph to expand its links.
 	1. Right click on a card on the graph to open the item in a new window.
@@ -39,12 +43,6 @@ Export your chart visualization for offline viewing or printing.
 	3. Select `Work Item Type`, `Feature`, and enter `color` (ie. red) in text color. 
 	4. Click `Save` to apply the highlighting.
 
-> **Known Issues**
-> 
-> - Export does not work in IE due to IE SVG Security Error (CORS issue).
-> - No way to collapse nodes yet.
-> - Inter team project commits / changesets and files will not navigate correctly, because current project is taken from context.
-
-Notices for certain third party software included in this extension are provided here: [Third Party Notice](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/ms-devlabs/extension/WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt).
+[View Notices](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/ms-devlabs/extension/WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt) for certain third party software included in this extension.
 
 > Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.

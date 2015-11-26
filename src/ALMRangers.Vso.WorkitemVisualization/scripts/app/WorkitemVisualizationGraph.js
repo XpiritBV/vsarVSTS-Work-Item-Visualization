@@ -456,6 +456,27 @@ define(["require", "exports"], function (require, exports) {
 
             var witColor = "";
             switch (type) {
+                case "Shared Steps":
+                    witColor = "#FF9D00";
+                    break;
+                case "Feedback Request":
+                    witColor = "#FF9D00";
+                    break;
+                case "Feedback Response":
+                    witColor = "#FF9D00";
+                    break;
+                case "Code Review Request":
+                    witColor = "#FF9D00";
+                    break;
+                case "Code Review Response":
+                    witColor = "#FF9D00";
+                    break;
+                case "Issue":
+                    witColor = "#FF9D00";
+                    break;
+                case "User Story":
+                    witColor = "#009CCC";
+                    break;
                 case "Product Backlog Item":
                     witColor = "#009CCC";
                     break;
@@ -551,7 +572,6 @@ define(["require", "exports"], function (require, exports) {
             return witText;
         }
 
-        //TODO: Cache!
         var artifactTemplate = '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path fill="backgroundColor" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="cardColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
         var artifactTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">artifactType</tspan> <tspan x="16" dy="16">artifactId</tspan> <tspan x="16" dy="16">artifactDate</tspan> <tspan x="16" dy="16">artifactAssignedTo</tspan></text>';
         WorkitemVisualizationGraph.prototype.getArtifactBackground = function (type, cardText, backgroundColor, borderColor, textColor) {

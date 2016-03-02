@@ -14,12 +14,10 @@
 
 define(["require", "exports",
 "TFS/WorkItemTracking/Services", "VSS/Service", "TFS/WorkItemTracking/RestClient", "TFS/Core/RestClient", "TFS/VersionControl/GitRestClient", "TFS/VersionControl/TfvcRestClient",
-"TFS/WorkItemTracking/Contracts", "TFS/VersionControl/Contracts",
-"Scripts/App/Services"],
-function (require, exports, Tfs_Wit_Service, VSS_Service, Tfs_Wit_Client, Tfs_Core_Client, Tfs_Git_Client, Tfs_Tfvc_Client, Tfs_Wit_Contracts, Tfs_VC_Contracts, Services) {
+"TFS/WorkItemTracking/Contracts"],
+function (require, exports, Tfs_Wit_Service, VSS_Service, Tfs_Wit_Client, Tfs_Core_Client, Tfs_Git_Client, Tfs_Tfvc_Client, Tfs_Wit_Contracts) {
     var VsoStoreService = (function () {
         function VsoStoreService() {
-            this.messenger = new Services.messageService();
             this.vsoContext = VSS.getWebContext();
 
             this.witClient = Tfs_Wit_Client.getClient();

@@ -15,9 +15,9 @@
 //TODO: Highlight path to selected node
 //TODO: Highlight elements that are being added
 
-define(["require", "exports", "VSS/Controls", "VSS/Controls/Common", "VSS/Controls/Menus",
+define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
         "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph"],
-    function (require, exports, Controls, Common, Menus, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph) {
+    function (require, exports, Controls, Menus, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph) {
         var WorkitemVisualization = (function() {
 
             var linkTypes;

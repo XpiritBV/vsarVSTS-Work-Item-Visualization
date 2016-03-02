@@ -20,8 +20,8 @@ var __extends = this.__extends || function (d, b) {
 }; 
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Common", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs"],
-    function (require, exports, Core, Controls, MenuControls, CommonControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs) {
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs"],
+    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs) {
 
     var ItemsView = (function (_super) {
         __extends(ItemsView, _super);

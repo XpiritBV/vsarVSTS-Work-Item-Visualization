@@ -20,8 +20,8 @@ var __extends = this.__extends || function (d, b) {
 };
 
 define(["require", "exports", "VSS/Utils/Core", 
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Common", "Scripts/App/LegendGrid"],
-    function (require, exports, Core, Controls, MenuControls, CommonControls, LegendGrid) {
+    "VSS/Controls", "VSS/Controls/Menus", "Scripts/App/LegendGrid"],
+    function (require, exports, Core, Controls, MenuControls, LegendGrid) {
     
 
     var ItemsView = (function (_super) {

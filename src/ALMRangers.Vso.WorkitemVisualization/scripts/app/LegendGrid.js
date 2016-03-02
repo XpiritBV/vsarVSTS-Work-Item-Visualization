@@ -24,8 +24,8 @@ var __extends = this.__extends || function (d, b) {
 //Gray:  #808080
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Common", "VSS/Controls/Grids", "Scripts/App/WorkitemVisualizationGraph"],
-    function (require, exports, Core, UIControls, CommonControls, Grids, WorkItemVisualizationGraph) {
+    "VSS/Controls", "VSS/Controls/Grids", "Scripts/App/WorkitemVisualizationGraph"],
+    function (require, exports, Core, UIControls, Grids, WorkItemVisualizationGraph) {
     /**
      *   This object will be draw the work item grid.
      */

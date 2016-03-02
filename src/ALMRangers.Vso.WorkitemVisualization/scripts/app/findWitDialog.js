@@ -18,15 +18,14 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(
-    ["require", "exports", "Scripts/App/services", "VSS/Controls/Dialogs"],
-    function (require, exports, Services, Dialogs) {
+    ["require", "exports", "VSS/Controls/Dialogs"],
+    function (require, exports, Dialogs) {
     var FindWitDialog = (function (_super) {
         __extends(FindWitDialog, _super);
         function FindWitDialog(context) {
             _super.call(this);
             var self = this;
             self.context = context;
-            self.messenger = new Services.messageService();
             self.callbacks = [];
         }
         FindWitDialog.prototype.start = function () {

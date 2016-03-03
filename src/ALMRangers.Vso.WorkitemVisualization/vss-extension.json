@@ -1,7 +1,7 @@
 ﻿{
   "manifestVersion": 1,
   "id": "WorkItemVisualization",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "name": "Work Item Visualization",
   "description": "Visualize relationships between work items from within the work item form.",
   "public": true,

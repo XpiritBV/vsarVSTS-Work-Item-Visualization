@@ -49,5 +49,5 @@ Export your chart visualization for offline viewing or printing.
 
 ##Contributors##
 
-We thank the following contributor(s) for this extension: Taavi Kõosaar.
+We thank the following contributor(s) for this extension: Taavi Koosaar.
 

@@ -20,8 +20,8 @@ var __extends = this.__extends || function (d, b) {
 }; 
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs"],
-    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs) {
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
+    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
 
     var ItemsView = (function (_super) {
         __extends(ItemsView, _super);
@@ -99,7 +99,11 @@ define(["require", "exports", "VSS/Utils/Core",
             items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
             items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
 
-            items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
+            var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
+            if (isHosted)
+            {
+                items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
+            }
 
             return items;
         };
@@ -226,6 +230,14 @@ define(["require", "exports", "VSS/Utils/Core",
         };
 
         ItemsView.prototype._exportGraph = function () {
+            var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
+
+            if (!isHosted) { //VSTS
+                var options = { buttons: null, title: "Export is currently not supported on-premis", contentText: "Export is currently not supported on-premis."};
+                ModalDialogs.show(ModalDialogs.ModalDialog, options);
+                return;
+            }
+
             var self = this;
             if (self.detectIE()) {
                 var options = { buttons: null, title: "Can not export in IE", contentText: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers."};
@@ -242,8 +254,9 @@ define(["require", "exports", "VSS/Utils/Core",
                 witType = rootNodes[0].data("workItemType");
                 witId = rootNodes[0].data("origId");
             }
+            
             var newImage = $("<img />").attr("src", png);
-            var imageDiv = $("<div />"); 
+            var imageDiv = $("<div />");
             imageDiv.append(newImage);
             var newWindow = window.open();
             var newDocument = newWindow.document;

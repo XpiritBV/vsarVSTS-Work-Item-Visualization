@@ -21,7 +21,7 @@ Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to 
 ![Orient](images/image2.png)
 
 ### Export for offline viewing ###
-Export your chart visualization for offline viewing or printing.
+Export your chart visualization for offline viewing or printing. (Only on Visual Studio Team Services! v1.1.7 does not support it on-premis.)
 
 ![Export](images/image5.png)
 

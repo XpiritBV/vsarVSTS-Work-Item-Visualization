@@ -301,7 +301,7 @@ define(["require", "exports", "VSS/Utils/Core",
 
                 var opts = {
                     width: 200,
-                    height: 125,
+                    height: 150,
                     cancelText: "Cancel",
                     okText: "Find",
                     getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },

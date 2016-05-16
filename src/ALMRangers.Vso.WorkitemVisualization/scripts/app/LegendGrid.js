@@ -267,7 +267,7 @@ define(["require", "exports", "VSS/Utils/Core",
             VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
                 var addEditHighlightDialog;
                 var opts = {
-                    width: 440,
+                    width: 450,
                     height: 265,
                     cancelText: "Cancel",
                     okText: "Save",

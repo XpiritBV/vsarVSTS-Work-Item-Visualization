@@ -20,8 +20,8 @@ Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to 
 
 ![Orient](images/image2.png)
 
-### Export for offline viewing ###
-Export your chart visualization for offline viewing or printing. (Only on Visual Studio Team Services! v1.1.7 does not support it on-premis.)
+### Export for offline viewing (Currently only supported on VSTS) ###
+Export your chart visualization for offline viewing or printing. 
 
 ![Export](images/image5.png)
 
@@ -37,6 +37,11 @@ Export your chart visualization for offline viewing or printing. (Only on Visual
 	1. Left click on the card on the graph to expand its links.
 	1. Right click on a card on the graph to open the item in a new window.
 	1. Click on `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To icons` on the toolbar to re-size.
+- **Visualize from Query**
+	1. Create or Open a Query.
+	2. Select one or many work items.
+	3. Right Click and open context menu, select `Visualize`.
+![Visualize from Query](images/VisualizeFromQuery.png)	
 - **Highlight**
 	1. Click on the `Toggle Legend Pane` icon on the right. A pane will expand.
 	2. Click on `add highlight`. A modal dialog will open to add.
@@ -49,5 +54,5 @@ Export your chart visualization for offline viewing or printing. (Only on Visual
 
 ##Contributors##
 
-We thank the following contributor(s) for this extension: Taavi Koosaar.
+We thank the following contributor(s) for this extension: Taavi Koosaar, Mattias Sköld (Visualize from Query).
 

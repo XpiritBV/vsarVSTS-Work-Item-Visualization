@@ -44,9 +44,15 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                     linkTypes = witLinkTypes;
 
                     //Get workitem and load it into the graph
-                    var workItemId = VSS.getConfiguration().action.workItemId;
-                    if (workItemId)
-                        storage.getWorkItem(workItemId, self.loadInitialItem.bind(self));
+                    var config= VSS.getConfiguration();
+                    if(config.action.workItemId!=null){
+                        storage.getWorkItem(config.action.workItemId, self.loadInitialItem.bind(self));
+                    }
+                    else if(config.action.ids!=null){
+                        storage.getWorkItems(config.action.ids, self.loadInitialItem.bind(self));
+
+                    }
+                    
                 }
 
                 //Load link types for the use during the application lifetime. Starts the application flow.
@@ -58,18 +64,26 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
 
             WorkitemVisualization.prototype.loadInitialItem = function (wit) {
                 var self = this;
+                var witArray =[].concat(wit);
+        
+                
+                var nodes = new Array();
+
+                witArray.forEach(function (i) {
+                    var nodeData = graph.createWitNodeData(i);
+                    nodes.push(nodeData);
+                });
+
                 function afterGraphLoaded() {
                     mainMenu.EnableToolbar();
                     legendMenu.EnableAddItem(true);
 
-                    var node = graph.findById("W" + wit.id);
-                    legendMenu.ApplyLegendToNode(node);
-                    self.expandNode(node);
+                    witArray.forEach(function (i) {
+                        var node = graph.findById("W" + i.id);
+                        legendMenu.ApplyLegendToNode(node);
+                        self.expandNode(node);
+                    });
                 }
-
-                var nodeData = graph.createWitNodeData(wit);
-                var nodes = new Array();
-                nodes.push(nodeData);
 
                 graph.create(nodes, null, afterGraphLoaded);
             }

@@ -40,14 +40,15 @@ define(["require", "exports", "VSS/Utils/Core",
             var _splitterPaneOnOff = "on";
             var _loadWorkItemGraphCallback = null;
         
-
+            var _favoritesList =[];
+            var favoritesMenu = [];
             /*
              *   Initialize will be called when this control is created.  This will setup the UI, 
              *   attach to events, etc.
              */
             ItemsView.prototype.initialize = function () {
                 _super.prototype.initialize.call(this);
-
+                this._LoadFavoritesFromSettings();
                 this._createToolbar();
             };
 
@@ -75,12 +76,7 @@ define(["require", "exports", "VSS/Utils/Core",
             ItemsView.prototype._createToolbarItems = function () {
                 var items = [];
 
-                var favorites = [];
-                favorites.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
-                favorites.push({ separator: true });
-                favorites.push({ id: "favorites-load", text: "Personal", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
-                favorites.push({ id: "bar", text: "Team", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
-
+               
 
                 var subItems2 = [];
                 subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
@@ -105,7 +101,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
                 items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
 
-                items.push({ id: "favorites", text: "Favorites", title: "Favorites", showText: true, icon: "icon-Favorites", disabled: false, childItems: favorites, cssClass: "right-align" });
+                items.push({ id: "favorites", text: "Favorites", title: "Favorites", showText: true, icon: "icon-Favorites", disabled: false, childItems: favoritesMenu, cssClass: "right-align" });
                 items.push({ separator: true, cssClass: "right-align" });
 
                 var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
@@ -201,10 +197,12 @@ define(["require", "exports", "VSS/Utils/Core",
                 var id = [];
                 this._graph.getAllNodes().forEach(function (n) {
                     if (n._private.data.id.charAt(0) == 'W') {
-                        id.push({id: n._private.data.origId, position: n._private.position);
+                        id.push({ id: n._private.data.origId, position: n._private.position });
                     }
                 });
-                this._SaveFavorites2Settings("Dummy", "Personal", id)
+                _favoritesList.push({name: "Dummy", idList: id}) ;
+                this._SaveFavorites2Settings(_favoritesList, "User")
+                this._RebuildFavoritesMenu();
             }
 
             ItemsView.prototype._LoadFavorite = function (name) {
@@ -218,16 +216,49 @@ define(["require", "exports", "VSS/Utils/Core",
 
             }
 
-            ItemsView.prototype._LoadFavoritesFromSettings = function () {
-                var self = this;
-                var witArray = [12496, 12497, 12500, 12498, 12501]; //[].concat(wit);
+            ItemsView.prototype._RebuildFavoritesMenu = function () {
+                // Get an account-scoped document in a collection
+                var self= this;
+                favoritesMenu = [];
+                favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
+                favoritesMenu.push({ separator: true });
+             
+                _favoritesList.forEach(function (n) {
+                    favoritesMenu.push({ id: n.name, text: n.name, title: n.name, showText: true });
+                });
 
-                var vsoStore = new Storage.VsoStoreService();
-                vsoStore.getWorkItems(witArray, _loadWorkItemGraphCallback);
-               
-
+                this._menu.updateCommandStates([
+                { id: "favorites", childItems: favoritesMenu}
+                ]);
             }
-            ItemsView.prototype._SaveFavorites2Settings = function (name, type, id ) {
+
+           
+
+            ItemsView.prototype._LoadFavoritesFromSettings = function () {
+                // Get an account-scoped document in a collection
+                var self = this;
+                favoritesMenu = [];
+                favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
+                favoritesMenu.push({ separator: true });
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService) {
+                    dataService.getDocument("Favorites").then(function (doc) {
+                        _favoritesList = doc;
+                        self._RebuildFavoritesMenu();
+                    }, 
+                    function (err) {
+                        self._RebuildFavoritesMenu();
+                    });
+                });
+            }
+
+            ItemsView.prototype._SaveFavorites2Settings = function (favoList, scopeType) {
+               
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+                    // Set a user-scoped preference
+                    dataService.setDocument("Favorites", favoList, {scopeType: scopeType}).then(function(value) {
+                        console.log("Saved list " + value);
+                    });        
+                });
 
             }
 

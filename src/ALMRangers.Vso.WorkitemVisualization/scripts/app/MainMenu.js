@@ -20,195 +20,218 @@ var __extends = this.__extends || function (d, b) {
 }; 
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
-    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
+    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualization, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
 
-    var ItemsView = (function (_super) {
-        __extends(ItemsView, _super);
+        var ItemsView = (function (_super) {
+            __extends(ItemsView, _super);
 
-        function ItemsView(options) {
-            _super.call(this, options);
-            this._menu = null;
-            this._graph = WorkitemVisualizationGraph.graph;
-        }
+            function ItemsView(options) {
+                _super.call(this, options);
+                this._menu = null;
+                this._graph = WorkitemVisualizationGraph.graph;
+            }
 
-        //var _callback;
-        var _diagramType = "";
-        var _lastDirectionCommand = "";
-        var _linkType = "Tree";
-        var _splitter = null;
-        var _splitterPaneOnOff = "on";
-        var _loadWorkItemGraphCallback = null;
+            //var _callback;
+            var _diagramType = "";
+            var _lastDirectionCommand = "";
+            var _linkType = "Tree";
+            var _splitter = null;
+            var _splitterPaneOnOff = "on";
+            var _loadWorkItemGraphCallback = null;
         
 
-        /*
-         *   Initialize will be called when this control is created.  This will setup the UI, 
-         *   attach to events, etc.
-         */
-        ItemsView.prototype.initialize = function () {
-            _super.prototype.initialize.call(this);
+            /*
+             *   Initialize will be called when this control is created.  This will setup the UI, 
+             *   attach to events, etc.
+             */
+            ItemsView.prototype.initialize = function () {
+                _super.prototype.initialize.call(this);
 
-            this._createToolbar();
-        };
+                this._createToolbar();
+            };
 
-        ItemsView.prototype.setLoadWorkItemGraphCallback = function(callback) {
-            _loadWorkItemGraphCallback = callback;
-        }
+            ItemsView.prototype.setLoadWorkItemGraphCallback = function(callback) {
+                _loadWorkItemGraphCallback = callback;
+            }
 
-        ItemsView.prototype._createToolbar = function () {
-            this._menu = Controls.BaseControl.createIn(MenuControls.MenuBar, this._element.find(".hub-pivot-toolbar"), {
-                items: this._createToolbarItems()
-            });
-            MenuControls.menuManager.attachExecuteCommand(Core.delegate(this, this._onToolbarItemClick));
-            //var splitterOptions = { initialSize : 250, minWidth : 250, maxWidth: 500, fixedSide : "right" };
-            _splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
-            //_splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), splitterOptions);
+            ItemsView.prototype._createToolbar = function () {
+                this._menu = Controls.BaseControl.createIn(MenuControls.MenuBar, this._element.find(".hub-pivot-toolbar"), {
+                    items: this._createToolbarItems()
+                });
+                MenuControls.menuManager.attachExecuteCommand(Core.delegate(this, this._onToolbarItemClick));
+                //var splitterOptions = { initialSize : 250, minWidth : 250, maxWidth: 500, fixedSide : "right" };
+                _splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
+                //_splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), splitterOptions);
             
-            //_splitter.collapse();
-            _splitter.noSplit();
-            _splitterPaneOnOff = "off";
-        };
+                //_splitter.collapse();
+                _splitter.noSplit();
+                _splitterPaneOnOff = "off";
+            };
 
-        /*
-         *  Create the actual toolbar items
-         */
-        ItemsView.prototype._createToolbarItems = function () {
-            var items = [];
+            /*
+             *  Create the actual toolbar items
+             */
+            ItemsView.prototype._createToolbarItems = function () {
+                var items = [];
 
-            var favorites = [];
-            favorites.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
-            favorites.push({ separator: true });
-            favorites.push({ id: "foo", text: "Personal", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
-            favorites.push({ id: "bar", text: "Team", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
+                var favorites = [];
+                favorites.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
+                favorites.push({ separator: true });
+                favorites.push({ id: "favorites-load", text: "Personal", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
+                favorites.push({ id: "bar", text: "Team", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
 
 
-            var subItems2 = [];
-            subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
-            subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
+                var subItems2 = [];
+                subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
+                subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
 
-            items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap-witviz", disabled: true });
+                items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap-witviz", disabled: true });
 
-            items.push({ separator: true });
+                items.push({ separator: true });
 
-            items.push({ id: "zoom-in", text: "Zoom In", title: "Zoom In", showText: false, icon: "icon-zoom-in-witviz", disabled: true });
-            items.push({ id: "zoom-out", text: "Zoom Out", title: "Zoom Out", showText: false, icon: "icon-zoom-out-witviz", disabled: true });
-            items.push({ id: "zoom-100", text: "Zoom 100%", title: "Zoom to 100%", showText: false, icon: "icon-zoom-100-witviz", disabled: true });
-            items.push({ id: "fit-to", text: "Fit to screen", title: "Fit to screen", showText: false, icon: "icon-fit-to-witviz", disabled: true });
+                items.push({ id: "zoom-in", text: "Zoom In", title: "Zoom In", showText: false, icon: "icon-zoom-in-witviz", disabled: true });
+                items.push({ id: "zoom-out", text: "Zoom Out", title: "Zoom Out", showText: false, icon: "icon-zoom-out-witviz", disabled: true });
+                items.push({ id: "zoom-100", text: "Zoom 100%", title: "Zoom to 100%", showText: false, icon: "icon-zoom-100-witviz", disabled: true });
+                items.push({ id: "fit-to", text: "Fit to screen", title: "Fit to screen", showText: false, icon: "icon-fit-to-witviz", disabled: true });
 
-            items.push({ separator: true });
+                items.push({ separator: true });
 
-            items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
+                items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
 
-            items.push({ separator: true });
+                items.push({ separator: true });
 
-            items.push({ id: "favorites", text: "Favorites", title: "Favorites", showText: true, icon: "icon-Favorites", disabled: false, childItems: favorites, cssClass: "right-align" });
-            items.push({ separator: true, cssClass: "right-align" });
+       
+                items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
+                items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
 
-            items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
-            items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
+                items.push({ id: "favorites", text: "Favorites", title: "Favorites", showText: true, icon: "icon-Favorites", disabled: false, childItems: favorites, cssClass: "right-align" });
+                items.push({ separator: true, cssClass: "right-align" });
 
-            var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
-            if (isHosted)
-            {
-                items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
-            }
-
-            return items;
-        };
-
-        /*
-         *  Fit the graph to the current window size
-         */
-        ItemsView.prototype._fitTo = function () {
-            if (!$("#fit-to").hasClass("disabled")) {
-                this._graph.fitTo();
-            }
-        };
-
-        /*
-         *  Zoom the diagram in one unit
-         */
-        ItemsView.prototype._zoomIn = function () {
-            if (!$("#zoom-in").hasClass("disabled")) {
-                this._graph.zoomIn();
-            }
-        };
-
-        /*
-         *  Zoom the diagram out one unit
-         */
-        ItemsView.prototype._zoomOut = function () {
-            if (!$("#zoom-out").hasClass("disabled")) {
-                this._graph.zoomOut();
-            }
-        };
-
-        /*
-         *  Set the diagram to 100%
-         */
-        ItemsView.prototype._zoom100 = function () {
-            if (!$("#zoom-100").hasClass("disabled")) {
-                this._graph.zoomTo100();
-            }
-        };
-
-        ItemsView.prototype.ResetOverview = function () {
-            this._graph.resetMinimap();
-        }
-
-        /*
-         *  Show or hide the minimap
-         */
-        ItemsView.prototype._toggleMiniMap = function () {
-            this._graph.toggleMinimap();
-        }
-
-        /*
-         *  Change the direction the diagram is drawn from
-         */
-        ItemsView.prototype._direction = function (e, parentUniqueId) {
-            if (this._graph != null) {
-                switch (e) {
-                    case "left-to-right":
-                        this._graph.direction = 'LR';
-                        this._graph.refreshLayout();
-                        break;
-                    case "top-to-bottom":
-                        this._graph.direction = 'TB';
-                        this._graph.refreshLayout();
-                        break;
-                };
-                this._clearDirectionIcon(parentUniqueId);
-                //Set the correct icon on the parent menu item
-                $("#" + parentUniqueId).children("span").addClass("icon-" + e);
-                _lastDirectionCommand = e;
-            }
-        };
-
-        /*
-         *  Remove the icon from the parent menu item
-         */
-        ItemsView.prototype._clearDirectionIcon = function (parentUniqueId) {
-            $("#" + parentUniqueId).children("span").removeClass("icon-left-to-right");
-            $("#" + parentUniqueId).children("span").removeClass("icon-top-to-bottom");
-        };
-
-        ItemsView.prototype._addFavorit = function () {
-            //Prompt user for name and type
-
-            //Fetch IDs
-            var id = [];
-            this._graph.getAllNodes().forEach(function (n) {
-                if (n._private.data.id.charAt(0) == 'W') {
-                    id.push(n._private.data.origId);
+                var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
+                if (isHosted)
+                {
+                    items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
                 }
-            });
 
+                return items;
+            };
 
-        }
+            /*
+             *  Fit the graph to the current window size
+             */
+            ItemsView.prototype._fitTo = function () {
+                if (!$("#fit-to").hasClass("disabled")) {
+                    this._graph.fitTo();
+                }
+            };
 
-        /*
-         *  Handle a button click on the toolbar
+            /*
+             *  Zoom the diagram in one unit
+             */
+            ItemsView.prototype._zoomIn = function () {
+                if (!$("#zoom-in").hasClass("disabled")) {
+                    this._graph.zoomIn();
+                }
+            };
+
+            /*
+             *  Zoom the diagram out one unit
+             */
+            ItemsView.prototype._zoomOut = function () {
+                if (!$("#zoom-out").hasClass("disabled")) {
+                    this._graph.zoomOut();
+                }
+            };
+
+            /*
+             *  Set the diagram to 100%
+             */
+            ItemsView.prototype._zoom100 = function () {
+                if (!$("#zoom-100").hasClass("disabled")) {
+                    this._graph.zoomTo100();
+                }
+            };
+
+            ItemsView.prototype.ResetOverview = function () {
+                this._graph.resetMinimap();
+            }
+
+            /*
+             *  Show or hide the minimap
+             */
+            ItemsView.prototype._toggleMiniMap = function () {
+                this._graph.toggleMinimap();
+            }
+
+            /*
+             *  Change the direction the diagram is drawn from
+             */
+            ItemsView.prototype._direction = function (e, parentUniqueId) {
+                if (this._graph != null) {
+                    switch (e) {
+                        case "left-to-right":
+                            this._graph.direction = 'LR';
+                            this._graph.refreshLayout();
+                            break;
+                        case "top-to-bottom":
+                            this._graph.direction = 'TB';
+                            this._graph.refreshLayout();
+                            break;
+                    };
+                    this._clearDirectionIcon(parentUniqueId);
+                    //Set the correct icon on the parent menu item
+                    $("#" + parentUniqueId).children("span").addClass("icon-" + e);
+                    _lastDirectionCommand = e;
+                }
+            };
+
+            /*
+             *  Remove the icon from the parent menu item
+             */
+            ItemsView.prototype._clearDirectionIcon = function (parentUniqueId) {
+                $("#" + parentUniqueId).children("span").removeClass("icon-left-to-right");
+                $("#" + parentUniqueId).children("span").removeClass("icon-top-to-bottom");
+            };
+
+            ItemsView.prototype._addFavorit = function () {
+                //Prompt user for name and type
+
+                //Fetch IDs
+                var id = [];
+                this._graph.getAllNodes().forEach(function (n) {
+                    if (n._private.data.id.charAt(0) == 'W') {
+                        id.push({id: n._private.data.origId, position: n._private.position);
+                    }
+                });
+                this._SaveFavorites2Settings("Dummy", "Personal", id)
+            }
+
+            ItemsView.prototype._LoadFavorite = function (name) {
+                var self = this;
+                var witArray = [12496, 12497, 12500, 12498, 12501]; //[].concat(wit);
+
+                var vsoStore = new Storage.VsoStoreService();
+                vsoStore.getWorkItems(witArray, _loadWorkItemGraphCallback);
+               
+  //              WorkitemVisualization.loadInitialItem(witArray);
+
+            }
+
+            ItemsView.prototype._LoadFavoritesFromSettings = function () {
+                var self = this;
+                var witArray = [12496, 12497, 12500, 12498, 12501]; //[].concat(wit);
+
+                var vsoStore = new Storage.VsoStoreService();
+                vsoStore.getWorkItems(witArray, _loadWorkItemGraphCallback);
+               
+
+            }
+            ItemsView.prototype._SaveFavorites2Settings = function (name, type, id ) {
+
+            }
+
+         /*  Handle a button click on the toolbar
          */
         ItemsView.prototype._onToolbarItemClick = function (sender, args) {
             var command = args.get_commandName(), commandArgument = args.get_commandArgument(), that = this, result = false;
@@ -246,7 +269,9 @@ define(["require", "exports", "VSS/Utils/Core",
                 case "favorites-add":
                     this._addFavorit();
                     break;
-
+                case "favorites-load":
+                    this._LoadFavorite("Dummy");
+                    break;
                 default:
                     result = true;
                     break;

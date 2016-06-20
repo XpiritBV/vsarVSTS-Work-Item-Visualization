@@ -74,9 +74,15 @@ define(["require", "exports", "VSS/Utils/Core",
          */
         ItemsView.prototype._createToolbarItems = function () {
             var items = [];
+
+            var favorites = [];
+            favorites.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
+            favorites.push({ separator: true });
+            favorites.push({ id: "foo", text: "Personal", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
+            favorites.push({ id: "bar", text: "Team", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
+
+
             var subItems2 = [];
-
-
             subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
             subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
 
@@ -95,6 +101,8 @@ define(["require", "exports", "VSS/Utils/Core",
 
             items.push({ separator: true });
 
+            items.push({ id: "favorites", text: "Favorites", title: "Favorites", showText: true, icon: "icon-Favorites", disabled: false, childItems: favorites, cssClass: "right-align" });
+            items.push({ separator: true, cssClass: "right-align" });
 
             items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
             items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
@@ -185,6 +193,19 @@ define(["require", "exports", "VSS/Utils/Core",
             $("#" + parentUniqueId).children("span").removeClass("icon-top-to-bottom");
         };
 
+        ItemsView.prototype._addFavorit = function () {
+            //Prompt user for name and type
+
+            //Fetch IDs
+            var id = [];
+            this._graph.getAllNodes().forEach(function (n) {
+                if (n._private.data.id.charAt(0) == 'W') {
+                    id.push(n._private.data.origId);
+                }
+            });
+
+
+        }
 
         /*
          *  Handle a button click on the toolbar
@@ -222,6 +243,10 @@ define(["require", "exports", "VSS/Utils/Core",
                 case "export-graph":
                     this._exportGraph();
                     break;
+                case "favorites-add":
+                    this._addFavorit();
+                    break;
+
                 default:
                     result = true;
                     break;

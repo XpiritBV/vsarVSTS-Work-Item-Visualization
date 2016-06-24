@@ -205,12 +205,12 @@ define(["require", "exports", "VSS/Utils/Core",
                 this._RebuildFavoritesMenu();
             }
 
-            ItemsView.prototype._LoadFavorite = function (name) {
+            ItemsView.prototype._LoadFavorite = function (favorite) {
                 var self = this;
-                var witArray = [12496, 12497, 12500, 12498, 12501]; //[].concat(wit);
+           
 
                 var vsoStore = new Storage.VsoStoreService();
-                vsoStore.getWorkItems(witArray, _loadWorkItemGraphCallback);
+                vsoStore.getWorkItems(favorite.idList, _loadWorkItemGraphCallback);
                
   //              WorkitemVisualization.loadInitialItem(witArray);
 
@@ -224,12 +224,22 @@ define(["require", "exports", "VSS/Utils/Core",
                 favoritesMenu.push({ separator: true });
              
                 _favoritesList.forEach(function (n) {
-                    favoritesMenu.push({ id: n.name, text: n.name, title: n.name, showText: true });
+                    favoritesMenu.push({ id: "select-favorit-" + n.name, text: n.name, title: n.name, showText: true });
                 });
 
-                this._menu.updateCommandStates([
-                { id: "favorites", childItems: favoritesMenu}
-                ]);
+                //this._menu.updateCommandStates([
+                //{ id: "favorites", childItems: favoritesMenu}
+                //]);
+                
+                //this._menu.updateMenuItemStates([
+                //    { id: "favorites", childItems: favoritesMenu }
+                //]);
+                //this._menu.updateContributedMenuItems([
+                //    { id: "favorites", childItems: favoritesMenu }
+                //]);
+                
+
+                this._menu.updateItems(this._createToolbarItems());
             }
 
            
@@ -241,8 +251,8 @@ define(["require", "exports", "VSS/Utils/Core",
                 favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
                 favoritesMenu.push({ separator: true });
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService) {
-                    dataService.getDocument("Favorites").then(function (doc) {
-                        _favoritesList = doc;
+                    dataService.getDocuments("Favorites", { scopeType: "User" }).then(function (docs) {
+                        _favoritesList = docs[0].List;
                         self._RebuildFavoritesMenu();
                     }, 
                     function (err) {
@@ -255,7 +265,7 @@ define(["require", "exports", "VSS/Utils/Core",
                
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
                     // Set a user-scoped preference
-                    dataService.setDocument("Favorites", favoList, {scopeType: scopeType}).then(function(value) {
+                    dataService.setDocument("Favorites", { Level:"Personal",  List: favoList }, {scopeType: scopeType}).then(function(value) {
                         console.log("Saved list " + value);
                     });        
                 });
@@ -300,11 +310,19 @@ define(["require", "exports", "VSS/Utils/Core",
                 case "favorites-add":
                     this._addFavorit();
                     break;
-                case "favorites-load":
-                    this._LoadFavorite("Dummy");
-                    break;
+                
                 default:
-                    result = true;
+                    if (command.indexOf("select-favorit-") == 0) {
+                        favoritesMenu.forEach(function (m) {
+                            if (m.id == command) {
+                                ._LoadFavorite(m);
+                            }
+                        });
+                    } 
+                    else {
+                        result = true;
+                    }
+                    
                     break;
             }
             return result;

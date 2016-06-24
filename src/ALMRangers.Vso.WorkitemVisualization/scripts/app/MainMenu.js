@@ -210,7 +210,7 @@ define(["require", "exports", "VSS/Utils/Core",
            
 
                 var vsoStore = new Storage.VsoStoreService();
-                vsoStore.getWorkItems(favorite.idList, _loadWorkItemGraphCallback);
+                vsoStore.getWorkItems(favorite.idList.map(function(i){return i.id;}), _loadWorkItemGraphCallback);
                
   //              WorkitemVisualization.loadInitialItem(witArray);
 
@@ -313,9 +313,10 @@ define(["require", "exports", "VSS/Utils/Core",
                 
                 default:
                     if (command.indexOf("select-favorit-") == 0) {
-                        favoritesMenu.forEach(function (m) {
-                            if (m.id == command) {
-                                ._LoadFavorite(m);
+                        var self = this;
+                        _favoritesList.forEach(function (m) {
+                            if (command == "select-favorit-" + m.name) {
+                                self._LoadFavorite(m);
                             }
                         });
                     } 

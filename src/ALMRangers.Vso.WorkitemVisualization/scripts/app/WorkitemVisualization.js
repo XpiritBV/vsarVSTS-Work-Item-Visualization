@@ -82,6 +82,12 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                         var node = graph.findById("W" + i.id);
                         legendMenu.ApplyLegendToNode(node);
                         self.expandNode(node);
+
+                        if (typeof _selectedFavorite != 'undefined') {
+                            //Find node 
+                            var pos = _selectedFavorite.idList.filter(function (w) { return w.id === i.id; })[0].position;
+                            node._private.position = pos;
+                        }
                     });
                 }
 

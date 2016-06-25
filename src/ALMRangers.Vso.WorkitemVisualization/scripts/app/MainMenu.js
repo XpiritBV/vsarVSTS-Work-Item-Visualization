@@ -233,9 +233,15 @@ define(["require", "exports", "VSS/Utils/Core",
                 var self = this;
 
                 var vsoStore = new Storage.VsoStoreService();
+                _selectedFavorite = favorite;
+                
                 vsoStore.getWorkItems(favorite.idList.map(function(i){return i.id;}), _loadWorkItemGraphCallback);
               
   //              WorkitemVisualization.loadInitialItem(witArray);
+            }
+
+            ItemsView.prototype._LoadWorkItemsWithPossition = function () {
+
             }
 
             ItemsView.prototype._RebuildFavoritesMenu = function () {
@@ -274,6 +280,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 favoritesMenu.push({ separator: true });
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService) {
                     dataService.getDocument(VSS.getWebContext().project.name, "ProjectShared").then(function (doc) {
+                        //_favoritesList = docs.filter(function (i) { return i.id == "ProjectShared"; })[0].List;
                         _favoritesList = doc.List;
                         self._RebuildFavoritesMenu();
                     }, 
@@ -287,7 +294,7 @@ define(["require", "exports", "VSS/Utils/Core",
                
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
                     // Set a user-scoped preference
-                    dataService.setDocument(VSS.getWebContext().project.name, { Id: "ProjectShared", eTag: -1, List: favoList }).then(function (value) {
+                    dataService.setDocument(VSS.getWebContext().project.name, { id: "ProjectShared", __etag:-1, List: favoList }).then(function (value) {
                         console.log("Saved list " + value);
                     });        
                 });

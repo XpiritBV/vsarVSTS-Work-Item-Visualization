@@ -20,8 +20,8 @@ var __extends = this.__extends || function (d, b) {
 }; 
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
-    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualization, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
+    function (require, exports, Core, Controls, MenuControls, Splitter, Dialogs, WorkitemVisualization, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
 
         var ItemsView = (function (_super) {
             __extends(ItemsView, _super);
@@ -190,30 +190,52 @@ define(["require", "exports", "VSS/Utils/Core",
                 $("#" + parentUniqueId).children("span").removeClass("icon-top-to-bottom");
             };
 
+
+
             ItemsView.prototype._addFavorit = function () {
                 //Prompt user for name and type
+                var view = this;
+                var extensionContext = VSS.getExtensionContext();
 
-                //Fetch IDs
-                var id = [];
-                this._graph.getAllNodes().forEach(function (n) {
-                    if (n._private.data.id.charAt(0) == 'W') {
-                        id.push({ id: n._private.data.origId, position: n._private.position });
+                var dlgContent = $("#createFavoriteDlg").clone();
+                dlgContent.show();
+                dlgContent.find("#createFavoriteDlg").show();
+
+                var options= {
+                    width: 300,
+                    height: 150,
+                    cancelText: "Cancel",
+                    okText: "Add",
+                    title: "Add favorite",
+                    content: dlgContent,
+                    okCallback: function(result) {
+                        //Fetch IDs
+                        var id = [];
+                        view._graph.getAllNodes().forEach(function (n) {
+                            if (n._private.data.id.charAt(0) == 'W') {
+                                id.push({ id: n._private.data.origId, position: n._private.position });
+                            }
+                        });
+                        _favoritesList.push({name: dlgContent.find("#FavoriteName")[0].value , idList: id}) ;
+                        view._SaveFavorites2Settings(_favoritesList, "Account")
+                        view._RebuildFavoritesMenu(); 
                     }
-                });
-                _favoritesList.push({name: "Dummy", idList: id}) ;
-                this._SaveFavorites2Settings(_favoritesList, "User")
-                this._RebuildFavoritesMenu();
+                };
+
+                var dialog = Dialogs.show(Dialogs.ModalDialog, options);
+                dialog.updateOkButton(true);
+                dialog.setDialogResult(true);
+
+              
             }
 
             ItemsView.prototype._LoadFavorite = function (favorite) {
                 var self = this;
-           
 
                 var vsoStore = new Storage.VsoStoreService();
                 vsoStore.getWorkItems(favorite.idList.map(function(i){return i.id;}), _loadWorkItemGraphCallback);
-               
+              
   //              WorkitemVisualization.loadInitialItem(witArray);
-
             }
 
             ItemsView.prototype._RebuildFavoritesMenu = function () {
@@ -251,8 +273,8 @@ define(["require", "exports", "VSS/Utils/Core",
                 favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
                 favoritesMenu.push({ separator: true });
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService) {
-                    dataService.getDocuments("Favorites", { scopeType: "User" }).then(function (docs) {
-                        _favoritesList = docs[0].List;
+                    dataService.getDocument(VSS.getWebContext().project.name, "ProjectShared").then(function (doc) {
+                        _favoritesList = doc.List;
                         self._RebuildFavoritesMenu();
                     }, 
                     function (err) {
@@ -265,7 +287,7 @@ define(["require", "exports", "VSS/Utils/Core",
                
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
                     // Set a user-scoped preference
-                    dataService.setDocument("Favorites", { Level:"Personal",  List: favoList }, {scopeType: scopeType}).then(function(value) {
+                    dataService.setDocument(VSS.getWebContext().project.name, { Id: "ProjectShared", eTag: -1, List: favoList }).then(function (value) {
                         console.log("Saved list " + value);
                     });        
                 });

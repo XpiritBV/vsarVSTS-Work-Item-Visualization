@@ -42,6 +42,7 @@ define(["require", "exports", "VSS/Utils/Core",
         
             var _favoritesList =[];
             var favoritesMenu = [];
+            var _notes=[];
             /*
              *   Initialize will be called when this control is created.  This will setup the UI, 
              *   attach to events, etc.
@@ -96,6 +97,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
 
                 items.push({ separator: true });
+                items.push({ id: "add-note", text: "Add note", title: "Add note", showText: true, disabled: false});
 
        
                 items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
@@ -189,6 +191,50 @@ define(["require", "exports", "VSS/Utils/Core",
                 $("#" + parentUniqueId).children("span").removeClass("icon-left-to-right");
                 $("#" + parentUniqueId).children("span").removeClass("icon-top-to-bottom");
             };
+
+            ItemsView.prototype._addNote = function () {
+                //Prompt user for name and type
+                var view = this;
+                var extensionContext = VSS.getExtensionContext();
+
+                var dlgContent = $("#createFavoriteDlg").clone();
+                dlgContent.show();
+                dlgContent.find("#createFavoriteDlg").show();
+
+                var options = {
+                    width: 300,
+                    height: 150,
+                    cancelText: "Cancel",
+                    okText: "Add",
+                    title: "Add note",
+                    content: dlgContent,
+                    okCallback: function (result) {
+                        //Fetch IDs
+                        var id = [];
+                        var txt = dlgContent.find("#FavoriteName")[0].value;
+                        var txtTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">'+ txt +'</tspan></text>';
+
+                        var newNote = {
+                            id: "NOTE" + _notes.length,
+                            origId: "NOTE" + _notes.length,
+                            bgImage: "blue",
+                            category: "Note",
+                            content: '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path  d="M0 0h210v80H0z"/><path  d="M0 0h6v80H0z"/>' + txtTemplate + '</svg>'
+                        };
+                        _notes.push(newNote);
+
+                        view._graph.addElements([{ group: 'nodes', data: newNote }], [{ group: 'edges', data: [] }]);
+                        //view._graph.addElements({ group: 'nodes', data: newNote }, { group: 'edges', data: [] });
+
+                    }
+                };
+
+                var dialog = Dialogs.show(Dialogs.ModalDialog, options);
+                dialog.updateOkButton(true);
+                dialog.setDialogResult(true);
+
+
+            }
 
 
 
@@ -338,6 +384,9 @@ define(["require", "exports", "VSS/Utils/Core",
                     break;
                 case "favorites-add":
                     this._addFavorit();
+                    break;
+                case "add-note":
+                    this._addNote();
                     break;
                 
                 default:

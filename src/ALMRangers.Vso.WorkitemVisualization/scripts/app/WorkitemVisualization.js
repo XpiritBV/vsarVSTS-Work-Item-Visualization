@@ -159,6 +159,9 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                 elements.each(self.highlightNewNode);
             }
 
+   
+            
+
             WorkitemVisualization.prototype.highlightNewNode = function (i, ele) {
                 if (ele.isNode()) {
                     legendMenu.ApplyLegendToNode(ele);

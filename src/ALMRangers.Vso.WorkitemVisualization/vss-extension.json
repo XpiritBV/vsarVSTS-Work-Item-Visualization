@@ -91,7 +91,21 @@
       "properties": {
         "uri": "addEditHighlightDialog.html"
       }
+    },
+    {
+          "id": "work-item-visualization-tab",
+          "type": "ms.vss-web.hub",
+          "description": "Adds a 'Workitem Visualization' hub to the Work hub group.",
+          "targets": [
+            "ms.vss-work-web.work-hub-group"
+          ],
+          "properties": {
+            "name": "Visualize",
+            "order": 99,
+            "uri": "WorkitemVisualization.html"
+          }
     }
+
   ],
   "content": {
     "details": {

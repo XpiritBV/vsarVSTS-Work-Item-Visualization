@@ -80,8 +80,6 @@ define(["require", "exports", "VSS/Utils/Core",
             ItemsView.prototype._createToolbarItems = function () {
                 var items = [];
 
-               
-
                 var subItems2 = [];
                 subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
                 subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
@@ -204,11 +202,7 @@ define(["require", "exports", "VSS/Utils/Core",
                     var node = witviz.addNote(_notes.length, title, txt, shapeType, size, null, linkedToId);
                     _notes.push(node);
                 });
-                
-
             }
-
-
 
             ItemsView.prototype._addFavorit = function () {
                 //Prompt user for name and type
@@ -238,8 +232,6 @@ define(["require", "exports", "VSS/Utils/Core",
                 var dialog = Dialogs.show(Dialogs.ModalDialog, options);
                 dialog.updateOkButton(true);
                 dialog.setDialogResult(true);
-
-              
             }
 
             ItemsView.prototype._LoadFavorite = function (favorite) {
@@ -262,7 +254,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 // Get an account-scoped document in a collection
                 var self= this;
                 favoritesMenu = [];
-                favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
+                favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-favorite-add-witviz" });
                 favoritesMenu.push({ separator: true });
              
                 _favoritesList.forEach(function (n) {

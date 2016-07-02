@@ -15,9 +15,10 @@
 //TODO: Highlight path to selected node
 //TODO: Highlight elements that are being added
 
-define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
-        "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph"],
-    function (require, exports, Controls, Menus, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph) {
+define(["require", "exports", "VSS/Controls",  "VSS/Controls/Menus", "VSS/Controls/Dialogs",
+        "Scripts/App/AnnotationForm", "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph"],
+    function (require, exports, Controls, Menus, Dialogs,
+                                AnnotationForm, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph) {
         var WorkitemVisualization = (function() {
 
             var linkTypes;
@@ -207,6 +208,26 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                     storage.getWorkItems(workItemIdArray, self.addWitNodes.bind(this), { id: "W" + wit.id, edges: workItemLinksArray });
                 }
             }
+
+            //This is called to add a note 
+            WorkitemVisualization.prototype.addNote = function (id, title, txt, shapeType, size, color,  linkedToId ) {
+                var self = this;
+                var node = graph.createNoteData(id, title, txt, shapeType, size, linkedToId);
+                var edges = {};
+                if (linkedToId != null) {
+                    edges = {
+                        id: node.data.id + "-" + linkedToId,
+                        source: node.data.id,
+                        target: linkedToId,
+                        name: ""
+                    };
+                }
+
+                graph.addElements([node], [{ group: 'edges', data: edges }]);
+            }
+
+
+
 
             WorkitemVisualization.prototype.addChangesetWorkitems = function (wits, data) {
                 var self = this;

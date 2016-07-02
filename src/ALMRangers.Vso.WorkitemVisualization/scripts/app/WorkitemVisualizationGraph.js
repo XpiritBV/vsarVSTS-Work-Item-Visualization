@@ -15,7 +15,7 @@
 //TODO: Tooltip support
 //TODO: Context Menu on right click
 
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "Scripts/App/AnnotationForm", ], function (require, exports, AnnotationForm) {
     var WorkitemVisualizationGraph = (function() {
         
         var _navigator = null;
@@ -52,6 +52,15 @@ define(["require", "exports"], function (require, exports) {
                         'background-image': 'data(bgImage)',
                         'background-width': '210px',
                         'background-height': '80px'
+                    })
+                    .selector('node .note')
+                    .css({
+                        'shape': 'rectangle',
+                        'width': '300px',
+                        'height': '120px',
+                        'background-image': 'data(bgImage)',
+                        'background-width': '300px',
+                        'background-height': '120px'
                     })
                     .selector('edge')
                     .css({
@@ -111,6 +120,9 @@ define(["require", "exports"], function (require, exports) {
                             case "File":
                                 self.openFile(e.cyTarget);
                                 break;
+                            case "Annotation":
+                                self.openAnnotation(e.cyTarget);
+                                break;
                         }
                     }
 
@@ -152,6 +164,25 @@ define(["require", "exports"], function (require, exports) {
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri + "/" + vsoContext.project.name + "/_workitems#id=" + id + "&triage=true&_a=edit";
             window.open(location, "_blank");
+        }
+
+        WorkitemVisualizationGraph.prototype.openAnnotation = function (node) {
+            var self = this;
+
+            var id = node.data("origId");
+            var frm = AnnotationForm.annotationForm;
+            
+            frm.showAnnotationForm(this, node.data(), this.getAllNodes(), function (title, txt, shapeType, size, linkedToId) {
+                n2  =      self.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
+                node.data("title", n2.data.title);
+                node.data("content", n2.data.content);
+                node.data("linkedToId", n2.data.linkedToId);
+                node.data("shapeType", n2.data.shapeType);
+                node.data("bgImage", n2.data.bgImage);
+                
+                self.refreshLayout();
+
+            });
         }
 
         WorkitemVisualizationGraph.prototype.openCheckin = function (node) {
@@ -257,6 +288,26 @@ define(["require", "exports"], function (require, exports) {
             return graphLoaded;
         }
 
+        WorkitemVisualizationGraph.prototype.createNoteData= function (id, title, txt, shapeType, size, backgroundColor , linkedtoId) {
+     
+            backgroundColor = "#FFFFFF";
+            var borderColor = "#FFFFFF";
+
+            var newNode = {
+                id: "Note" + id,
+                origId: id,
+                title: title,
+                category: "Annotation",
+                content: txt,
+                size: size,
+                shapeType: shapeType,
+                linkedToId: linkedtoId,
+                bgImage: this.getNoteBackground(title, txt, shapeType, size, backgroundColor, borderColor),
+            };
+
+            return { group: 'nodes', data: newNode };
+        }
+
         WorkitemVisualizationGraph.prototype.createWitNodeData = function (wit) {
             var assigned = "";
             if (wit.fields["System.AssignedTo"] != null) {
@@ -280,6 +331,7 @@ define(["require", "exports"], function (require, exports) {
             };
             return { group: 'nodes', data: newNode };
         }
+
 
         WorkitemVisualizationGraph.prototype.createChangesetNodeData = function (cs) {
             var category = "Changeset";
@@ -588,6 +640,9 @@ define(["require", "exports"], function (require, exports) {
                 case "File":
                     cardColor = "#D6CE95";
                     break;
+                case "Note":
+                    cardColor = backgroundColor;
+                    break;
                 default:
                     cardColor = "#F2CB1D";
             }
@@ -611,6 +666,63 @@ define(["require", "exports"], function (require, exports) {
 
             return cardText;
         }
+        var template_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path fill="#ffffa5" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="cardColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
+        var template_TEXT_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" ><path fill="#fff" stroke="#fff" d="M0 0h210v80H0z"/><path fill="#fff" d="M0 0h6v80H0z"/>textTemplate</svg>';
+
+        var noteTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">noteTitle</tspan> <tspan x="16" dy="16">noteText</tspan></text>';
+
+        function getNoteTemplate(shapeType) {
+            switch (shapeType) {
+                case "Text":
+                    return template_TEXT_Background;
+                    break;
+                case "Note":
+                    return template_NOTE_Background;
+                    break;
+            }
+        }
+
+        function getAnnotationSize(sizeTxt) {
+            switch (sizeTxt) {
+                case "Small":
+                    return { width: 210, height: 80 };
+                    break;
+                case "Medium":
+                    return { width: 300, height: 120 };
+                    break;
+                case "Large":
+                    return { width: 400, height: 120 };
+                    break;
+
+            }
+
+        }
+
+        WorkitemVisualizationGraph.prototype.getNoteBackground = function (title, text, shapeType, sizeTxt, backgroundColor, borderColor, textColor) {
+            if (backgroundColor == undefined) backgroundColor = defaultBackgroundColor;
+            if (borderColor == undefined) borderColor = defaultBorderColor;
+            if (textColor == undefined) textColor = defaultTextColor;
+
+            
+
+            var cardText = noteTextTemplate.replace(/noteTitle/g, title).replace(/noteText/g, text);
+            var cardBg;
+            var size = getAnnotationSize(sizeTxt);
+            cardBg = getNoteTemplate(shapeType).replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
+                                    .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/cardColor/g, backgroundColor)
+                                    .replace(/size-width/g, size.width).replace(/size-height/g, size.height);
+
+            
+  
+            if (window.btoa) {
+                //To make sure all UTF8 characters work
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(cardBg)));
+            } else {
+                //For IE9 and below
+                return "";
+            }
+        }
+
 
         return WorkitemVisualizationGraph;
     })();

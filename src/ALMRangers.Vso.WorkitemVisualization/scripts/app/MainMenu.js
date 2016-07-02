@@ -20,8 +20,10 @@ var __extends = this.__extends || function (d, b) {
 }; 
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
-    function (require, exports, Core, Controls, MenuControls, Splitter, Dialogs, WorkitemVisualization, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
+    "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs",
+     "Scripts/App/AnnotationForm", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
+    function (require, exports, Core, Controls, CboControls, MenuControls, Splitter, Dialogs,
+        AnnotationForm, WorkitemVisualization, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
 
         var ItemsView = (function (_super) {
             __extends(ItemsView, _super);
@@ -43,6 +45,7 @@ define(["require", "exports", "VSS/Utils/Core",
             var _favoritesList =[];
             var favoritesMenu = [];
             var _notes=[];
+
             /*
              *   Initialize will be called when this control is created.  This will setup the UI, 
              *   attach to events, etc.
@@ -97,7 +100,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
 
                 items.push({ separator: true });
-                items.push({ id: "add-note", text: "Add note", title: "Add note", showText: true, disabled: false});
+                items.push({ id: "add-annotation", text: "Add Annotation", title: "Add Annotation", showText: true, disabled: false });
 
        
                 items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
@@ -194,45 +197,14 @@ define(["require", "exports", "VSS/Utils/Core",
 
             ItemsView.prototype._addNote = function () {
                 //Prompt user for name and type
-                var view = this;
-                var extensionContext = VSS.getExtensionContext();
+                var frm = AnnotationForm.annotationForm;
+                var witviz = WorkitemVisualization.witviz;
 
-                var dlgContent = $("#createFavoriteDlg").clone();
-                dlgContent.show();
-                dlgContent.find("#createFavoriteDlg").show();
-
-                var options = {
-                    width: 300,
-                    height: 150,
-                    cancelText: "Cancel",
-                    okText: "Add",
-                    title: "Add note",
-                    content: dlgContent,
-                    okCallback: function (result) {
-                        //Fetch IDs
-                        var id = [];
-                        var txt = dlgContent.find("#FavoriteName")[0].value;
-                        var txtTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">'+ txt +'</tspan></text>';
-
-                        var newNote = {
-                            id: "NOTE" + _notes.length,
-                            origId: "NOTE" + _notes.length,
-                            bgImage: "blue",
-                            category: "Note",
-                            content: '<svg xmlns="http://www.w3.org/2000/svg" width="210" height="80"><path  d="M0 0h210v80H0z"/><path  d="M0 0h6v80H0z"/>' + txtTemplate + '</svg>'
-                        };
-                        _notes.push(newNote);
-
-                        view._graph.addElements([{ group: 'nodes', data: newNote }], [{ group: 'edges', data: [] }]);
-                        //view._graph.addElements({ group: 'nodes', data: newNote }, { group: 'edges', data: [] });
-
-                    }
-                };
-
-                var dialog = Dialogs.show(Dialogs.ModalDialog, options);
-                dialog.updateOkButton(true);
-                dialog.setDialogResult(true);
-
+                var node = frm.showAnnotationForm(this, null, this._graph.getAllNodes(), function (title, txt, shapeType, size, linkedToId) {
+                    var node = witviz.addNote(_notes.length, title, txt, shapeType, size, null, linkedToId);
+                    _notes.push(node);
+                });
+                
 
             }
 
@@ -385,7 +357,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 case "favorites-add":
                     this._addFavorit();
                     break;
-                case "add-note":
+                case "add-annotation":
                     this._addNote();
                     break;
                 

@@ -159,10 +159,7 @@ define(["require", "exports", "VSS/Controls",  "VSS/Controls/Menus", "VSS/Contro
                 var elements = graph.addElements(newNodes, data.edges);
                 elements.each(self.highlightNewNode);
             }
-
    
-            
-
             WorkitemVisualization.prototype.highlightNewNode = function (i, ele) {
                 if (ele.isNode()) {
                     legendMenu.ApplyLegendToNode(ele);
@@ -225,9 +222,6 @@ define(["require", "exports", "VSS/Controls",  "VSS/Controls/Menus", "VSS/Contro
 
                 graph.addElements([node], [{ group: 'edges', data: edges }]);
             }
-
-
-
 
             WorkitemVisualization.prototype.addChangesetWorkitems = function (wits, data) {
                 var self = this;
@@ -324,7 +318,30 @@ define(["require", "exports", "VSS/Controls",  "VSS/Controls/Menus", "VSS/Contro
                 elements.each(self.highlightNewNode);
             }
 
+            WorkitemVisualization.prototype.refreshWorkItemNodes = function () {
+                var self = this;
+                var lstWI= graph.getAllNodes();
+                var lstWorkItemId= lstWI.filter(function(f){
+                    return lstWI[f].data("category")=="Work Item";
+                } ).map(function(i){
+                    return i.data("origId");
+                });
+                
+                storage.getWorkItems(lstWorkItemId, self.updateWorkItemNodes.bind(this));
+            }
 
+            WorkitemVisualization.prototype.updateWorkItemNodes = function (wit) {
+                var self = this;
+                var nodes = graph.cy.nodes();
+
+                wit.forEach(function (w) {
+                    var nodeData = graph.createWitNodeData(w);
+                    
+                    var existingNode = nodes.filter(function (f) { return nodes[f].data("category") == "Work Item" && nodes[f].data("origId") == w.id })[0];
+                    existingNode.data(nodeData.data);
+                });
+            
+            }
             //Returns true if the link type is directional, otherwise false
             //Note that this is simply returning the value of directional
             WorkitemVisualization.prototype.isDirectional = function (rel) {

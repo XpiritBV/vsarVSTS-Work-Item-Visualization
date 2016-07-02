@@ -228,13 +228,8 @@ define(["require", "exports", "VSS/Utils/Core",
                     content: dlgContent,
                     okCallback: function(result) {
                         //Fetch IDs
-                        var id = [];
-                        view._graph.getAllNodes().forEach(function (n) {
-                            if (n._private.data.id.charAt(0) == 'W') {
-                                id.push({ id: n._private.data.origId, position: n._private.position });
-                            }
-                        });
-                        _favoritesList.push({name: dlgContent.find("#FavoriteName")[0].value , idList: id}) ;
+
+                        _favoritesList.push({ name: dlgContent.find("#FavoriteName")[0].value, elements: view._graph.cy.json().elements });
                         view._SaveFavorites2Settings(_favoritesList, "Account")
                         view._RebuildFavoritesMenu(); 
                     }
@@ -250,12 +245,13 @@ define(["require", "exports", "VSS/Utils/Core",
             ItemsView.prototype._LoadFavorite = function (favorite) {
                 var self = this;
 
-                var vsoStore = new Storage.VsoStoreService();
                 _selectedFavorite = favorite;
-                
-                vsoStore.getWorkItems(favorite.idList.map(function(i){return i.id;}), _loadWorkItemGraphCallback);
+
+                this._graph.cy.load(favorite.elements);
+                this._graph.fitTo();
               
-  //              WorkitemVisualization.loadInitialItem(witArray);
+                var witviz = WorkitemVisualization.witviz;
+                witviz.refreshWorkItemNodes();
             }
 
             ItemsView.prototype._LoadWorkItemsWithPossition = function () {
@@ -275,8 +271,6 @@ define(["require", "exports", "VSS/Utils/Core",
 
                 this._menu.updateItems(this._createToolbarItems());
             }
-
-           
 
             ItemsView.prototype._LoadFavoritesFromSettings = function () {
                 // Get an account-scoped document in a collection

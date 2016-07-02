@@ -273,18 +273,6 @@ define(["require", "exports", "VSS/Utils/Core",
                     favoritesMenu.push({ id: "select-favorit-" + n.name, text: n.name, title: n.name, showText: true });
                 });
 
-                //this._menu.updateCommandStates([
-                //{ id: "favorites", childItems: favoritesMenu}
-                //]);
-                
-                //this._menu.updateMenuItemStates([
-                //    { id: "favorites", childItems: favoritesMenu }
-                //]);
-                //this._menu.updateContributedMenuItems([
-                //    { id: "favorites", childItems: favoritesMenu }
-                //]);
-                
-
                 this._menu.updateItems(this._createToolbarItems());
             }
 

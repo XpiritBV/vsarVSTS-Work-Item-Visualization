@@ -35,13 +35,13 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos",  "VSS/Contr
                 var dlgContent = $("#createNoteDlg").clone();
                 dlgContent.show();
 
-                //var cboSizeOptions = { //: CtrlCombos.IComboOptions = {
-                //    mode: "drop",
-                //    allowEdit: false,
-                //    source: SizeTable
-                //};
+                var cboSizeOptions = { //: CtrlCombos.IComboOptions = {
+                    mode: "drop",
+                    allowEdit: false,
+                    source: SizeTable
+                };
 
-                //var cboSize = Controls.create(CboControls.Combo, dlgContent.find("#cboSize"), cboSizeOptions);
+                var cboSize = Controls.create(CboControls.Combo, dlgContent.find("#cboSize"), cboSizeOptions);
 
                 var cboShapeOptions = { //: CtrlCombos.IComboOptions = {
                     mode: "drop",
@@ -65,12 +65,14 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos",  "VSS/Contr
                     dlgContent.find("#noteTitle")[0].value = node.title;
                     dlgContent.find("#noteTxt")[0].value = node.content
 
+                    cboSize.setText(node.size);
                     cboShape.setText(node.shapeType);
                     if (node.linkedToId != null) {
                         cboPin2Node.setText(lstNodesId.filter(function (i) { return i.id == node.linkedToId; })[0].text);
                     }
                 }
                 else {
+                    cboSize.setText(SizeTable[0]);
                     cboShape.setText(ShapeTable[0]);
                 }
 
@@ -78,7 +80,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos",  "VSS/Contr
 
                 var options = {
                     width: 404,
-                    height: 310,
+                    height: 335,
                     cancelText: "Cancel",
                     okText: "Add",
                     title: "Add Annotation",
@@ -94,7 +96,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos",  "VSS/Contr
                             linkedToId = lstNodesId[cboPin2Node.getSelectedIndex()].id;
                         }
 
-                        var size = "Small"; //cboSize.getText();
+                        var size = cboSize.getText();
                         var shapeType = cboShape.getText();
                         callbackFunction(title, txt, shapeType, size, linkedToId);
                     }

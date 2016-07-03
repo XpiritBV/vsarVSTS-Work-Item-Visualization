@@ -681,11 +681,11 @@ define(["require", "exports", "Scripts/App/AnnotationForm", ], function (require
 
             return cardText;
         }
-        var template_Yellow_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path fill="#ffffa5" stroke="borderColor" d="M0 0h210v80H0z"/>textTemplate</svg>';
-        var template_Red_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path fill="#FFC0CB" stroke="RED" d="M0 0h210v80H0z"/>textTemplate</svg>';
-        var template_Red_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="pink" stroke="red" />textTemplate</svg>';
-        var template_Yellow_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#ffffa5" stroke="black" />textTemplate</svg>';
-        var template_Green_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#00CC00" stroke="red" />textTemplate</svg>';
+        var template_Yellow_NOTE_Background  = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path fill="#ffffa5" stroke="borderColor" d="M0 0h210v80H0z"/>textTemplate</svg>';
+        var template_Red_NOTE_Background     = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path fill="#FFC0CB" stroke="RED" d="M0 0h210v80H0z"/>textTemplate</svg>';
+        var template_Red_Arrow_Background    = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="pink" stroke="red" />textTemplate</svg>';
+        var template_Yellow_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#ffffa5" stroke="black" />textTemplate</svg>';
+        var template_Green_Arrow_Background  = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#00CC00" stroke="green" />textTemplate</svg>';
 
         var template_TEXT_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" ><path fill="#fff" stroke="#fff" d="M0 0h210v80H0z"/>textTemplate</svg>';
 

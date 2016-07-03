@@ -53,7 +53,12 @@ define(["require", "exports", "Scripts/App/AnnotationForm", ], function (require
                         'background-width': '210px',
                         'background-height': '80px'
                     })
-                    .selector('node .note')
+                    .selector("node[category='Annotation']")
+                    .css({
+                        'background-color': 'white'
+                    })
+
+                    .selector("node[size='Medium']")
                     .css({
                         'shape': 'rectangle',
                         'width': '300px',
@@ -62,6 +67,16 @@ define(["require", "exports", "Scripts/App/AnnotationForm", ], function (require
                         'background-width': '300px',
                         'background-height': '120px'
                     })
+                    .selector("node[size='Large']")
+                    .css({
+                        'shape': 'rectangle',
+                        'width': '400px',
+                        'height': '160px',
+                        'background-image': 'data(bgImage)',
+                        'background-width': '400px',
+                        'background-height': '160px'
+                    })
+
                     .selector('edge')
                     .css({
                         'source-arrow-shape': 'circle',
@@ -708,7 +723,7 @@ define(["require", "exports", "Scripts/App/AnnotationForm", ], function (require
                     return { width: 300, height: 120 };
                     break;
                 case "Large":
-                    return { width: 400, height: 120 };
+                    return { width: 400, height: 160 };
                     break;
 
             }

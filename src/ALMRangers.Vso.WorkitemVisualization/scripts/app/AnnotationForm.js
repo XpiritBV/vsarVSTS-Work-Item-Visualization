@@ -19,8 +19,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos",  "VSS/Contr
     function (require, exports, Controls, CboControls, Dialogs) {
         var AnnotationForm = (function () {
             var SizeTable = ['Small', 'Medium', 'Large'];
-            var ShapeTable = ['Text', 'Note'];
-
+            var ShapeTable = ['Text', 'Yellow Note', 'Red Note']; // Need to wait for us to control cy styles for notes, 'Yellow Arrow','Red Arrow','Green Arrow'];
+            
             function AnnotationForm() {
                 
             }

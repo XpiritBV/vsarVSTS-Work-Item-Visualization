@@ -666,8 +666,13 @@ define(["require", "exports", "Scripts/App/AnnotationForm", ], function (require
 
             return cardText;
         }
-        var template_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path fill="#ffffa5" stroke="borderColor" d="M0 0h210v80H0z"/><path fill="cardColor" d="M0 0h6v80H0z"/>textTemplate</svg>';
-        var template_TEXT_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" ><path fill="#fff" stroke="#fff" d="M0 0h210v80H0z"/><path fill="#fff" d="M0 0h6v80H0z"/>textTemplate</svg>';
+        var template_Yellow_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path fill="#ffffa5" stroke="borderColor" d="M0 0h210v80H0z"/>textTemplate</svg>';
+        var template_Red_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path fill="#FFC0CB" stroke="RED" d="M0 0h210v80H0z"/>textTemplate</svg>';
+        var template_Red_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="pink" stroke="red" />textTemplate</svg>';
+        var template_Yellow_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#ffffa5" stroke="black" />textTemplate</svg>';
+        var template_Green_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#00CC00" stroke="red" />textTemplate</svg>';
+
+        var template_TEXT_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" ><path fill="#fff" stroke="#fff" d="M0 0h210v80H0z"/>textTemplate</svg>';
 
         var noteTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">noteTitle</tspan> <tspan x="16" dy="16">noteText</tspan></text>';
 
@@ -676,8 +681,20 @@ define(["require", "exports", "Scripts/App/AnnotationForm", ], function (require
                 case "Text":
                     return template_TEXT_Background;
                     break;
-                case "Note":
-                    return template_NOTE_Background;
+                case "Red Note":
+                    return template_Red_NOTE_Background;
+                    break;
+                case "Yellow Note":
+                    return template_Yellow_NOTE_Background;
+                    break;
+                case "Yellow Arrow":
+                    return template_Yellow_Arrow_Background;
+                    break;
+                case "Red Arrow":
+                    return template_Red_Arrow_Background;
+                    break;
+                case "Green Arrow":
+                    return template_Green_Arrow_Background;
                     break;
             }
         }

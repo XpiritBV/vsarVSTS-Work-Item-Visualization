@@ -115,10 +115,6 @@
       "addressable": true
     },
     {
-      "path": "sdk",
-      "addressable": true
-    },
-    {
       "path": "addedithighlightDialog.html",
       "addressable": true
     },

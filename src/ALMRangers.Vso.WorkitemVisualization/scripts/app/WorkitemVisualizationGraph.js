@@ -150,7 +150,7 @@ define(["require", "exports"], function (require, exports) {
         WorkitemVisualizationGraph.prototype.openWorkitem = function (node) {
             var id = node.data("origId");
             var vsoContext = VSS.getWebContext();
-            var location = vsoContext.host.uri + "/" + vsoContext.project.name + "/_workitems#id=" + id + "&triage=true&_a=edit";
+            var location = vsoContext.host.uri + "/" + vsoContext.project.name + "/_workitems?id=" + id + "&triage=true&_a=edit";
             window.open(location, "_blank");
         }
 
@@ -160,12 +160,16 @@ define(["require", "exports"], function (require, exports) {
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri;
 
+            //Check if location ends with "/"
+            if (location.substr(-1) !== "/") {
+                location += "/";
+            }
+
             if (category === "Commit") {
-                //TODO: Cant we use and store the remote url of commit?
-                location = node.data("url");  //+= "/_git/" + vsoContext.project.name + "/commit/" + id;
+                location = node.data("url");
             } else {
                 //TODO: Cant we use and store the remote url of changeset - if exists?
-                location += "/" + vsoContext.project.name + "/_versionControl/changeset/" + id;
+                location += vsoContext.project.name + "/_versionControl/changeset/" + id;
             }
 
             window.open(location, "_blank");
@@ -177,18 +181,28 @@ define(["require", "exports"], function (require, exports) {
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri;
 
+            //TODO: Useful to have as common and on string
+            //http://stackoverflow.com/questions/280634/endswith-in-javascript
+            function endsWith(str, suffix) {
+                return str.indexOf(suffix, str.length - suffix.length) !== -1;
+            }
+
+            //Check if location ends with "/"
+            if (location.substr(-1) !== "/") {
+                location += "/";
+            }
+
             if (objectType !== "File") {
+                var remoteUrl = node.data("url");
                 var path = node.data("path");
-                var commitId = node.data("commitId");
                 //This means it's a git file
-                //TODO: Cant we use and store the remote url of commit? 
-                location += "/_git/" + vsoContext.project.name + "/commit/" + commitId + "#path=" + path + "&_a=contents";
+                location = remoteUrl + "?path=" + path + "&_a=contents";
             } else {
                 //TODO: Cant we use and store the remote url of changeset - if exists?
                 //It's a tfvc file
                 var origId = node.data("origId");
                 var changesetId = node.data("changesetId");
-                location += "/" + vsoContext.project.name + "/_versionControl/changeset/" + changesetId + "#path=" + origId + "&_a=contents";
+                location += vsoContext.project.name + "/_versionControl/changeset/" + changesetId + "?path=" + origId + "&_a=contents";
             }
 
             window.open(location, "_blank");

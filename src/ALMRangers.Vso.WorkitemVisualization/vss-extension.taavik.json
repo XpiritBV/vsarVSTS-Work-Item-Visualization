@@ -1,7 +1,6 @@
 {
   "id": "WorkItemVisualization-internal",
   "name": "Work Item Visualization (Internal)",
-  "version": "1.1.9",
   "publisher": "taavi-koosaar",
   "baseUri": null,
   "public": false

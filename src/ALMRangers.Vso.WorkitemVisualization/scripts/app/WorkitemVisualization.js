@@ -44,15 +44,20 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                     linkTypes = witLinkTypes;
 
                     //Get workitem and load it into the graph
-                    var config= VSS.getConfiguration();
-                    if(config.action.workItemId!=null){
+                    var config = VSS.getConfiguration();
+                    //For the work item form action button
+                    if(config.action.workItemId){
                         storage.getWorkItem(config.action.workItemId, self.loadInitialItem.bind(self));
                     }
-                    else if(config.action.ids!=null){
+                    //For the work item query context menu
+                    else if(config.action.ids){
                         storage.getWorkItems(config.action.ids, self.loadInitialItem.bind(self));
 
+                    }//For the backlog context menu
+                    else if (config.action.workItemIds)
+                    {
+                        storage.getWorkItems(config.action.workItemIds, self.loadInitialItem.bind(self));
                     }
-                    
                 }
 
                 //Load link types for the use during the application lifetime. Starts the application flow.

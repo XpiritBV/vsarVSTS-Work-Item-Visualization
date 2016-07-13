@@ -26,6 +26,22 @@ define(["require", "exports"], function (require, exports) {
         var defaultTextColor = "#000";
         var graphLoaded = false;
 
+        function navigateTo(url)
+        {
+            // Get navigation service
+            VSS.getService(VSS.ServiceIds.Navigation).then(function (navigationService) {
+                //Check if openNewWindow is available
+                if (navigationService.openNewWindow)
+                {
+                    navigationService.openNewWindow(url, "");
+                }
+                else//, if not then use old approach (Update 2 and below)
+                {
+                    window.open(url, "_blank");
+                }
+            });
+        }
+
         function WorkitemVisualizationGraph(container, cytoscape) {
             var self = this;
             _container = container;
@@ -150,8 +166,13 @@ define(["require", "exports"], function (require, exports) {
         WorkitemVisualizationGraph.prototype.openWorkitem = function (node) {
             var id = node.data("origId");
             var vsoContext = VSS.getWebContext();
-            var location = vsoContext.host.uri + "/" + vsoContext.project.name + "/_workitems?id=" + id + "&triage=true&_a=edit";
-            window.open(location, "_blank");
+            var location = vsoContext.host.uri;
+            //Check if location ends with "/"
+            if (location.substr(-1) !== "/") {
+                location += "/";
+            }
+            location += vsoContext.project.name + "/_workitems?id=" + id + "&triage=true&_a=edit";
+            navigateTo(location);
         }
 
         WorkitemVisualizationGraph.prototype.openCheckin = function (node) {
@@ -168,11 +189,10 @@ define(["require", "exports"], function (require, exports) {
             if (category === "Commit") {
                 location = node.data("url");
             } else {
-                //TODO: Cant we use and store the remote url of changeset - if exists?
                 location += vsoContext.project.name + "/_versionControl/changeset/" + id;
             }
 
-            window.open(location, "_blank");
+            navigateTo(location);
         }
         WorkitemVisualizationGraph.prototype.openFile = function (node) {
             //BUG: If commit or file is from different project, then it would not go to right location!
@@ -180,12 +200,6 @@ define(["require", "exports"], function (require, exports) {
             //Full path
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri;
-
-            //TODO: Useful to have as common and on string
-            //http://stackoverflow.com/questions/280634/endswith-in-javascript
-            function endsWith(str, suffix) {
-                return str.indexOf(suffix, str.length - suffix.length) !== -1;
-            }
 
             //Check if location ends with "/"
             if (location.substr(-1) !== "/") {
@@ -198,14 +212,13 @@ define(["require", "exports"], function (require, exports) {
                 //This means it's a git file
                 location = remoteUrl + "?path=" + path + "&_a=contents";
             } else {
-                //TODO: Cant we use and store the remote url of changeset - if exists?
                 //It's a tfvc file
                 var origId = node.data("origId");
                 var changesetId = node.data("changesetId");
                 location += vsoContext.project.name + "/_versionControl/changeset/" + changesetId + "?path=" + origId + "&_a=contents";
             }
 
-            window.open(location, "_blank");
+            navigateTo(location);
         }
 
         WorkitemVisualizationGraph.prototype.findById = function(id) {

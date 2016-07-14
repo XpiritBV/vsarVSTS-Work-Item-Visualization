@@ -42,6 +42,15 @@ define(["require", "exports"], function (require, exports) {
             });
         }
 
+        function xmlSafe(text)
+        {
+            return  text.replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&apos;');
+        }
+
         function WorkitemVisualizationGraph(container, cytoscape) {
             var self = this;
             _container = container;
@@ -560,6 +569,7 @@ define(["require", "exports"], function (require, exports) {
             }
 
             title = trim(title);
+            title = xmlSafe(title);
 
             var words = title.split(" ");
             var line = "";

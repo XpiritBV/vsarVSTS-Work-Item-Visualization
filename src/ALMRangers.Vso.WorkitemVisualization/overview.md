@@ -58,7 +58,7 @@ We thank the following contributor(s) for this extension: Taavi Koosaar, Mattias
 
 ##Release History##
 
-### v1.2.0 ###
+### v1.2 ###
 
 It is recommended to have Team Foundation Server 2015 Update 3 when running on-premis!
 

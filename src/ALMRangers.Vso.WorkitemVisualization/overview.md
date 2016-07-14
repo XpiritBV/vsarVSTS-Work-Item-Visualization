@@ -54,5 +54,6 @@ Export your chart visualization for offline viewing or printing.
 
 ##Contributors##
 
-We thank the following contributor(s) for this extension: Taavi Koosaar, Mattias Sköld (Visualize from Query).
+We thank the following contributor(s) for this extension: Taavi Koosaar, Mattias Sköld.
 
+**[View Release Notes](releasenotes.md)**

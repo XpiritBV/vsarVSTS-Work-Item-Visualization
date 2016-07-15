@@ -15,7 +15,7 @@
 //TODO: Tooltip support
 //TODO: Context Menu on right click
 
-define(["require", "exports"], function (require, exports) {
+define(["require", "exports", "Scripts/app/TeleMetryClient"], function (require, exports, TelemetryClient) {
     var WorkitemVisualizationGraph = (function() {
         
         var _navigator = null;
@@ -148,6 +148,8 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.openWorkitem = function (node) {
+            TelemetryClient.getClient().trackEvent("openWorkItem");
+
             var id = node.data("origId");
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri + "/" + vsoContext.project.name + "/_workitems#id=" + id + "&triage=true&_a=edit";
@@ -155,6 +157,7 @@ define(["require", "exports"], function (require, exports) {
         }
 
         WorkitemVisualizationGraph.prototype.openCheckin = function (node) {
+            TelemetryClient.getClient().trackEvent("openCheckin");
             var id = node.data("origId");
             var category = node.data("category");
             var vsoContext = VSS.getWebContext();
@@ -171,6 +174,7 @@ define(["require", "exports"], function (require, exports) {
             window.open(location, "_blank");
         }
         WorkitemVisualizationGraph.prototype.openFile = function (node) {
+            TelemetryClient.getClient().trackEvent("openFile");
             //BUG: If commit or file is from different project, then it would not go to right location!
             var objectType = node.data("objectType");
             //Full path
@@ -216,7 +220,8 @@ define(["require", "exports"], function (require, exports) {
             this.cy.zoom(1);
         }
 
-        WorkitemVisualizationGraph.prototype.toggleMinimap = function() {
+        WorkitemVisualizationGraph.prototype.toggleMinimap = function () {
+
             var self = this;
             if (_navigator === null) {
                 //initialize

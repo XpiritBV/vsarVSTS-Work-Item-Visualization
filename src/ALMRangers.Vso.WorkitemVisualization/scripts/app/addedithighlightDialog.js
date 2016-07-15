@@ -18,8 +18,8 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(
-    ["require", "exports", "VSS/Controls/Dialogs"],
-    function (require, exports, Dialogs) {
+    ["require", "exports", "VSS/Controls/Dialogs", "Scripts/app/TeleMetryClient"],
+    function (require, exports, Dialogs, TelemetryClient) {
     var addEditHighlightDialog = (function (_super) {
         __extends(addEditHighlightDialog, _super);
         function addEditHighlightDialog(context) {
@@ -28,6 +28,8 @@ define(
             self.context = context;
         }
         addEditHighlightDialog.prototype.start = function (data) {
+            TelemetryClient.getClient().trackEvent("AddHiglight");
+
             var self = this;
             var workItemTypesHtml;
             var categoryHtml;

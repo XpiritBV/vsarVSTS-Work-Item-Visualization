@@ -16,8 +16,8 @@
 //TODO: Highlight elements that are being added
 
 define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
-        "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph"],
-    function (require, exports, Controls, Menus, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph) {
+        "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph", "Scripts/app/TeleMetryClient"],
+    function (require, exports, Controls, Menus, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph, TelemetryClient) {
         var WorkitemVisualization = (function() {
 
             var linkTypes;
@@ -45,10 +45,12 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
 
                     //Get workitem and load it into the graph
                     var config= VSS.getConfiguration();
-                    if(config.action.workItemId!=null){
+                    if (config.action.workItemId != null) {
+                        TelemetryClient.getClient().trackEvent("Vizualize.One");
                         storage.getWorkItem(config.action.workItemId, self.loadInitialItem.bind(self));
                     }
-                    else if(config.action.ids!=null){
+                    else if (config.action.ids != null) {
+                        TelemetryClient.getClient().trackEvent("Vizualize.Multiple");
                         storage.getWorkItems(config.action.ids, self.loadInitialItem.bind(self));
 
                     }

@@ -20,8 +20,8 @@ var __extends = this.__extends || function (d, b) {
 }; 
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
-    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context", "Scripts/app/TeleMetryClient"],
+    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs, Context, TelemetryClient) {
 
     var ItemsView = (function (_super) {
         __extends(ItemsView, _super);
@@ -112,6 +112,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Fit the graph to the current window size
          */
         ItemsView.prototype._fitTo = function () {
+            TelemetryClient.getClient().trackEvent("fitTo");
             if (!$("#fit-to").hasClass("disabled")) {
                 this._graph.fitTo();
             }
@@ -121,6 +122,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Zoom the diagram in one unit
          */
         ItemsView.prototype._zoomIn = function () {
+            TelemetryClient.getClient().trackEvent("zoomIn");
             if (!$("#zoom-in").hasClass("disabled")) {
                 this._graph.zoomIn();
             }
@@ -130,6 +132,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Zoom the diagram out one unit
          */
         ItemsView.prototype._zoomOut = function () {
+            TelemetryClient.getClient().trackEvent("zoomOut");
             if (!$("#zoom-out").hasClass("disabled")) {
                 this._graph.zoomOut();
             }
@@ -139,12 +142,14 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Set the diagram to 100%
          */
         ItemsView.prototype._zoom100 = function () {
+            TelemetryClient.getClient().trackEvent("zoom100");
             if (!$("#zoom-100").hasClass("disabled")) {
                 this._graph.zoomTo100();
             }
         };
 
         ItemsView.prototype.ResetOverview = function () {
+            TelemetryClient.getClient().trackEvent("ResetOverview");
             this._graph.resetMinimap();
         }
 
@@ -152,6 +157,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Show or hide the minimap
          */
         ItemsView.prototype._toggleMiniMap = function () {
+            TelemetryClient.getClient().trackEvent("toggleMinimap");
             this._graph.toggleMinimap();
         }
 
@@ -162,10 +168,12 @@ define(["require", "exports", "VSS/Utils/Core",
             if (this._graph != null) {
                 switch (e) {
                     case "left-to-right":
+                        TelemetryClient.getClient().trackEvent("reOrder.Left2Right");
                         this._graph.direction = 'LR';
                         this._graph.refreshLayout();
                         break;
                     case "top-to-bottom":
+                        TelemetryClient.getClient().trackEvent("reOrder.Top2Bottom");
                         this._graph.direction = 'TB';
                         this._graph.refreshLayout();
                         break;
@@ -230,6 +238,7 @@ define(["require", "exports", "VSS/Utils/Core",
         };
 
         ItemsView.prototype._exportGraph = function () {
+            TelemetryClient.getClient().trackEvent("ExportGraph");
             var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
 
             if (!isHosted) { //VSTS
@@ -293,6 +302,8 @@ define(["require", "exports", "VSS/Utils/Core",
         }
 
         ItemsView.prototype._findWorkItem = function () {
+            TelemetryClient.getClient().trackEvent("FindWorkItem");
+
             var self = this;
             var vsoStore = new Storage.VsoStoreService();
 

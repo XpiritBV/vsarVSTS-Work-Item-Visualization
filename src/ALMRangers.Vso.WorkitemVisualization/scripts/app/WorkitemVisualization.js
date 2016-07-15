@@ -45,16 +45,19 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
 
                     //Get workitem and load it into the graph
                     var config= VSS.getConfiguration();
-                    if (config.action.workItemId != null) {
+                    if (config.action.workItemId ) {
                         TelemetryClient.getClient().trackEvent("Vizualize.One");
                         storage.getWorkItem(config.action.workItemId, self.loadInitialItem.bind(self));
                     }
-                    else if (config.action.ids != null) {
+                    else if (config.action.ids ) {
                         TelemetryClient.getClient().trackEvent("Vizualize.Multiple");
                         storage.getWorkItems(config.action.ids, self.loadInitialItem.bind(self));
 
+                    }//For the backlog context menu
+                    else if (config.action.workItemIds)
+                    {
+                        storage.getWorkItems(config.action.workItemIds, self.loadInitialItem.bind(self));
                     }
-                    
                 }
 
                 //Load link types for the use during the application lifetime. Starts the application flow.

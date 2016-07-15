@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "WorkItemVisualization",
-  "version": "1.1.8",
+  "version": "1.2.0",
   "name": "Work Item Visualization",
   "description": "Visualize relationships between work items from within the work item form.",
   "public": true,
@@ -44,24 +44,7 @@
       }
     },
     {
-      "id": "visualize-work-item-button",
-      "type": "ms.vss-web.action",
-      "description": "Visualize work item",
-      "targets": [
-        "ms.vss-work-web.work-item-toolbar-menu"
-      ],
-      "properties": {
-        "text": "Visualize",
-        "title": "Visualize this workitem",
-        "toolbarText": "Visualize",
-        "icon": "images/WitVizShortIcon-16x16.png",
-        "group": "actions",
-        "uri": "VisualizeWitButton.html",
-        "registeredObjectId": "visualize-work-item-button"
-      }
-    },
-     {
-      "id": "visualize-work-item-query-rightclick",
+      "id": "visualize-work-item-action",
       "type": "ms.vss-web.action",
       "description": "Shows the target properties for menu actions for work items",
       "targets": [
@@ -70,10 +53,10 @@
       "properties": {
         "text": "Visualize",
         "title": "Visualize this workitem",
-        "toolbarText": "Create using template",
+        "toolbarText": "Visualize",
         "icon": "images/WitVizShortIcon-16x16.png",
         "uri": "VisualizeWitButton.html",
-        "registeredObjectId": "visualize-work-item-query-rightclick"
+        "registeredObjectId": "visualize-work-item-action"
       }
     }, 
     {

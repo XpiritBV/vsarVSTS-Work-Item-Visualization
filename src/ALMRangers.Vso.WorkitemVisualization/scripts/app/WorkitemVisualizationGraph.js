@@ -26,6 +26,31 @@ define(["require", "exports", "Scripts/app/TeleMetryClient"], function (require,
         var defaultTextColor = "#000";
         var graphLoaded = false;
 
+        function navigateTo(url)
+        {
+            // Get navigation service
+            VSS.getService(VSS.ServiceIds.Navigation).then(function (navigationService) {
+                //Check if openNewWindow is available
+                if (navigationService.openNewWindow)
+                {
+                    navigationService.openNewWindow(url, "");
+                }
+                else//, if not then use old approach (Update 2 and below)
+                {
+                    window.open(url, "_blank");
+                }
+            });
+        }
+
+        function xmlSafe(text)
+        {
+            return  text.replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&apos;');
+        }
+
         function WorkitemVisualizationGraph(container, cytoscape) {
             var self = this;
             _container = container;
@@ -152,8 +177,13 @@ define(["require", "exports", "Scripts/app/TeleMetryClient"], function (require,
 
             var id = node.data("origId");
             var vsoContext = VSS.getWebContext();
-            var location = vsoContext.host.uri + "/" + vsoContext.project.name + "/_workitems#id=" + id + "&triage=true&_a=edit";
-            window.open(location, "_blank");
+            var location = vsoContext.host.uri;
+            //Check if location ends with "/"
+            if (location.substr(-1) !== "/") {
+                location += "/";
+            }
+            location += vsoContext.project.name + "/_workitems?id=" + id + "&triage=true&_a=edit";
+            navigateTo(location);
         }
 
         WorkitemVisualizationGraph.prototype.openCheckin = function (node) {
@@ -163,15 +193,18 @@ define(["require", "exports", "Scripts/app/TeleMetryClient"], function (require,
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri;
 
-            if (category === "Commit") {
-                //TODO: Cant we use and store the remote url of commit?
-                location = node.data("url");  //+= "/_git/" + vsoContext.project.name + "/commit/" + id;
-            } else {
-                //TODO: Cant we use and store the remote url of changeset - if exists?
-                location += "/" + vsoContext.project.name + "/_versionControl/changeset/" + id;
+            //Check if location ends with "/"
+            if (location.substr(-1) !== "/") {
+                location += "/";
             }
 
-            window.open(location, "_blank");
+            if (category === "Commit") {
+                location = node.data("url");
+            } else {
+                location += vsoContext.project.name + "/_versionControl/changeset/" + id;
+            }
+
+            navigateTo(location);
         }
         WorkitemVisualizationGraph.prototype.openFile = function (node) {
             TelemetryClient.getClient().trackEvent("openFile");
@@ -181,21 +214,24 @@ define(["require", "exports", "Scripts/app/TeleMetryClient"], function (require,
             var vsoContext = VSS.getWebContext();
             var location = vsoContext.host.uri;
 
+            //Check if location ends with "/"
+            if (location.substr(-1) !== "/") {
+                location += "/";
+            }
+
             if (objectType !== "File") {
+                var remoteUrl = node.data("url");
                 var path = node.data("path");
-                var commitId = node.data("commitId");
                 //This means it's a git file
-                //TODO: Cant we use and store the remote url of commit? 
-                location += "/_git/" + vsoContext.project.name + "/commit/" + commitId + "#path=" + path + "&_a=contents";
+                location = remoteUrl + "?path=" + path + "&_a=contents";
             } else {
-                //TODO: Cant we use and store the remote url of changeset - if exists?
                 //It's a tfvc file
                 var origId = node.data("origId");
                 var changesetId = node.data("changesetId");
-                location += "/" + vsoContext.project.name + "/_versionControl/changeset/" + changesetId + "#path=" + origId + "&_a=contents";
+                location += vsoContext.project.name + "/_versionControl/changeset/" + changesetId + "?path=" + origId + "&_a=contents";
             }
 
-            window.open(location, "_blank");
+            navigateTo(location);
         }
 
         WorkitemVisualizationGraph.prototype.findById = function(id) {
@@ -538,6 +574,7 @@ define(["require", "exports", "Scripts/app/TeleMetryClient"], function (require,
             }
 
             title = trim(title);
+            title = xmlSafe(title);
 
             var words = title.split(" ");
             var line = "";

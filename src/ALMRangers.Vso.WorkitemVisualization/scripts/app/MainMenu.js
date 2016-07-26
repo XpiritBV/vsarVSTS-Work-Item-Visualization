@@ -244,7 +244,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 var opts = {
                     width: window.screen.width,
                     height: window.screen.height,
-                    title: "Visualize Work Item",
+                    title: "Export Visualization",
                     buttons: null
                 };
 

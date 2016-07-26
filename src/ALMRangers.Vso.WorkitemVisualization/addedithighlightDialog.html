@@ -1,6 +1,6 @@
 ﻿<!--
  //---------------------------------------------------------------------
- // <copyright file="app.html">
+ // <copyright file="addedithighlightDialog.html">
  //    This code is licensed under the MIT License.
  //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
  //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
@@ -68,13 +68,7 @@
 </div>
     <script>
     VSS.init({
-        explicitNotifyLoaded: true//,
-        //setupModuleLoader: true,
-        //moduleLoaderConfig: {
-        //    paths: {
-        //        "Scripts/App": "scripts/app"
-        //    }
-        //}
+        explicitNotifyLoaded: true
     });
     VSS.require(["Scripts/App/addEditHighlightDialog"], function (app) {
         VSS.register("work-item-visualization-add-edit-highlight-dialog", function (context) {

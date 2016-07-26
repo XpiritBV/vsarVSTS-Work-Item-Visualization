@@ -1,5 +1,5 @@
 ﻿/*---------------------------------------------------------------------
-// <copyright file="StateModelVisualization.js">
+// <copyright file="WorkitemVisualizationGraph.js">
 //    This code is licensed under the MIT License.
 //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
 //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
@@ -15,7 +15,7 @@
 //TODO: Tooltip support
 //TODO: Context Menu on right click
 
-define(["require", "exports", "Scripts/app/TeleMetryClient"], function (require, exports, TelemetryClient) {
+define(["require", "exports"], function (require, exports) {
     var WorkitemVisualizationGraph = (function() {
         
         var _navigator = null;

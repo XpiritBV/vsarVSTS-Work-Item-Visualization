@@ -58,7 +58,7 @@
         "uri": "VisualizeWitButton.html",
         "registeredObjectId": "visualize-work-item-action"
       }
-    }, 
+    },
     {
       "id": "work-item-visualization-find-wit-dialog",
       "type": "ms.vss-web.control",
@@ -73,6 +73,14 @@
       "targets": [ ".controls" ],
       "properties": {
         "uri": "addEditHighlightDialog.html"
+      }
+    },
+    {
+      "id": "work-item-visualization-print-graph-dialog",
+      "type": "ms.vss-web.control",
+      "targets": [ ".controls" ],
+      "properties": {
+        "uri": "printGraph.html"
       }
     }
   ],
@@ -103,6 +111,10 @@
     },
     {
       "path": "findWitDialog.html",
+      "addressable": true
+    },
+    {
+      "path": "printGraph.html",
       "addressable": true
     },
     {

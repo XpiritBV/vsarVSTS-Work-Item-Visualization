@@ -1,5 +1,5 @@
 ﻿/*---------------------------------------------------------------------
-// <copyright file="findWitDialog.js">
+// <copyright file="PrintGraph.js">
 //    This code is licensed under the MIT License.
 //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
 //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
@@ -20,34 +20,25 @@ var __extends = (this && this.__extends) || function (d, b) {
 define(
     ["require", "exports", "VSS/Controls/Dialogs"],
     function (require, exports, Dialogs) {
-    var FindWitDialog = (function (_super) {
-        __extends(FindWitDialog, _super);
-        function FindWitDialog(context) {
+    var PrintGraph = (function (_super) {
+        __extends(PrintGraph, _super);
+        function PrintGraph(context) {
             _super.call(this);
             var self = this;
             self.context = context;
-            self.callbacks = [];
         }
-        FindWitDialog.prototype.start = function () {
+        PrintGraph.prototype.start = function (img, witType, witId) {
             var self = this;
-            $("#WitIdToSearch").on("change", function () {
-                var containsText = $("#WitIdToSearch").val() !== "";
-                for (var i = 0; i < self.callbacks.length; i++) {
-                    self.callbacks[i](containsText);
-                }
-            });
+
+            var d = new Date();
+
+            $("#printTitle").text("Visualization of " + witType + " " + witId);
+            $("#printDateTime").text("Generated " + d.toLocaleDateString());
+            $("#graphImage").attr("src",img);
         };
 
-        FindWitDialog.prototype.getSearchedId = function() {
-            var searchedId = $("#WitIdToSearch").val();
-            return { id : searchedId };
-        };
-
-        FindWitDialog.prototype.attachFormChanged = function (callback) {
-            this.callbacks.push(callback);
-        };
-        return FindWitDialog;
+        return PrintGraph;
     })(Dialogs.ModalDialog);
-    exports.FindWitDialog = FindWitDialog;
-    exports.dlg = new FindWitDialog();
+    exports.PrintGraph = PrintGraph;
+    exports.dlg = new PrintGraph();
 });

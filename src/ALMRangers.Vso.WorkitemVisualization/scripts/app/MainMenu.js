@@ -99,11 +99,7 @@ define(["require", "exports", "VSS/Utils/Core",
             items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
             items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
 
-            var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
-            if (isHosted)
-            {
-                items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
-            }
+            items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
 
             return items;
         };
@@ -230,22 +226,6 @@ define(["require", "exports", "VSS/Utils/Core",
         };
 
         ItemsView.prototype._exportGraph = function () {
-            var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
-
-            if (!isHosted) { //VSTS
-                var options = { buttons: null, title: "Export is currently not supported on-premis", contentText: "Export is currently not supported on-premis."};
-                ModalDialogs.show(ModalDialogs.ModalDialog, options);
-                return;
-            }
-
-            var self = this;
-            if (self.detectIE()) {
-                var options = { buttons: null, title: "Can not export in IE", contentText: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers."};
-                ModalDialogs.show(ModalDialogs.ModalDialog, options);
-                return;
-            }
-
-            var d = new Date();
             var witType = "";
             var witId = "";
             var png = this._graph.exportImage();
@@ -254,18 +234,29 @@ define(["require", "exports", "VSS/Utils/Core",
                 witType = rootNodes[0].data("workItemType");
                 witId = rootNodes[0].data("origId");
             }
-            
-            var newImage = $("<img />").attr("src", png);
-            var imageDiv = $("<div />");
-            imageDiv.append(newImage);
-            var newWindow = window.open();
-            var newDocument = newWindow.document;
-            newDocument.write("<html><head><title>Visualization Output</title></head><body>");
-            newDocument.write("<div style='font-family: Segoe UI Light; font-size: 18px; font-weight: 100; height: 24px'>Visualization of " + witType + " " + witId + "</div>");
-            newDocument.write("<div style='font-family: Segoe UI Light; font-size: 12px; font-weight: 100; padding-bottom: 5px'>Generated " + d.toLocaleDateString() + "</div>");
-            newDocument.write($("<div />").append(imageDiv).html());
-            newDocument.write("</body></html>");
-            newDocument.close();
+
+            var self = this;
+
+            VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
+                var printGraphDialog;
+
+                //TODO: later make dialog same size as window and offer full screen option
+                var opts = {
+                    width: window.screen.width,
+                    height: window.screen.height,
+                    title: "Visualize Work Item",
+                    buttons: null
+                };
+
+                dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-print-graph-dialog", opts).then(function (dialog) {
+                    dialog.getContributionInstance("work-item-visualization-print-graph-dialog").then(function (ci) {
+                        printGraphDialog = ci;
+                        printGraphDialog.start(png, witType, witId);
+                    }, function (err) {
+                        alert(err.message);
+                    });
+                });
+            });
         };
 
          /**

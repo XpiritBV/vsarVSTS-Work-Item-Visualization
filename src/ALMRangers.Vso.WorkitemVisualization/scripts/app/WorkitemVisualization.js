@@ -16,7 +16,7 @@
 //TODO: Highlight elements that are being added
 
 define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
-        "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph", "Scripts/app/TeleMetryClient"],
+        "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph", "Scripts/app/TelemetryClient"],
     function (require, exports, Controls, Menus, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph, TelemetryClient) {
         var WorkitemVisualization = (function() {
 

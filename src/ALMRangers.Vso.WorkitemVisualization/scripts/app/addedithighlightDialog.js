@@ -18,7 +18,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(
-    ["require", "exports", "VSS/Controls/Dialogs", "Scripts/app/TeleMetryClient"],
+    ["require", "exports", "VSS/Controls/Dialogs", "Scripts/app/TelemetryClient"],
     function (require, exports, Dialogs, TelemetryClient) {
     var addEditHighlightDialog = (function (_super) {
         __extends(addEditHighlightDialog, _super);

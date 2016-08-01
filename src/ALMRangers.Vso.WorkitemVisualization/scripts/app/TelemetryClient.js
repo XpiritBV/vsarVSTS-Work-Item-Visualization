@@ -3,7 +3,6 @@
 
 define(["require", "exports", "Scripts/lib/ai.0.22.9-build00167"],
     function (require, exports, Microsoft2) {
-
      
         var telemetryClient;
         function getClient(){
@@ -17,14 +16,9 @@ define(["require", "exports", "Scripts/lib/ai.0.22.9-build00167"],
 
         var TelemetryClient = (function () {
             function TelemetryClient() {
-
-
                 this.appInsightsClient = null;//: Microsoft.ApplicationInsights.AppInsights;
             }
             
-
-            this.appInsightsClient;//: Microsoft.ApplicationInsights.AppInsights;
-
             TelemetryClient.prototype.Init= function() {
                 try {
                     var snippet = {

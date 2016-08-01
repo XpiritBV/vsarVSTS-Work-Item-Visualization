@@ -20,7 +20,7 @@ var __extends = this.__extends || function (d, b) {
 }; 
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context", "Scripts/app/TeleMetryClient"],
+    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context", "Scripts/app/TelemetryClient"],
     function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs, Context, TelemetryClient) {
 
     var ItemsView = (function (_super) {

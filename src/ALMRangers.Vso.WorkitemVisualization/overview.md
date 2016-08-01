@@ -52,21 +52,19 @@ Export your chart visualization for offline viewing or printing.
 
 > Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.
 
+##TFS On-Premis##
+
+We recommend TFS 2015 Update 3 when running this extension.
+
 ##Contributors##
 
-We thank the following contributor(s) for this extension: Taavi Koosaar, Mattias Sköld.
+We thank the following contributor(s) for this extension: Taavi Koosaar and Mattias Sköld.
 
-##Release History##
+##Feedback##
 
-### v1.2 ###
+We need your feedback! Here are some of the ways to connect with us:
 
-It is recommended to have Team Foundation Server 2015 Update 3 when running on-premis!
+- Add a review below
+- Send us an [email](mailto://mktdevlabs@microsoft.com).
 
-- **New Features **
-	1. You can now Visualize from Work Item Form, Backlog Item list (selecting one or many items) or Query (selecting one or many items)
-
-- **Bug fixes **
-
-	1. Fixed issues when title contained &, <, >, ", ' characters and grey box was shown.
-	1. Fixed issues with right-clicking card to navigate to item, commit, file etc
-
+Review the [list of features and resolved issues of latest tools and extensions](https://aka.ms/vsarreleases) for more information on latest releases. 

@@ -1,29 +1,9 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{E24C65DC-7377-472B-9ABA-BC803B73C61A}") = "ALMRangers.Vso.WorkitemVisualization", "ALMRangers.Vso.WorkitemVisualization\", "{A51C3695-F153-43B3-9A32-709F3C295915}"
-	ProjectSection(WebsiteProperties) = preProject
-		TargetFrameworkMoniker = ".NETFramework,Version%3Dv4.5.2"
-		Debug.AspNetCompiler.VirtualPath = "/localhost_40704"
-		Debug.AspNetCompiler.PhysicalPath = "ALMRangers.Vso.WorkitemVisualization\"
-		Debug.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_40704\"
-		Debug.AspNetCompiler.Updateable = "true"
-		Debug.AspNetCompiler.ForceOverwrite = "true"
-		Debug.AspNetCompiler.FixedNames = "false"
-		Debug.AspNetCompiler.Debug = "True"
-		Release.AspNetCompiler.VirtualPath = "/localhost_40704"
-		Release.AspNetCompiler.PhysicalPath = "ALMRangers.Vso.WorkitemVisualization\"
-		Release.AspNetCompiler.TargetPath = "PrecompiledWeb\localhost_40704\"
-		Release.AspNetCompiler.Updateable = "true"
-		Release.AspNetCompiler.ForceOverwrite = "true"
-		Release.AspNetCompiler.FixedNames = "false"
-		Release.AspNetCompiler.Debug = "False"
-		VWDPort = "40704"
-		SlnRelativePath = "ALMRangers.Vso.WorkitemVisualization\"
-		DefaultWebSiteLanguage = "Visual C#"
-	EndProjectSection
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ALMRangers.Vso.WorkitemVisualization", "ALMRangers.Vso.WorkitemVisualization\ALMRangers.Vso.WorkitemVisualization.csproj", "{A51C3695-F153-43B3-9A32-709F3C295915}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

@@ -223,10 +223,13 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
 
             if (objectType !== "File") {
                 TelemetryClient.getClient().trackEvent("openGitFile");
-                var remoteUrl = node.data("url");
+                //Need this url combined - http://taavik-devbox:8080/tfs/DevCollection/Scrum.Demo/_git/953e95e1-c6b8-4ce3-8b61-33c3dcbb2485/commit/2829c8597f5731c3dbee625b04d29600018e1c6b
+                var repo = node.data("repo");
+                var commitId = node.data("commitId");
+                var remoteUrl = vsoContext.project.name + "/_git/"+repo+"/commit/"+commitId;
                 var path = node.data("path");
                 //This means it's a git file
-                location = remoteUrl + "?path=" + path + "&_a=contents";
+                location += remoteUrl + "?path=" + path + "&_a=contents";
             } else {
                 TelemetryClient.getClient().trackEvent("openTfvcFile");
                 //It's a tfvc file

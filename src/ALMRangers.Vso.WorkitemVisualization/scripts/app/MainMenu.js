@@ -1,9 +1,9 @@
 ﻿/*---------------------------------------------------------------------
 // <copyright file="MainMenu.js">
 //    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
  // <summary>
@@ -17,7 +17,7 @@ var __extends = this.__extends || function (d, b) {
     function __() { this.constructor = d; }
     __.prototype = b.prototype;
     d.prototype = new __();
-}; 
+};
 
 define(["require", "exports", "VSS/Utils/Core",
     "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context", "Scripts/app/TelemetryClient"],
@@ -39,10 +39,10 @@ define(["require", "exports", "VSS/Utils/Core",
         var _splitter = null;
         var _splitterPaneOnOff = "on";
         var _loadWorkItemGraphCallback = null;
-        
+
 
         /*
-         *   Initialize will be called when this control is created.  This will setup the UI, 
+         *   Initialize will be called when this control is created.  This will setup the UI,
          *   attach to events, etc.
          */
         ItemsView.prototype.initialize = function () {
@@ -63,7 +63,7 @@ define(["require", "exports", "VSS/Utils/Core",
             //var splitterOptions = { initialSize : 250, minWidth : 250, maxWidth: 500, fixedSide : "right" };
             _splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
             //_splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), splitterOptions);
-            
+
             //_splitter.collapse();
             _splitter.noSplit();
             _splitterPaneOnOff = "off";
@@ -253,7 +253,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 var opts = {
                     width: window.screen.width,
                     height: window.screen.height,
-                    title: "Export Visualization",
+                    title: "Export Work Item Visualization",
                     buttons: null
                 };
 
@@ -314,7 +314,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 };
 
                 dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
-                    //TODO: this should be disabled when content becomes empty and enabled again. 
+                    //TODO: this should be disabled when content becomes empty and enabled again.
                     dialog.updateOkButton(true);
                     dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
                         findWorkItemDialog = ci;
@@ -328,7 +328,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 });
             });
         }
-        
+
         ItemsView.prototype._toggleLegendPane = function () {
             var legendPane = $("#legend-pane");
 

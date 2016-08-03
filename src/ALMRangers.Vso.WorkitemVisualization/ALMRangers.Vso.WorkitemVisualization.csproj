@@ -67,6 +67,7 @@
     <Content Include="screenshots\Screen1.png" />
     <Content Include="screenshots\Screen2.png" />
     <Content Include="scripts\app\addedithighlightDialog.js" />
+    <Content Include="scripts\app\AppInsightPageViewsTelemetry.js" />
     <Content Include="scripts\app\findWitDialog.js" />
     <Content Include="scripts\app\LegendGrid.js" />
     <Content Include="scripts\app\LegendMenu.js" />

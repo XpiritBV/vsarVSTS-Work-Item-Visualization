@@ -1,9 +1,9 @@
 ﻿/*---------------------------------------------------------------------
 // <copyright file="WorkitemVisualizationGraph.js">
 //    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
  // <summary>
@@ -17,7 +17,7 @@
 
 define(["require", "exports", "Scripts/app/TelemetryClient"], function (require, exports, TelemetryClient) {
     var WorkitemVisualizationGraph = (function() {
-        
+
         var _navigator = null;
         var _container = null;
         var _expandNodeCallback = null;
@@ -145,7 +145,7 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
 
                     //cy.on('mouseover', 'node', function (e) {
                     //cy.$('node').one('mouseover', function (e) {
-                    //    e.preventDefault(); 
+                    //    e.preventDefault();
                     //    if (e.cyTarget.data("category") === "Work Item") {
                     //        var text = e.cyTarget.data("title");
                     //        var renderedPosition = e.cyTarget.renderedPosition();
@@ -155,7 +155,7 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
                     //        $("#witViz-tooltip").css({"position": "relative", "top": newX + "px", "left": newY +"px" });
                     //        $("#witViz-tooltip").text(text).show();
                     //    }
-                        
+
                     //});
 
                     //////cy.on('mouseout', 'node', function (e) {
@@ -199,8 +199,10 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
             }
 
             if (category === "Commit") {
+                TelemetryClient.getClient().trackEvent("openGitCommit");
                 location = node.data("url");
             } else {
+                TelemetryClient.getClient().trackEvent("openTfvcChangeset");
                 location += vsoContext.project.name + "/_versionControl/changeset/" + id;
             }
 
@@ -220,11 +222,13 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
             }
 
             if (objectType !== "File") {
+                TelemetryClient.getClient().trackEvent("openGitFile");
                 var remoteUrl = node.data("url");
                 var path = node.data("path");
                 //This means it's a git file
                 location = remoteUrl + "?path=" + path + "&_a=contents";
             } else {
+                TelemetryClient.getClient().trackEvent("openTfvcFile");
                 //It's a tfvc file
                 var origId = node.data("origId");
                 var changesetId = node.data("changesetId");
@@ -430,7 +434,7 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
 
         WorkitemVisualizationGraph.prototype.addElements = function (nodes, edges) {
             var self = this;
-            var newElements = self.cy.collection(); 
+            var newElements = self.cy.collection();
             var elements = new Array();
 
 
@@ -459,7 +463,7 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
                     }
                 }
             }
-            
+
             if (elements.length > 0) {
                 newElements = self.cy.add(elements);
                 self.refreshLayout();
@@ -551,7 +555,7 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
 
             var witBg = witTemplate.replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
                                 .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/witColor/g, witColor);
-            
+
             if (window.btoa) {
                 //To make sure all UTF8 characters work
                 return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(witBg)));

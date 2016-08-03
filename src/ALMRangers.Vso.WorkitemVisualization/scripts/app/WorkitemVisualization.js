@@ -1,9 +1,9 @@
 ﻿/*---------------------------------------------------------------------
 // <copyright file="WorkitemVisualization.js">
 //    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
  // <summary>
@@ -36,7 +36,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
 
                 mainMenu = Controls.Enhancement.enhance(MainMenu.ItemsView, $(".hub-view"), {});
                 legendMenu = Controls.Enhancement.enhance(LegendMenu.ItemsView, $(".hub-view"), {});
-                
+
                 graph.setExpandNodeCallback(self.expandNode.bind(this));
                 mainMenu.setLoadWorkItemGraphCallback(self.loadInitialItem.bind(this));
 
@@ -50,12 +50,13 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                         storage.getWorkItem(config.action.workItemId, self.loadInitialItem.bind(self));
                     }
                     else if (config.action.ids ) {
-                        TelemetryClient.getClient().trackEvent("Vizualize.Multiple");
+                        TelemetryClient.getClient().trackEvent("Vizualize.Multiple.FromQuery");
                         storage.getWorkItems(config.action.ids, self.loadInitialItem.bind(self));
 
                     }//For the backlog context menu
                     else if (config.action.workItemIds)
                     {
+                        TelemetryClient.getClient().trackEvent("Vizualize.Multiple.FromBacklog");
                         storage.getWorkItems(config.action.workItemIds, self.loadInitialItem.bind(self));
                     }
                 }
@@ -70,8 +71,8 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
             WorkitemVisualization.prototype.loadInitialItem = function (wit) {
                 var self = this;
                 var witArray =[].concat(wit);
-        
-                
+
+
                 var nodes = new Array();
 
                 witArray.forEach(function (i) {
@@ -100,13 +101,16 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
 
                 switch (id.substring(0, 1)) {
                     case "W":
+                        TelemetryClient.getClient().trackEvent("expandWorkItem");
                         storage.getWorkItemWithLinks(originalId, self.addWorkitem.bind(this));
                         break;
                     case "C":
+                        TelemetryClient.getClient().trackEvent("expandChangeset");
                         storage.getChangesetWorkitems(originalId, self.addChangesetWorkitems.bind(this), { id: originalId });
                         storage.getChangesetChanges(originalId, self.addChangesetChanges.bind(this), { id: originalId });
                         break;
                     case "G":
+                        TelemetryClient.getClient().trackEvent("expandCommit");
                         var repo = node.data("repo");
                         storage.getCommitChanges({ id: originalId, repo: repo }, self.addCommitChanges.bind(this));
                         break;
@@ -114,9 +118,11 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                         {
                             var objectType = node.data("objectType");
                             if (objectType === "File") {
+                                TelemetryClient.getClient().trackEvent("expandTfvcFile");
                                 //This is tfvc
                                 storage.getTfvcFileLinks(originalId, self.addTfvcFileLinks.bind(this), { id: id, origId: originalId });
                             } else {
+                                TelemetryClient.getClient().trackEvent("expandGitFile");
                                 //This is git
                                 var repo = node.data("repo");
                                 var path = node.data("path");
@@ -187,7 +193,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                             var changeType = self.isChangeset(wit.relations[i].url);
                             if (changeType === "Changeset") {
                                 var link = graph.createNodeEdgeData("W" + id, "C" + tempId[0], self.getLinkTypeName(wit.relations[i].rel));
-                                //Process the changsets now. All information is already available as we only 
+                                //Process the changsets now. All information is already available as we only
                                 //use the changeset id
                                 storage.getChangesetDetails(tempId[0], self.addChangesetNode.bind(this), link);
 

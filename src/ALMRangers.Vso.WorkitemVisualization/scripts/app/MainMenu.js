@@ -235,16 +235,23 @@ define(["require", "exports", "VSS/Utils/Core",
 
         ItemsView.prototype._exportGraph = function () {
             TelemetryClient.getClient().trackEvent("ExportGraph");
+
+            var self = this;
+            if (self.detectIE()) {
+                TelemetryClient.getClient().trackEvent("ExportGraph.IESecurityError");
+                var options = { buttons: null, title: "Can not export in IE", contentText: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers." };
+                ModalDialogs.show(ModalDialogs.ModalDialog, options);
+                return;
+            }
+
             var witType = "";
             var witId = "";
-            var png = this._graph.exportImage();
-            var rootNodes = this._graph.cy.$('node').roots();
+            var png = self._graph.exportImage();
+            var rootNodes = self._graph.cy.$('node').roots();
             if (!rootNodes.empty()) {
                 witType = rootNodes[0].data("workItemType");
                 witId = rootNodes[0].data("origId");
             }
-
-            var self = this;
 
             VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
                 var printGraphDialog;

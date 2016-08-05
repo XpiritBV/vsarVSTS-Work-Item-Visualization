@@ -1,9 +1,9 @@
 ﻿/// <reference path="ai.0.22.9-build00167.d.ts" />
 /// <reference path="ai.0.22.9-build00167.d.ts" />
 
-define(["require", "exports", "Scripts/lib/ai.0.22.9-build00167"],
+define(["require", "exports", "scripts/lib/ai.0.22.9-build00167"],
     function (require, exports, Microsoft2) {
-     
+
         var telemetryClient;
         function getClient(){
             if (!this.telemetryClient) {
@@ -18,7 +18,7 @@ define(["require", "exports", "Scripts/lib/ai.0.22.9-build00167"],
             function TelemetryClient() {
                 this.appInsightsClient = null;//: Microsoft.ApplicationInsights.AppInsights;
             }
-            
+
             TelemetryClient.prototype.Init= function() {
                 try {
                     var snippet = {
@@ -65,7 +65,7 @@ define(["require", "exports", "Scripts/lib/ai.0.22.9-build00167"],
             TelemetryClient.prototype.trackPageView= function(name, url, properties, measurements, duration) {
                 try {
                     if (this.appInsightsClient != null) {
-                        this.appInsightsClient.trackPageView( name, url, properties, measurements, duration);        
+                        this.appInsightsClient.trackPageView( name, url, properties, measurements, duration);
                     }
                 }
                 catch (e) {

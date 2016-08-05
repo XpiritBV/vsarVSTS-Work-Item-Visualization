@@ -21,7 +21,7 @@ var __extends = this.__extends || function (d, b) {
 
 define(["require", "exports", "VSS/Utils/Core", "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs", "VSS/Context",
     "scripts/app/WorkitemVisualizationGraph", "scripts/app/Storage", "scripts/app/TelemetryClient"],
-    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs, Context, TelemetryClient) {
+    function (require, exports, Core, Controls, MenuControls, Splitter, ModalDialogs, Context, WorkitemVisualizationGraph, Storage, TelemetryClient) {
 
     var ItemsView = (function (_super) {
         __extends(ItemsView, _super);

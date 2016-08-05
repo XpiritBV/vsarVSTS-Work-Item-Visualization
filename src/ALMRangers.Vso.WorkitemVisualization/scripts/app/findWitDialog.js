@@ -49,5 +49,4 @@ define(
         return FindWitDialog;
     })(Dialogs.ModalDialog);
     exports.FindWitDialog = FindWitDialog;
-    exports.dlg = new FindWitDialog();
 });

@@ -19,10 +19,8 @@ var __extends = this.__extends || function (d, b) {
     d.prototype = new __();
 };
 
-define(["require", "exports", "VSS/Utils/Core", 
-    "VSS/Controls", "VSS/Controls/Menus", "Scripts/App/LegendGrid"],
-    function (require, exports, Core, Controls, MenuControls, LegendGrid) {
-    
+define(["require", "exports", "VSS/Utils/Core", "VSS/Controls", "VSS/Controls/Menus", "scripts/app/LegendGrid"],
+    function (require, exports, Core, Controls, MenuControls, LegendGrid) {    
 
     var ItemsView = (function (_super) {
         __extends(ItemsView, _super);

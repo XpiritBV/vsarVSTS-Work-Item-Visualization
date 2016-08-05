@@ -66,9 +66,9 @@
     <Content Include="images\ZoomZoomOut.png" />
     <Content Include="screenshots\Screen1.png" />
     <Content Include="screenshots\Screen2.png" />
-    <Content Include="scripts\app\addedithighlightDialog.js" />
+    <Content Include="scripts\app\AddEditHighlightDialog.js" />
     <Content Include="scripts\app\AppInsightPageViewsTelemetry.js" />
-    <Content Include="scripts\app\findWitDialog.js" />
+    <Content Include="scripts\app\FindWitDialog.js" />
     <Content Include="scripts\app\LegendGrid.js" />
     <Content Include="scripts\app\LegendMenu.js" />
     <Content Include="scripts\app\MainMenu.js" />
@@ -93,11 +93,11 @@
     <Content Include="vss-extension-mskold.json" />
     <Content Include="marketplace\mp_terms.md" />
     <None Include="vss-extension.json" />
-    <Content Include="addedithighlightDialog.html" />
+    <Content Include="AddEditHighlightDialog.html" />
     <Content Include="CytoscapePrototype.html" />
-    <Content Include="findWitDialog.html" />
+    <Content Include="FindWitDialog.html" />
     <Content Include="License.txt" />
-    <Content Include="printGraph.html" />
+    <Content Include="PrintGraph.html" />
     <Content Include="ThirdPartyNotice.txt" />
     <Content Include="VisualizeWitButton.html" />
     <Content Include="Web.config" />

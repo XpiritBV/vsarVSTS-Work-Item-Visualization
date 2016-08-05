@@ -1,6 +1,6 @@
 ﻿<!--
  //---------------------------------------------------------------------
- // <copyright file="printGraph.html">
+ // <copyright file="PrintGraph.html">
  //    This code is licensed under the MIT License.
  //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
  //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
@@ -21,7 +21,7 @@
     <title>Export Work Item Visualization</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="css/app.css" type="text/css" />
-    <script src="scripts/App/AppInsightPageViewsTelemetry.js"></script>
+    <script src="scripts/app/AppInsightPageViewsTelemetry.js"></script>
     <script src="scripts/lib/VSS.SDK.js"></script>
 </head>
 <body>
@@ -36,7 +36,7 @@
     VSS.init({
         explicitNotifyLoaded: true
     });
-    VSS.require(["Scripts/App/PrintGraph"], function(app) {
+    VSS.require(["scripts/app/PrintGraph"], function(app) {
         VSS.register("work-item-visualization-print-graph-dialog", function (context) {
             return new app.PrintGraph(context);
         });

@@ -1,9 +1,9 @@
 ﻿/*---------------------------------------------------------------------
-// <copyright file="addedithighlightDialog.js">
+// <copyright file="AddEditHighlightDialog.js">
 //    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
  // <summary>
@@ -18,7 +18,7 @@ var __extends = (this && this.__extends) || function (d, b) {
     d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
 };
 define(
-    ["require", "exports", "VSS/Controls/Dialogs", "Scripts/app/TelemetryClient"],
+    ["require", "exports", "VSS/Controls/Dialogs", "scripts/app/TelemetryClient"],
     function (require, exports, Dialogs, TelemetryClient) {
     var addEditHighlightDialog = (function (_super) {
         __extends(addEditHighlightDialog, _super);

@@ -78,6 +78,30 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
                         'background-width': '210px',
                         'background-height': '80px'
                     })
+                                        .selector("node[category='Annotation']")
+                    .css({
+                        'background-color': 'white'
+                    })
+
+                    .selector("node[size='Medium']")
+                    .css({
+                        'shape': 'rectangle',
+                        'width': '300px',
+                        'height': '120px',
+                        'background-image': 'data(bgImage)',
+                        'background-width': '300px',
+                        'background-height': '120px'
+                    })
+                    .selector("node[size='Large']")
+                    .css({
+                        'shape': 'rectangle',
+                        'width': '400px',
+                        'height': '160px',
+                        'background-image': 'data(bgImage)',
+                        'background-width': '400px',
+                        'background-height': '160px'
+                    })
+
                     .selector('edge')
                     .css({
                         'source-arrow-shape': 'circle',
@@ -136,6 +160,9 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
                             case "File":
                                 self.openFile(e.cyTarget);
                                 break;
+                            case "Annotation":
+                                self.openAnnotation(e.cyTarget);
+                                break;
                         }
                     }
 
@@ -184,6 +211,24 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
             }
             location += vsoContext.project.name + "/_workitems?id=" + id + "&triage=true&_a=edit";
             navigateTo(location);
+        }
+        WorkitemVisualizationGraph.prototype.openAnnotation = function (node) {
+            var self = this;
+
+            var id = node.data("origId");
+            var frm = AnnotationForm.annotationForm;
+
+            frm.showAnnotationForm(this, node.data(), this.getAllNodes(), function (title, txt, shapeType, size, linkedToId) {
+                n2 = self.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
+                node.data("title", n2.data.title);
+                node.data("content", n2.data.content);
+                node.data("linkedToId", n2.data.linkedToId);
+                node.data("shapeType", n2.data.shapeType);
+                node.data("bgImage", n2.data.bgImage);
+
+                self.refreshLayout();
+
+            });
         }
 
         WorkitemVisualizationGraph.prototype.openCheckin = function (node) {
@@ -262,6 +307,27 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
         WorkitemVisualizationGraph.prototype.zoomTo100 = function() {
             this.cy.zoom(1);
         }
+
+        WorkitemVisualizationGraph.prototype.createNoteData = function (id, title, txt, shapeType, size, backgroundColor, linkedtoId) {
+
+            backgroundColor = "#FFFFFF";
+            var borderColor = "#FFFFFF";
+
+            var newNode = {
+                id: "Note" + id,
+                origId: id,
+                title: title,
+                category: "Annotation",
+                content: txt,
+                size: size,
+                shapeType: shapeType,
+                linkedToId: linkedtoId,
+                bgImage: this.getNoteBackground(title, txt, shapeType, size, backgroundColor, borderColor),
+            };
+
+            return { group: 'nodes', data: newNode };
+        }
+
 
         WorkitemVisualizationGraph.prototype.toggleMinimap = function () {
 
@@ -637,6 +703,9 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
                 case "File":
                     cardColor = "#D6CE95";
                     break;
+                case "Note":
+                    cardColor = backgroundColor;
+                    break;
                 default:
                     cardColor = "#F2CB1D";
             }
@@ -660,6 +729,81 @@ define(["require", "exports", "Scripts/app/TelemetryClient"], function (require,
 
             return cardText;
         }
+
+        var template_Yellow_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path fill="#ffffa5" stroke="borderColor" d="M0 0h210v80H0z"/>textTemplate</svg>';
+        var template_Red_NOTE_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path fill="#FFC0CB" stroke="RED" d="M0 0h210v80H0z"/>textTemplate</svg>';
+        var template_Red_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="pink" stroke="red" />textTemplate</svg>';
+        var template_Yellow_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#ffffa5" stroke="black" />textTemplate</svg>';
+        var template_Green_Arrow_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" viewBox="0 0 210 80"><path d="M 0,0L 180,0 L 210,40 L 180,80 L 0,80 L 0,0 z" fill="#00CC00" stroke="green" />textTemplate</svg>';
+
+        var template_TEXT_Background = '<svg xmlns="http://www.w3.org/2000/svg" width="size-width" height="size-height" ><path fill="#fff" stroke="#fff" d="M0 0h210v80H0z"/>textTemplate</svg>';
+
+        var noteTextTemplate = '<text y="20" font-size="12px" font-family="Segoe UI,Tahoma,Arial,Verdana" fill="textColor"><tspan x="16" font-weight="bold">noteTitle</tspan> <tspan x="16" dy="16">noteText</tspan></text>';
+
+        function getNoteTemplate(shapeType) {
+            switch (shapeType) {
+                case "Text":
+                    return template_TEXT_Background;
+                    break;
+                case "Red Note":
+                    return template_Red_NOTE_Background;
+                    break;
+                case "Yellow Note":
+                    return template_Yellow_NOTE_Background;
+                    break;
+                case "Yellow Arrow":
+                    return template_Yellow_Arrow_Background;
+                    break;
+                case "Red Arrow":
+                    return template_Red_Arrow_Background;
+                    break;
+                case "Green Arrow":
+                    return template_Green_Arrow_Background;
+                    break;
+            }
+        }
+
+        function getAnnotationSize(sizeTxt) {
+            switch (sizeTxt) {
+                case "Small":
+                    return { width: 210, height: 80 };
+                    break;
+                case "Medium":
+                    return { width: 300, height: 120 };
+                    break;
+                case "Large":
+                    return { width: 400, height: 160 };
+                    break;
+
+            }
+
+        }
+
+        WorkitemVisualizationGraph.prototype.getNoteBackground = function (title, text, shapeType, sizeTxt, backgroundColor, borderColor, textColor) {
+            if (backgroundColor == undefined) backgroundColor = defaultBackgroundColor;
+            if (borderColor == undefined) borderColor = defaultBorderColor;
+            if (textColor == undefined) textColor = defaultTextColor;
+
+
+
+            var cardText = noteTextTemplate.replace(/noteTitle/g, title).replace(/noteText/g, text);
+            var cardBg;
+            var size = getAnnotationSize(sizeTxt);
+            cardBg = getNoteTemplate(shapeType).replace(/backgroundColor/g, backgroundColor).replace(/borderColor/g, borderColor)
+                                    .replace(/textTemplate/g, cardText).replace(/textColor/g, textColor).replace(/cardColor/g, backgroundColor)
+                                    .replace(/size-width/g, size.width).replace(/size-height/g, size.height);
+
+
+
+            if (window.btoa) {
+                //To make sure all UTF8 characters work
+                return "data:image/svg+xml;base64," + btoa(unescape(encodeURIComponent(cardBg)));
+            } else {
+                //For IE9 and below
+                return "";
+            }
+        }
+
 
         return WorkitemVisualizationGraph;
     })();

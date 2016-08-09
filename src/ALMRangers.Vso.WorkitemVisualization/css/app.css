@@ -54,6 +54,10 @@
     background: url("../images/map-magnify-icon.png") no-repeat !important;
 }
 
+.icon-favorite-add-witviz {
+    background: url("../images/favorite_add.png") no-repeat !important;
+}
+
 .icon-export-witviz {
     background-image: url("../images/Export.png");
     background-repeat:  no-repeat !important;

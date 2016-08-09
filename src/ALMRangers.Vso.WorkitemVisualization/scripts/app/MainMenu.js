@@ -20,89 +20,101 @@ var __extends = this.__extends || function (d, b) {
 };
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Splitter", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context", "Scripts/app/TelemetryClient"],
-    function (require, exports, Core, Controls, MenuControls, Splitter, WorkitemVisualizationGraph, Storage, ModalDialogs, Context, TelemetryClient) {
+    "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs",
+     "Scripts/App/AnnotationForm", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
+    function (require, exports, Core, Controls, CboControls, MenuControls, Splitter, Dialogs,
+        AnnotationForm, WorkitemVisualization, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
 
-    var ItemsView = (function (_super) {
-        __extends(ItemsView, _super);
+        var ItemsView = (function (_super) {
+            __extends(ItemsView, _super);
 
-        function ItemsView(options) {
-            _super.call(this, options);
-            this._menu = null;
-            this._graph = WorkitemVisualizationGraph.graph;
-        }
+            function ItemsView(options) {
+                _super.call(this, options);
+                this._menu = null;
+                this._graph = WorkitemVisualizationGraph.graph;
+            }
 
-        //var _callback;
-        var _diagramType = "";
-        var _lastDirectionCommand = "";
-        var _linkType = "Tree";
-        var _splitter = null;
-        var _splitterPaneOnOff = "on";
-        var _loadWorkItemGraphCallback = null;
+            //var _callback;
+            var _diagramType = "";
+            var _lastDirectionCommand = "";
+            var _linkType = "Tree";
+            var _splitter = null;
+            var _splitterPaneOnOff = "on";
+            var _loadWorkItemGraphCallback = null;
+        
+            var _favoritesList =[];
+            var favoritesMenu = [];
+            var _notes=[];
 
+            /*
+             *   Initialize will be called when this control is created.  This will setup the UI, 
+             *   attach to events, etc.
+             */
+            ItemsView.prototype.initialize = function () {
+                _super.prototype.initialize.call(this);
+                this._LoadFavoritesFromSettings();
+                this._createToolbar();
+            };
 
-        /*
-         *   Initialize will be called when this control is created.  This will setup the UI,
-         *   attach to events, etc.
-         */
-        ItemsView.prototype.initialize = function () {
-            _super.prototype.initialize.call(this);
+            ItemsView.prototype.setLoadWorkItemGraphCallback = function(callback) {
+                _loadWorkItemGraphCallback = callback;
+            }
 
-            this._createToolbar();
-        };
+            ItemsView.prototype._createToolbar = function () {
+                this._menu = Controls.BaseControl.createIn(MenuControls.MenuBar, this._element.find(".hub-pivot-toolbar"), {
+                    items: this._createToolbarItems()
+                });
+                MenuControls.menuManager.attachExecuteCommand(Core.delegate(this, this._onToolbarItemClick));
+                //var splitterOptions = { initialSize : 250, minWidth : 250, maxWidth: 500, fixedSide : "right" };
+                _splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
+                //_splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), splitterOptions);
+            
+                //_splitter.collapse();
+                _splitter.noSplit();
+                _splitterPaneOnOff = "off";
+            };
 
-        ItemsView.prototype.setLoadWorkItemGraphCallback = function(callback) {
-            _loadWorkItemGraphCallback = callback;
-        }
+            /*
+             *  Create the actual toolbar items
+             */
+            ItemsView.prototype._createToolbarItems = function () {
+                var items = [];
 
-        ItemsView.prototype._createToolbar = function () {
-            this._menu = Controls.BaseControl.createIn(MenuControls.MenuBar, this._element.find(".hub-pivot-toolbar"), {
-                items: this._createToolbarItems()
-            });
-            MenuControls.menuManager.attachExecuteCommand(Core.delegate(this, this._onToolbarItemClick));
-            //var splitterOptions = { initialSize : 250, minWidth : 250, maxWidth: 500, fixedSide : "right" };
-            _splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
-            //_splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), splitterOptions);
+                var subItems2 = [];
+                subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
+                subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
 
-            //_splitter.collapse();
-            _splitter.noSplit();
-            _splitterPaneOnOff = "off";
-        };
+                items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap-witviz", disabled: true });
 
-        /*
-         *  Create the actual toolbar items
-         */
-        ItemsView.prototype._createToolbarItems = function () {
-            var items = [];
-            var subItems2 = [];
+                items.push({ separator: true });
 
+                items.push({ id: "zoom-in", text: "Zoom In", title: "Zoom In", showText: false, icon: "icon-zoom-in-witviz", disabled: true });
+                items.push({ id: "zoom-out", text: "Zoom Out", title: "Zoom Out", showText: false, icon: "icon-zoom-out-witviz", disabled: true });
+                items.push({ id: "zoom-100", text: "Zoom 100%", title: "Zoom to 100%", showText: false, icon: "icon-zoom-100-witviz", disabled: true });
+                items.push({ id: "fit-to", text: "Fit to screen", title: "Fit to screen", showText: false, icon: "icon-fit-to-witviz", disabled: true });
 
-            subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
-            subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
+                items.push({ separator: true });
 
-            items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap-witviz", disabled: true });
+                items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
 
-            items.push({ separator: true });
+                items.push({ separator: true });
+                items.push({ id: "add-annotation", text: "Add Annotation", title: "Add Annotation", showText: true, disabled: false });
 
-            items.push({ id: "zoom-in", text: "Zoom In", title: "Zoom In", showText: false, icon: "icon-zoom-in-witviz", disabled: true });
-            items.push({ id: "zoom-out", text: "Zoom Out", title: "Zoom Out", showText: false, icon: "icon-zoom-out-witviz", disabled: true });
-            items.push({ id: "zoom-100", text: "Zoom 100%", title: "Zoom to 100%", showText: false, icon: "icon-zoom-100-witviz", disabled: true });
-            items.push({ id: "fit-to", text: "Fit to screen", title: "Fit to screen", showText: false, icon: "icon-fit-to-witviz", disabled: true });
+       
+                items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
+                items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
 
-            items.push({ separator: true });
+                items.push({ id: "favorites", text: "Favorites", title: "Favorites", showText: true, icon: "icon-Favorites", disabled: false, childItems: favoritesMenu, cssClass: "right-align" });
+                items.push({ separator: true, cssClass: "right-align" });
 
-            items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
+                var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
+                if (isHosted)
+                {
+                    items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
+                }
 
-            items.push({ separator: true });
-
-
-            items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
-            items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
-
-            items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
-
-            return items;
-        };
+                return items;
+            };
 
         /*
          *  Fit the graph to the current window size
@@ -181,17 +193,115 @@ define(["require", "exports", "VSS/Utils/Core",
             }
         };
 
-        /*
-         *  Remove the icon from the parent menu item
-         */
-        ItemsView.prototype._clearDirectionIcon = function (parentUniqueId) {
-            $("#" + parentUniqueId).children("span").removeClass("icon-left-to-right");
-            $("#" + parentUniqueId).children("span").removeClass("icon-top-to-bottom");
-        };
+            /*
+             *  Remove the icon from the parent menu item
+             */
+            ItemsView.prototype._clearDirectionIcon = function (parentUniqueId) {
+                $("#" + parentUniqueId).children("span").removeClass("icon-left-to-right");
+                $("#" + parentUniqueId).children("span").removeClass("icon-top-to-bottom");
+            };
 
+            ItemsView.prototype._addNote = function () {
+                //Prompt user for name and type
+                var frm = AnnotationForm.annotationForm;
+                var witviz = WorkitemVisualization.witviz;
 
-        /*
-         *  Handle a button click on the toolbar
+                var node = frm.showAnnotationForm(this, null, this._graph.getAllNodes(), function (title, txt, shapeType, size, linkedToId) {
+                    var node = witviz.addNote(_notes.length, title, txt, shapeType, size, null, linkedToId);
+                    _notes.push(node);
+                });
+            }
+
+            ItemsView.prototype._addFavorit = function () {
+                //Prompt user for name and type
+                var view = this;
+                var extensionContext = VSS.getExtensionContext();
+
+                var dlgContent = $("#createFavoriteDlg").clone();
+                dlgContent.show();
+                dlgContent.find("#createFavoriteDlg").show();
+
+                var options= {
+                    width: 300,
+                    height: 150,
+                    cancelText: "Cancel",
+                    okText: "Add",
+                    title: "Add favorite",
+                    content: dlgContent,
+                    okCallback: function(result) {
+                        //Fetch IDs
+
+                        _favoritesList.push({ name: dlgContent.find("#FavoriteName")[0].value, elements: view._graph.cy.json().elements });
+                        view._SaveFavorites2Settings(_favoritesList, "Account")
+                        view._RebuildFavoritesMenu(); 
+                    }
+                };
+
+                var dialog = Dialogs.show(Dialogs.ModalDialog, options);
+                dialog.updateOkButton(true);
+                dialog.setDialogResult(true);
+            }
+
+            ItemsView.prototype._LoadFavorite = function (favorite) {
+                var self = this;
+
+                _selectedFavorite = favorite;
+
+                this._graph.cy.load(favorite.elements);
+                this._graph.fitTo();
+              
+                var witviz = WorkitemVisualization.witviz;
+                witviz.refreshWorkItemNodes();
+            }
+
+            ItemsView.prototype._LoadWorkItemsWithPossition = function () {
+
+            }
+
+            ItemsView.prototype._RebuildFavoritesMenu = function () {
+                // Get an account-scoped document in a collection
+                var self= this;
+                favoritesMenu = [];
+                favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-favorite-add-witviz" });
+                favoritesMenu.push({ separator: true });
+             
+                _favoritesList.forEach(function (n) {
+                    favoritesMenu.push({ id: "select-favorit-" + n.name, text: n.name, title: n.name, showText: true });
+                });
+
+                this._menu.updateItems(this._createToolbarItems());
+            }
+
+            ItemsView.prototype._LoadFavoritesFromSettings = function () {
+                // Get an account-scoped document in a collection
+                var self = this;
+                favoritesMenu = [];
+                favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-left-to-right-witviz" });
+                favoritesMenu.push({ separator: true });
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService) {
+                    dataService.getDocument(VSS.getWebContext().project.name, "ProjectShared").then(function (doc) {
+                        //_favoritesList = docs.filter(function (i) { return i.id == "ProjectShared"; })[0].List;
+                        _favoritesList = doc.List;
+                        self._RebuildFavoritesMenu();
+                    }, 
+                    function (err) {
+                        self._RebuildFavoritesMenu();
+                    });
+                });
+            }
+
+            ItemsView.prototype._SaveFavorites2Settings = function (favoList, scopeType) {
+               
+                VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
+                    // Set a user-scoped preference
+                    dataService.setDocument(VSS.getWebContext().project.name, { id: "ProjectShared", __etag:-1, List: favoList }).then(function (value) {
+                        console.log("Saved list " + value);
+                    });        
+                });
+
+            }
+
+         /*  Handle a button click on the toolbar
          */
         ItemsView.prototype._onToolbarItemClick = function (sender, args) {
             var command = args.get_commandName(), commandArgument = args.get_commandArgument(), that = this, result = false;
@@ -226,8 +336,26 @@ define(["require", "exports", "VSS/Utils/Core",
                 case "export-graph":
                     this._exportGraph();
                     break;
+                case "favorites-add":
+                    this._addFavorit();
+                    break;
+                case "add-annotation":
+                    this._addNote();
+                    break;
+                
                 default:
-                    result = true;
+                    if (command.indexOf("select-favorit-") == 0) {
+                        var self = this;
+                        _favoritesList.forEach(function (m) {
+                            if (command == "select-favorit-" + m.name) {
+                                self._LoadFavorite(m);
+                            }
+                        });
+                    } 
+                    else {
+                        result = true;
+                    }
+                    
                     break;
             }
             return result;

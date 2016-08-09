@@ -15,9 +15,10 @@
 //TODO: Highlight path to selected node
 //TODO: Highlight elements that are being added
 
-define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
-        "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph", "Scripts/app/TelemetryClient"],
-    function (require, exports, Controls, Menus, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph, TelemetryClient) {
+define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Dialogs",
+        "Scripts/App/AnnotationForm", "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph", "Scripts/app/TelemetryClient"],
+    function (require, exports, Controls, Menus, Dialogs,
+        AnnotationForm, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph, TelemetryClient) {
         var WorkitemVisualization = (function() {
 
             var linkTypes;
@@ -88,6 +89,12 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                         var node = graph.findById("W" + i.id);
                         legendMenu.ApplyLegendToNode(node);
                         self.expandNode(node);
+
+                        if (typeof _selectedFavorite != 'undefined') {
+                            //Find node 
+                            var pos = _selectedFavorite.idList.filter(function (w) { return w.id === i.id; })[0].position;
+                            node._private.position = pos;
+                        }
                     });
                 }
 
@@ -163,7 +170,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                 var elements = graph.addElements(newNodes, data.edges);
                 elements.each(self.highlightNewNode);
             }
-
+   
             WorkitemVisualization.prototype.highlightNewNode = function (i, ele) {
                 if (ele.isNode()) {
                     legendMenu.ApplyLegendToNode(ele);
@@ -208,6 +215,23 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
 
                     storage.getWorkItems(workItemIdArray, self.addWitNodes.bind(this), { id: "W" + wit.id, edges: workItemLinksArray });
                 }
+            }
+
+            //This is called to add a note 
+            WorkitemVisualization.prototype.addNote = function (id, title, txt, shapeType, size, color,  linkedToId ) {
+                var self = this;
+                var node = graph.createNoteData(id, title, txt, shapeType, size, linkedToId);
+                var edges = {};
+                if (linkedToId != null) {
+                    edges = {
+                        id: node.data.id + "-" + linkedToId,
+                        source: node.data.id,
+                        target: linkedToId,
+                        name: ""
+                    };
+                }
+
+                graph.addElements([node], [{ group: 'edges', data: edges }]);
             }
 
             WorkitemVisualization.prototype.addChangesetWorkitems = function (wits, data) {
@@ -305,7 +329,30 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus",
                 elements.each(self.highlightNewNode);
             }
 
+            WorkitemVisualization.prototype.refreshWorkItemNodes = function () {
+                var self = this;
+                var lstWI= graph.getAllNodes();
+                var lstWorkItemId= lstWI.filter(function(f){
+                    return lstWI[f].data("category")=="Work Item";
+                } ).map(function(i){
+                    return i.data("origId");
+                });
+                
+                storage.getWorkItems(lstWorkItemId, self.updateWorkItemNodes.bind(this));
+            }
 
+            WorkitemVisualization.prototype.updateWorkItemNodes = function (wit) {
+                var self = this;
+                var nodes = graph.cy.nodes();
+
+                wit.forEach(function (w) {
+                    var nodeData = graph.createWitNodeData(w);
+                    
+                    var existingNode = nodes.filter(function (f) { return nodes[f].data("category") == "Work Item" && nodes[f].data("origId") == w.id })[0];
+                    existingNode.data(nodeData.data);
+                });
+            
+            }
             //Returns true if the link type is directional, otherwise false
             //Note that this is simply returning the value of directional
             WorkitemVisualization.prototype.isDirectional = function (rel) {

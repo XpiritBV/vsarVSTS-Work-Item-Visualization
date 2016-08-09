@@ -30,62 +30,89 @@
     <script src="scripts/cytoscape/cytoscape.js-navigator.js"></script>
 </head>
 <body>
-<div class="hub-view explorer">
-    <div class="splitter horizontal right-fix right-hub-splitter">
-        <!--removed "stateful" from the class-->
-        <div class="leftPane">
-            <!--<div class="hub-title">
-                <div>Visualize Work Item</div>
-            </div>-->
-            <div class="hub-progress pageProgressIndicator" style="display: none;"></div>
-            <div class="left-hub-content">
-                <!--<div class="hub-pivot">
-                </div>-->
-                <div class="pivot-hub-content" style="width: 100%; height: 100%;">
-                    <div class="main-content" style="width: 100%; height: 100%;">
-                        <div class="toolbar hub-pivot-toolbar">
+    <div id="createFavoriteDlg" style="display:none">
+        <div>
+            <input type="text" id="FavoriteName" placeholder="Enter favorite name" title="Enter favorite name" />
+        </div>
+    </div>
+    <div id="createNoteDlg" style="display:none">
+        <div>
+            <label>Title:</label>
+            <input type="text" id="noteTitle" placeholder="Title" title="Enter note title" size="50" />
+            <label>Text:</label>
+            <textarea id="noteTxt" placeholder="Text" title="Enter note text" cols="50" rows="3"></textarea>
+            <label>Size:</label><div id="cboSize"></div>
+            <label>Shape:</label><div id="cboShape" ></div>
+            <label>Pin to:</label><div id="cboNode" ></div>
+            
+   
+          
+        </div>
+    </div>
+    <div class="hub-view explorer">
+            <div class="splitter horizontal right-fix right-hub-splitter">
+                <!--removed "stateful" from the class-->
+                <div class="leftPane">
+                    <div class="hub-title">
+                        <div class="state-model-page-title-area" title="Work Item Visualizations">Work Item Visualization</div>
+                    </div>
+                    <div class="hub-progress pageProgressIndicator" style="display: none;"></div>
+                    <div class="left-hub-content">
+                        <div class="hub-pivot">
                         </div>
-                        <div id="message"></div>
-                        <div id="cy" class="cy"></div>
-                        <div id="cytoscape-navigator" class="cytoscape-navigator" style="display: none">
-                            <canvas></canvas>
-                            <div class="cytoscape-navigatorView"></div>
-                            <div class="cytoscape-navigatorOverlay"></div>
+                        <div class="pivot-hub-content" style="width: 100%; height: 100%;">
+                            <div class=" main-content" style="width: 100%; height: 100%;">
+                                <div class="toolbar hub-pivot-toolbar">
+                                </div>
+                                <div id="message"></div>
+                                <div id="cy" class="cy"></div>
+                                <div id="cytoscape-navigator" class="cytoscape-navigator" style="display: none">
+                                    <canvas></canvas>
+                                    <div class="cytoscape-navigatorView"></div>
+                                    <div class="cytoscape-navigatorOverlay"></div>
+                                </div>
+                                <!--<div id="witViz-tooltip" style="display: none; z-index: 9998"></div>-->
+                            </div>
                         </div>
-                        <!--<div id="witViz-tooltip" style="display: none; z-index: 9998"></div>-->
+                    </div>
+                </div>
+                <div class="handleBar" id="right-hub-splitter"></div>
+                <div class="rightPane" id="legend-pane" style="display: none">
+                    <div class="hub-title">
+                        <div class="state-model-page-title-area" title="Legend">Highlight</div>
+                    </div>
+                    <div class="right-hub-content">
+                        <div class="toolbar legend-hub-pivot-toolbar">
+                        </div>
+                        <div class="legend-content" id="legend" style="width: 100%; height: 100%">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        <div class="handleBar" id="right-hub-splitter"></div>
-        <div class="rightPane" id="legend-pane" style="display: none">
-            <div class="hub-title">
-                <div class="state-model-page-title-area" title="Legend">Highlight</div>
-            </div>
-            <div class="right-hub-content">
-                <div class="toolbar legend-hub-pivot-toolbar">
-                </div>
-                <div class="legend-content" id="legend" style="width: 100%; height: 100%">
+        <script type="text/javascript">
+            VSS.init({
+                // Our extension will explicitly notify the host when we're done loading
+                explicitNotifyLoaded: true//,
 
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-<script type="text/javascript">
-    VSS.init({
-        // Our extension will explicitly notify the host when we're done loading
-        explicitNotifyLoaded: true
-    });
+                // We are using some VSO APIs, so we will need the module loader to load them in
+                //setupModuleLoader: true,
+                //moduleLoaderConfig: {
+                //paths: {
+                //    "Scripts/App": "/scripts/app"
+                //}
+                //}
 
-        // Wait for the SDK to be initialized
-    VSS.ready(function () {
-        VSS.require(["Scripts/App/WorkitemVisualization"], function (app) {
-            app.witviz.start();
-            VSS.notifyLoadSucceeded();
-        });
-    });
+            });
 
-</script>
+            // Wait for the SDK to be initialized
+            VSS.ready(function () {
+                VSS.require(["Scripts/App/WorkitemVisualization"], function (app) {
+                    app.witviz.start();
+                    VSS.notifyLoadSucceeded();
+                });
+            });
+
+        </script>
 </body>
 </html>

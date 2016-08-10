@@ -6,7 +6,7 @@
   "description": "Dont install this version, will be removed ASAP.",
   "public": true,
   "publisher": "mskold",
-  "baseUri": "https://localhost:44331/", 
+  "baseUri": "https://localhost:44375/", 
 
   "scopes": [ "vso.work", "vso.code", "vso.test", "vso.profile" ], 
   "icons": {

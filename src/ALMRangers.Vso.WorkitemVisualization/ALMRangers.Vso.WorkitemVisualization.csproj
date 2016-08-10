@@ -16,7 +16,7 @@
     <AssemblyName>ALMRangers.Vso.WorkitemVisualization</AssemblyName>
     <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
-    <IISExpressSSLPort />
+    <IISExpressSSLPort>44375</IISExpressSSLPort>
     <IISExpressAnonymousAuthentication />
     <IISExpressWindowsAuthentication />
     <IISExpressUseClassicPipelineMode />
@@ -67,6 +67,7 @@
     <Content Include="screenshots\Screen1.png" />
     <Content Include="screenshots\Screen2.png" />
     <Content Include="scripts\app\addedithighlightDialog.js" />
+    <Content Include="scripts\app\AnnotationForm.js" />
     <Content Include="scripts\app\AppInsightPageViewsTelemetry.js" />
     <Content Include="scripts\app\findWitDialog.js" />
     <Content Include="scripts\app\LegendGrid.js" />

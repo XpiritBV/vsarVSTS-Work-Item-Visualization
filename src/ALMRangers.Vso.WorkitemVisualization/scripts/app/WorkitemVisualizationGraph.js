@@ -15,7 +15,10 @@
 //TODO: Tooltip support
 //TODO: Context Menu on right click
 
-define(["require", "exports", "Scripts/app/TelemetryClient"], function (require, exports, TelemetryClient) {
+define(["require", "exports",
+    "Scripts/app/AnnotationForm", "Scripts/app/TelemetryClient"],
+    function (require, exports,
+        AnnotationForm, TelemetryClient) {
     var WorkitemVisualizationGraph = (function() {
 
         var _navigator = null;

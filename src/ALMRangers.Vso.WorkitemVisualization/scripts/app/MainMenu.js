@@ -20,10 +20,10 @@ var __extends = this.__extends || function (d, b) {
 };
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs",
-     "Scripts/App/AnnotationForm", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "VSS/Controls/Dialogs", "VSS/Context"],
-    function (require, exports, Core, Controls, CboControls, MenuControls, Splitter, Dialogs,
-        AnnotationForm, WorkitemVisualization, WorkitemVisualizationGraph, Storage, ModalDialogs, Context) {
+    "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs","VSS/Context", 
+     "Scripts/App/AnnotationForm", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "Scripts/App/TelemetryClient"],
+    function (require, exports, Core, Controls, CboControls, MenuControls, Splitter, Dialogs, Context,
+        AnnotationForm, WorkitemVisualization, WorkitemVisualizationGraph, Storage, TelemetryClient ) {
 
         var ItemsView = (function (_super) {
             __extends(ItemsView, _super);
@@ -368,7 +368,7 @@ define(["require", "exports", "VSS/Utils/Core",
             if (self.detectIE()) {
                 TelemetryClient.getClient().trackEvent("ExportGraph.IESecurityError");
                 var options = { buttons: null, title: "Can not export in IE", contentText: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers." };
-                ModalDialogs.show(ModalDialogs.ModalDialog, options);
+                Dialogs.show(Dialogs.ModalDialog, options);
                 return;
             }
 

@@ -88,3 +88,24 @@
   left: 0;
 /*  top: 100px;*/
 }
+
+.handleBar {
+    width: 30%;
+}
+
+.rightPane {
+    width: 30%;
+}
+
+.icon-shared-visualization-witviz {
+    /*.icon-favorite-in;*/
+    height: 16px;
+    width: 16px;
+    color: #FFBE00;
+}
+
+.icon-add-annotation-witviz{
+/*    .bowtie-icon;
+    .bowtie-comment;*/
+    color: #ff6a00;
+}

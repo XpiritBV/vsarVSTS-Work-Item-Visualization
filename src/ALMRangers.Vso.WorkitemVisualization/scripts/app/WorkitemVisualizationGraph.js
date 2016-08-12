@@ -597,6 +597,9 @@ define(["require", "exports",
                 case "Product Backlog Item":
                     witColor = "#009CCC";
                     break;
+                case "Requirement":
+                    witColor = "#009CCC";
+                    break;
                 case "Task":
                     witColor = "#F2CB1D";
                     break;
@@ -620,6 +623,15 @@ define(["require", "exports",
                     break;
                 case "Epic":
                     witColor = "#FF7B00";
+                    break;
+                case "Change Request":
+                    witColor = "#FF9D00";
+                    break;
+                case "Review":
+                    witColor = "#FF9D00";
+                    break;
+                case "Risk":
+                    witColor = "#FF9D00";
                     break;
                 default:
                     witColor = "#F2CB1D";

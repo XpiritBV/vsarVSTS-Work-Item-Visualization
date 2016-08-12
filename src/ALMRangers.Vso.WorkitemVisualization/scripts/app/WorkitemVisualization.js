@@ -16,7 +16,7 @@
 //TODO: Highlight elements that are being added
 
 define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Controls/Dialogs",
-        "Scripts/App/AnnotationForm", "Scripts/App/MainMenu", "Scripts/App/LegendMenu", "Scripts/App/LegendGrid", "Scripts/App/Storage", "Scripts/App/WorkitemVisualizationGraph", "Scripts/app/TelemetryClient"],
+        "scripts/app/AnnotationForm", "scripts/app/MainMenu", "scripts/app/LegendMenu", "scripts/app/LegendGrid", "scripts/app/Storage", "scripts/app/WorkitemVisualizationGraph", "scripts/app/TelemetryClient"],
     function (require, exports, Controls, Menus, Dialogs,
         AnnotationForm, MainMenu, LegendMenu, LegendGrid, StorageLib, CyWorkitemVisualizationGraph, TelemetryClient) {
         var WorkitemVisualization = (function() {
@@ -95,7 +95,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                         self.expandNode(node);
 
                         if (typeof _selectedFavorite != 'undefined') {
-                            //Find node 
+                            //Find node
                             var pos = _selectedFavorite.idList.filter(function (w) { return w.id === i.id; })[0].position;
                             node._private.position = pos;
                         }
@@ -174,7 +174,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                 var elements = graph.addElements(newNodes, data.edges);
                 elements.each(self.highlightNewNode);
             }
-   
+
             WorkitemVisualization.prototype.highlightNewNode = function (i, ele) {
                 if (ele.isNode()) {
                     legendMenu.ApplyLegendToNode(ele);
@@ -221,7 +221,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                 }
             }
 
-            //This is called to add a note 
+            //This is called to add a note
             WorkitemVisualization.prototype.addNote = function (id, title, txt, shapeType, size, color,  linkedToId ) {
                 var self = this;
                 var node = graph.createNoteData(id, title, txt, shapeType, size, linkedToId);
@@ -341,7 +341,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                 } ).map(function(i){
                     return i.data("origId");
                 });
-                
+
                 storage.getWorkItems(lstWorkItemId, self.updateWorkItemNodes.bind(this));
             }
 
@@ -351,11 +351,11 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
 
                 wit.forEach(function (w) {
                     var nodeData = graph.createWitNodeData(w);
-                    
+
                     var existingNode = nodes.filter(function (f) { return nodes[f].data("category") == "Work Item" && nodes[f].data("origId") == w.id })[0];
                     existingNode.data(nodeData.data);
                 });
-            
+
             }
             //Returns true if the link type is directional, otherwise false
             //Note that this is simply returning the value of directional

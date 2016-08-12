@@ -21,7 +21,7 @@ var __extends = this.__extends || function (d, b) {
 
 define(["require", "exports", "VSS/Utils/Core",
     "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs","VSS/Context", 
-     "Scripts/App/AnnotationForm", "Scripts/App/WorkitemVisualization", "Scripts/App/WorkitemVisualizationGraph", "Scripts/App/Storage", "Scripts/App/TelemetryClient"],
+     "scripts/app/AnnotationForm", "scripts/app/WorkitemVisualization", "scripts/app/WorkitemVisualizationGraph", "scripts/app/Storage", "scripts/app/TelemetryClient"],
     function (require, exports, Core, Controls, CboControls, MenuControls, Splitter, Dialogs, Context,
         AnnotationForm, WorkitemVisualization, WorkitemVisualizationGraph, Storage, TelemetryClient ) {
 

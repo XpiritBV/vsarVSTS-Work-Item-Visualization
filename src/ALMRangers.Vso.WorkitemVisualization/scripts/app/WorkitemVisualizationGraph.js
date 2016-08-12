@@ -16,7 +16,7 @@
 //TODO: Context Menu on right click
 
 define(["require", "exports",
-    "Scripts/app/AnnotationForm", "Scripts/app/TelemetryClient"],
+    "scripts/app/AnnotationForm", "scripts/app/TelemetryClient"],
     function (require, exports,
         AnnotationForm, TelemetryClient) {
     var WorkitemVisualizationGraph = (function() {

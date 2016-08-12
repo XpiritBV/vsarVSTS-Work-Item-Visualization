@@ -64,7 +64,7 @@
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],
       "properties": {
-        "uri": "findWitDialog.html"
+        "uri": "FindWitDialog.html"
       }
     },
     {
@@ -72,7 +72,7 @@
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],
       "properties": {
-        "uri": "addEditHighlightDialog.html"
+        "uri": "AddEditHighlightDialog.html"
       }
     },
     {
@@ -80,7 +80,7 @@
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],
       "properties": {
-        "uri": "printGraph.html"
+        "uri": "PrintGraph.html"
       }
     }
   ],
@@ -106,15 +106,15 @@
       "addressable": true
     },
     {
-      "path": "addedithighlightDialog.html",
+      "path": "AddEditHighlightDialog.html",
       "addressable": true
     },
     {
-      "path": "findWitDialog.html",
+      "path": "FindWitDialog.html",
       "addressable": true
     },
     {
-      "path": "printGraph.html",
+      "path": "PrintGraph.html",
       "addressable": true
     },
     {

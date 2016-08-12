@@ -47,8 +47,12 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                     //Get workitem and load it into the graph
                     var config= VSS.getConfiguration();
                     if (config.action.workItemId ) {
-                        TelemetryClient.getClient().trackEvent("Vizualize.One");
+                        TelemetryClient.getClient().trackEvent("Vizualize.OneFromForm");
                         storage.getWorkItem(config.action.workItemId, self.loadInitialItem.bind(self));
+                    }
+                    else if (config.action.id) {
+                        TelemetryClient.getClient().trackEvent("Vizualize.OneFromBoard");
+                        storage.getWorkItem(config.action.id, self.loadInitialItem.bind(self));
                     }
                     else if (config.action.ids ) {
                         TelemetryClient.getClient().trackEvent("Vizualize.Multiple.FromQuery");

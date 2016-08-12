@@ -22,7 +22,7 @@
     <meta charset="utf-8"/>
     <link href="css/app.css" rel="stylesheet"/>
     <link href="css/cytoscape.js-navigator.css" rel="stylesheet" />
-    <script src="scripts/App/AppInsightPageViewsTelemetry.js"></script>
+    <script src="scripts/app/AppInsightPageViewsTelemetry.js"></script>
     <script src="scripts/lib/VSS.SDK.js"></script>
     <script src="scripts/lib/jquery.min.js"></script>
     <script src="scripts/cytoscape/cytoscape.js"></script>
@@ -93,25 +93,17 @@
         <script type="text/javascript">
             VSS.init({
                 // Our extension will explicitly notify the host when we're done loading
-                explicitNotifyLoaded: true//,
-
-                // We are using some VSO APIs, so we will need the module loader to load them in
-                //setupModuleLoader: true,
-                //moduleLoaderConfig: {
-                //paths: {
-                //    "Scripts/App": "/scripts/app"
-                //}
-                //}
+                explicitNotifyLoaded: true
 
             });
 
-            // Wait for the SDK to be initialized
-            VSS.ready(function () {
-                VSS.require(["Scripts/App/WorkitemVisualization"], function (app) {
-                    app.witviz.start();
-                    VSS.notifyLoadSucceeded();
-                });
-            });
+        // Wait for the SDK to be initialized
+    VSS.ready(function () {
+        VSS.require(["scripts/app/WorkitemVisualization"], function (app) {
+            app.witviz.start();
+            VSS.notifyLoadSucceeded();
+        });
+    });
 
         </script>
 </body>

@@ -1,6 +1,6 @@
 ﻿<!--
  //---------------------------------------------------------------------
- // <copyright file="findWitDialog.html">
+ // <copyright file="FindWitDialog.html">
  //    This code is licensed under the MIT License.
  //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
  //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
@@ -21,7 +21,7 @@
     <title>Find work item</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="css/app.css" type="text/css" />
-    <script src="scripts/App/AppInsightPageViewsTelemetry.js"></script>
+    <script src="scripts/app/AppInsightPageViewsTelemetry.js"></script>
     <script src="scripts/lib/VSS.SDK.js"></script>
     <script src="scripts/lib/ai.0.22.9-build00167.js"></script>
 
@@ -36,7 +36,7 @@
     VSS.init({
         explicitNotifyLoaded: true
     });
-    VSS.require(["Scripts/App/findWitDialog"], function(app) {
+    VSS.require(["scripts/app/FindWitDialog"], function (app) {
         VSS.register("work-item-visualization-find-wit-dialog", function (context) {
             return new app.FindWitDialog(context);
         });

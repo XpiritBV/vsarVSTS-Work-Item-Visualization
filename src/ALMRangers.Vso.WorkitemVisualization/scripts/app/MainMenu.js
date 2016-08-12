@@ -20,7 +20,7 @@ var __extends = this.__extends || function (d, b) {
 };
 
 define(["require", "exports", "VSS/Utils/Core",
-    "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs","VSS/Context", 
+    "VSS/Controls", "VSS/Controls/Combos", "VSS/Controls/Menus", "VSS/Controls/Splitter", "VSS/Controls/Dialogs","VSS/Context",
      "scripts/app/AnnotationForm", "scripts/app/WorkitemVisualization", "scripts/app/WorkitemVisualizationGraph", "scripts/app/Storage", "scripts/app/TelemetryClient"],
     function (require, exports, Core, Controls, CboControls, MenuControls, Splitter, Dialogs, Context,
         AnnotationForm, WorkitemVisualization, WorkitemVisualizationGraph, Storage, TelemetryClient ) {
@@ -41,13 +41,13 @@ define(["require", "exports", "VSS/Utils/Core",
             var _splitter = null;
             var _splitterPaneOnOff = "on";
             var _loadWorkItemGraphCallback = null;
-        
+
             var _favoritesList =[];
             var favoritesMenu = [];
             var _notes=[];
 
             /*
-             *   Initialize will be called when this control is created.  This will setup the UI, 
+             *   Initialize will be called when this control is created.  This will setup the UI,
              *   attach to events, etc.
              */
             ItemsView.prototype.initialize = function () {
@@ -68,7 +68,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 //var splitterOptions = { initialSize : 250, minWidth : 250, maxWidth: 500, fixedSide : "right" };
                 _splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
                 //_splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), splitterOptions);
-            
+
                 //_splitter.collapse();
                 _splitter.noSplit();
                 _splitterPaneOnOff = "off";
@@ -100,18 +100,14 @@ define(["require", "exports", "VSS/Utils/Core",
                 items.push({ separator: true });
                 items.push({ id: "add-annotation", text: "Add Annotation", title: "Add Annotation", showText: true, disabled: false });
 
-       
+
                 items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
                 items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
 
                 items.push({ id: "favorites", text: "Favorites", title: "Favorites", showText: true, icon: "icon-Favorites", disabled: false, childItems: favoritesMenu, cssClass: "right-align" });
                 items.push({ separator: true, cssClass: "right-align" });
 
-                var isHosted = Context.getPageContext().webAccessConfiguration.isHosted;
-                if (isHosted)
-                {
-                    items.push({ id: "export-graph", text: "Export Graph", title: "Export Graph", showText: false, icon: "icon-export-witviz", disabled: true });
-                }
+                items.push({ id: "export-graph", text: "Export Visualization", title: "Export Visualization", showText: false, icon: "icon-export-witviz", disabled: true });
 
                 return items;
             };
@@ -233,7 +229,7 @@ define(["require", "exports", "VSS/Utils/Core",
 
                         _favoritesList.push({ name: dlgContent.find("#FavoriteName")[0].value, elements: view._graph.cy.json().elements });
                         view._SaveFavorites2Settings(_favoritesList, "Account")
-                        view._RebuildFavoritesMenu(); 
+                        view._RebuildFavoritesMenu();
                     }
                 };
 
@@ -249,7 +245,7 @@ define(["require", "exports", "VSS/Utils/Core",
 
                 this._graph.cy.load(favorite.elements);
                 this._graph.fitTo();
-              
+
                 var witviz = WorkitemVisualization.witviz;
                 witviz.refreshWorkItemNodes();
             }
@@ -264,7 +260,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 favoritesMenu = [];
                 favoritesMenu.push({ id: "favorites-add", text: "Add ", title: "Add favorite", showText: true, icon: "icon-favorite-add-witviz" });
                 favoritesMenu.push({ separator: true });
-             
+
                 _favoritesList.forEach(function (n) {
                     favoritesMenu.push({ id: "select-favorit-" + n.name, text: n.name, title: n.name, showText: true });
                 });
@@ -283,7 +279,7 @@ define(["require", "exports", "VSS/Utils/Core",
                         //_favoritesList = docs.filter(function (i) { return i.id == "ProjectShared"; })[0].List;
                         _favoritesList = doc.List;
                         self._RebuildFavoritesMenu();
-                    }, 
+                    },
                     function (err) {
                         self._RebuildFavoritesMenu();
                     });
@@ -291,12 +287,12 @@ define(["require", "exports", "VSS/Utils/Core",
             }
 
             ItemsView.prototype._SaveFavorites2Settings = function (favoList, scopeType) {
-               
+
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function(dataService) {
                     // Set a user-scoped preference
                     dataService.setDocument(VSS.getWebContext().project.name, { id: "ProjectShared", __etag:-1, List: favoList }).then(function (value) {
                         console.log("Saved list " + value);
-                    });        
+                    });
                 });
 
             }
@@ -342,7 +338,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 case "add-annotation":
                     this._addNote();
                     break;
-                
+
                 default:
                     if (command.indexOf("select-favorit-") == 0) {
                         var self = this;
@@ -351,11 +347,11 @@ define(["require", "exports", "VSS/Utils/Core",
                                 self._LoadFavorite(m);
                             }
                         });
-                    } 
+                    }
                     else {
                         result = true;
                     }
-                    
+
                     break;
             }
             return result;

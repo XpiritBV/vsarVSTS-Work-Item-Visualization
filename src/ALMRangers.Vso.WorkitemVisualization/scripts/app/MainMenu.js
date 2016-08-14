@@ -439,20 +439,17 @@ define(["require", "exports", "VSS/Utils/Core",
                     okText: "Find",
                     getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },
                     okCallback: function (result) {
-                        vsoStore.getWorkItem(result.id, _loadWorkItemGraphCallback);
+                        if (parseInt(result.id) !== NaN && result.id !== "")
+                            vsoStore.getWorkItem(result.id, _loadWorkItemGraphCallback);
                     },
                     title: "Find work item"
                 };
 
                 dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
-                    //TODO: this should be disabled when content becomes empty and enabled again.
                     dialog.updateOkButton(true);
                     dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
                         findWorkItemDialog = ci;
                         findWorkItemDialog.start();
-                        findWorkItemDialog.attachFormChanged(function (containsText) {
-                            dialog.updateOkButton(containsText);
-                        });
                     }, function (err) {
                         alert(err.message);
                     });

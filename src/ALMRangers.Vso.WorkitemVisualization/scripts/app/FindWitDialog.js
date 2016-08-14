@@ -1,9 +1,9 @@
 ﻿/*---------------------------------------------------------------------
 // <copyright file="findWitDialog.js">
 //    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
  // <summary>
@@ -26,16 +26,9 @@ define(
             _super.call(this);
             var self = this;
             self.context = context;
-            self.callbacks = [];
         }
         FindWitDialog.prototype.start = function () {
-            var self = this;
-            $("#WitIdToSearch").on("change", function () {
-                var containsText = $("#WitIdToSearch").val() !== "";
-                for (var i = 0; i < self.callbacks.length; i++) {
-                    self.callbacks[i](containsText);
-                }
-            });
+
         };
 
         FindWitDialog.prototype.getSearchedId = function() {
@@ -43,9 +36,6 @@ define(
             return { id : searchedId };
         };
 
-        FindWitDialog.prototype.attachFormChanged = function (callback) {
-            this.callbacks.push(callback);
-        };
         return FindWitDialog;
     })(Dialogs.ModalDialog);
     exports.FindWitDialog = FindWitDialog;

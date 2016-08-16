@@ -427,34 +427,45 @@ define(["require", "exports", "VSS/Utils/Core",
             TelemetryClient.getClient().trackEvent("FindWorkItem");
 
             var self = this;
+
+            var categoryArray = {};
+
+            var nodes = self._graph.cy.nodes();
+            for (var i = 0; i < nodes.length; i++) {
+                if (!categoryArray[nodes[i].data("category")]) {
+                    categoryArray[nodes[i].data("category")] = nodes[i].data("category");
+                }
+            }
+
             var vsoStore = new Storage.VsoStoreService();
 
             VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg) {
                 var findWorkItemDialog;
 
                 var opts = {
-                    width: 200,
-                    height: 150,
-                    cancelText: "Cancel",
-                    okText: "Find",
-                    getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },
-                    okCallback: function (result) {
+                        width: 200,
+                        height: 150,
+                        cancelText: "Cancel",
+                        okText: "Find",
+                        getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null
+                },
+                        okCallback: function (result) {
                         if (parseInt(result.id) !== NaN && result.id !== "")
-                            vsoStore.getWorkItem(result.id, _loadWorkItemGraphCallback);
-                    },
-                    title: "Find work item"
-                };
+                            self._graph.findAndHighlight(result.id, result.category);
+                },
+                        title: "Find on visualization"
+            };
 
-                dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
+                dlg.openDialog(VSS.getExtensionContext().publisherId + "." +VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
                     dialog.updateOkButton(true);
                     dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
                         findWorkItemDialog = ci;
-                        findWorkItemDialog.start();
+                        findWorkItemDialog.start(categoryArray);
                     }, function (err) {
                         alert(err.message);
-                    });
                 });
             });
+        });
         }
 
         ItemsView.prototype._toggleLegendPane = function () {

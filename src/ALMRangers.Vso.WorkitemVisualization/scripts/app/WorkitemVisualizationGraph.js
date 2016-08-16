@@ -81,7 +81,12 @@ define(["require", "exports",
                         'background-width': '210px',
                         'background-height': '80px'
                     })
-                                        .selector("node[category='Annotation']")
+                    .selector(':selected')
+                      .css({
+                          'border-width': 2,
+                          'border-color': '#696969'//d2691e
+                      })
+                    .selector("node[category='Annotation']")
                     .css({
                         'background-color': 'white'
                     })
@@ -293,6 +298,31 @@ define(["require", "exports",
             return this.cy.getElementById(id);
         }
 
+        WorkitemVisualizationGraph.prototype.findAndHighlight = function (id, category) {
+            var self = this;
+
+            var filter = '';
+            if (category === "Work Item" || category === "Changeset")
+            {
+                id = category.substring(0,1) + id;
+                filter = 'node[id = "'+id+'"][category @= "'+category+'"]';
+            }
+            else if (category === "Commit")
+            {
+                id = "G"+id;
+                filter = 'node[id @^= "'+id+'"][category @= "'+category+'"]';
+            }
+            else if (category === "File")
+            {
+                filter = 'node[file @*= "' + id + '"][category @= "' + category + '"]';
+            }
+
+            var matchingElements = self.cy.elements(filter);
+            self.cy.elements(":selected").unselect();
+            matchingElements.select();
+            return matchingElements;
+        }
+
         WorkitemVisualizationGraph.prototype.fitTo = function() {
             this.cy.fit();
         }
@@ -419,14 +449,14 @@ define(["require", "exports",
         WorkitemVisualizationGraph.prototype.createCommitNodeData = function (commit, repo) {
             var category = "Commit";
             var d = new Date(commit.author.date);
-            var cardText = this.getArtifactText(category, commit.commitId, d.toLocaleString(), commit.author.name);
+            var cardText = this.getArtifactText(category, commit.commitId.substring(0, 8), d.toLocaleString(), commit.author.name);
             var newNode = {
                 id: "G" + commit.commitId,
                 origId: commit.commitId,
                 repo: repo,
                 category: category,
                 content: cardText,
-                shortId: commit.commitId.substring(0, 6) + "...",
+                shortId: commit.commitId.substring(0, 8) + "...",
                 bgImage: this.getArtifactBackground(category, cardText),
                 author: commit.author.name,
                 createdDate: d.toLocaleString(),

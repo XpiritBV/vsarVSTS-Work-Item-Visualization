@@ -27,13 +27,21 @@ define(
             var self = this;
             self.context = context;
         }
-        FindWitDialog.prototype.start = function () {
-
+        FindWitDialog.prototype.start = function (categories) {
+            var categoryHtml;
+            for (var item in categories)
+            {
+                if (item != null) {
+                    categoryHtml += "<option value=" + item + ">" + item + "</option>";//$("<option />").val
+                }
+            }
+            $("#selectItemType").html(categoryHtml);
         };
 
         FindWitDialog.prototype.getSearchedId = function() {
             var searchedId = $("#WitIdToSearch").val();
-            return { id : searchedId };
+            var selectItemType = $("#selectItemType option:selected").text();
+            return { id: searchedId, category: selectItemType };
         };
 
         return FindWitDialog;

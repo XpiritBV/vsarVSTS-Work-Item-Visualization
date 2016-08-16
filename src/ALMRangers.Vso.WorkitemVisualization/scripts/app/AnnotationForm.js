@@ -52,7 +52,9 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos",  "VSS/Contr
                 var cboShape = Controls.create(CboControls.Combo, dlgContent.find("#cboShape"), cboShapeOptions);
 
 
-                var lstNodesId = lstNodes.map(function (i) { return { id: i.data("id"), text: i.data("id") + "-" + i.data("title") }; });
+                var lstNodesId = lstNodes.map(function (i) { return { 
+                    id: i.data("id"), 
+                    text: getHumanText(i) }; });
                 var cboPinToOptions = { //: CtrlCombos.IComboOptions = {
                     mode: "drop",
                     allowEdit: false,
@@ -111,4 +113,24 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Combos",  "VSS/Contr
         })();
 
         exports.annotationForm = new AnnotationForm();
-    });
+});
+
+function getHumanText(i) {
+    var s = "";
+            switch(i.data("category")){
+                case "File":
+                    s = i.data("category") + " " + i.data("file");
+                    break;
+                case "Changeset":
+                    s = i.data("category") + " " + i.data("origId");
+                    break;
+                case "Commit":
+                    s = i.data("category") + " " + i.data("origId");
+                    break;
+                default:
+                    s= i.data("id") +"-"+i.data("title")
+                    break;
+                    
+            };
+            return s;
+        }

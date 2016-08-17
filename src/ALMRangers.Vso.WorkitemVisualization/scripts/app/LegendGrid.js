@@ -191,7 +191,7 @@ define(["require", "exports", "VSS/Utils/Core",
 
             this._grid.setDataSource(this._gridData, null, this._getColumns());
 
-            this._applyLegend(node);
+            this.ReApplyLegend(node);
         }
 
         LegendGrid.prototype._removeItem = function (index) {
@@ -202,7 +202,7 @@ define(["require", "exports", "VSS/Utils/Core",
 
             this._grid.setDataSource(this._gridData, null, this._getColumns());
 
-            this._applyLegend(node);
+            this.ReApplyLegend(node);
         }
 
 
@@ -289,13 +289,17 @@ define(["require", "exports", "VSS/Utils/Core",
 
         LegendGrid.prototype._updateLegend = function (node) {
             this._addRow(node);
-            this._applyLegend(node);
+
+            this.ReApplyLegend(node);
         }
 
         LegendGrid.prototype.ReApplyLegend = function () {
-            if (this._gridData != null) {
-                for (var i = 0; i < this._gridData.length; i++) {
-                    this._applyLegend(this._gridData[i][2]);
+            if (WorkItemVisualizationGraph.graph.isGraphLoaded()) {
+                //Get the nodes and loop through them
+                var nodes = WorkItemVisualizationGraph.graph.getAllNodes();
+                for (var i = 0; i < nodes.length; i++) {
+                    var n = nodes[i];
+                    this.ApplyLegendToNode(n);
                 }
             }
         }
@@ -304,49 +308,38 @@ define(["require", "exports", "VSS/Utils/Core",
             //Find the node
             var n = graphNode;
             if (this._gridData != null) {
+                var mergedBackground = null;
+                var mergedStroke=null;
+                var mergedText=null;
+            
                 for (var i = 0; i < this._gridData.length; i++) {
                     var node = this._gridData[i][2];
                     if ((n.data("workItemType") === node.Field) || (n.data("category") === node.Field) || (n.data("state") === node.Field) || (n.data("assignedTo") === node.Field) || (n.data("outcome") === node.Field)) {
-
-                        var content = n.data("content");
-                        if (n.data("category") === "Work Item") {
-                            var image = this._graph.getWitBackground(n.data("workItemType"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
-                            n.data("bgImage", image);
-
-                        } else {
-                            var image = this._graph.getArtifactBackground(n.data("category"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
-                            n.data("bgImage", image);
+                        if (node.BackgroundApply) {
+                            mergedBackground = node.Background;
+                        }
+                        if (node.StrokeApply) {
+                            mergedStroke = node.Stroke;
+                        }
+                        if (node.TextApply) {
+                            mergedText = node.Text;
                         }
                     }
+                }
+
+                var content = n.data("content");
+                if (n.data("category") === "Work Item") {
+                    var image = this._graph.getWitBackground(n.data("workItemType"), content, mergedBackground, mergedStroke, mergedText );
+                    n.data("bgImage", image);
+
+                } else {
+                    var image = this._graph.getArtifactBackground(n.data("category"), content, mergedBackground, mergedStroke, mergedText);
+                    n.data("bgImage", image);
                 }
             }
         }
 
-        /**
-         *   Applies a legend to the diagram
-         */
-        LegendGrid.prototype._applyLegend = function(node) {
-            //Update the graph only if the graph has been created
-            if (WorkItemVisualizationGraph.graph.isGraphLoaded()) {
-                //Get the nodes and loop through them
-                var nodes = WorkItemVisualizationGraph.graph.getAllNodes();
-                for (var i = 0; i < nodes.length; i++) {
-                    var n = nodes[i];
-                    if ((n.data("workItemType") === node.Field) || (n.data("category") === node.Field) || (n.data("state") === node.Field) || (n.data("assignedTo") === node.Field) || (n.data("outcome") === node.Field)) {
-                        var content = n.data("content");
-                        if (n.data("category") === "Work Item") {
-                            var image = this._graph.getWitBackground(n.data("workItemType"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
-                            n.data("bgImage", image);
 
-                        } else {
-                            var image = this._graph.getArtifactBackground(n.data("category"), content, node.BackgroundApply ? node.Background : undefined, node.StrokeApply ? node.Stroke : undefined, node.TextApply ? node.Text : undefined);
-                            n.data("bgImage", image);
-                        }
-                    }
-                }
-               
-            }
-        }
 
         /**
          *   This is strictly a utility function with checks to see

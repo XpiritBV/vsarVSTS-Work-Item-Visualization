@@ -197,9 +197,15 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                         //Skip items which do not go to a work item (i.e. changesets and hyperlinks and documents)
                         if (self.getLinkType(wit.relations[i].rel) === "workItemLink") {
                             workItemIdArray.push(tempId[0]);
-                            var link = graph.createNodeEdgeData("W" + id, "W" + tempId[0], self.getLinkTypeName(wit.relations[i].rel));
-
-                            workItemLinksArray.push(link);
+                            var sourceId = "W" + id;
+                            var targetId = "W" + tempId[0];
+                            var relRefId = wit.relations[i].rel;
+                            if (!relRefId.match("-Reverse$")) {//Endswith
+                                //We only add forward links, as the addElement function checks for links in both directions and only adds the first link between 2 workitems 
+                                var link = graph.createNodeEdgeData(sourceId, targetId, self.getLinkTypeName(relRefId));
+                                workItemLinksArray.push(link);
+                            }
+                            
                         } else {
                             var changeType = self.isChangeset(wit.relations[i].url);
                             if (changeType === "Changeset") {

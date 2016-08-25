@@ -400,6 +400,11 @@ define(["require", "exports",
             return this.cy.nodes();
         }
 
+
+        WorkitemVisualizationGraph.prototype.getNodes = function (filter) {
+            return this.cy.nodes(filter);
+        }
+
         WorkitemVisualizationGraph.prototype.isGraphLoaded = function () {
             return graphLoaded;
         }

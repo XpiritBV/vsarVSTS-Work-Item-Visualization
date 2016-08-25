@@ -200,7 +200,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 var frm = AnnotationForm.annotationForm;
                 var witviz = WorkitemVisualization.witviz;
 
-                var node = frm.showAnnotationForm(this, null, this._graph.getAllNodes(), function (title, txt, shapeType, size, linkedToId) {
+                var node = frm.showAnnotationForm(this, null, this._graph.getNodes("[category != 'Annotation']"), function (title, txt, shapeType, size, linkedToId) {
                     var node = witviz.addNote(_notes.length, title, txt, shapeType, size, null, linkedToId);
                     _notes.push(node);
                 });

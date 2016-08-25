@@ -557,10 +557,11 @@ define(["require", "exports",
                 var target = edges[j].data.target;
                 var edgeId = edges[j].data.id;
                 var reverseEdgeId = target + "-" + source;
-                var tmpEdges = self.cy.edges("#" + edgeId);
+                var tmpEdges = self.cy.edges("[id='" + edgeId + "']");//self.cy.edges("#" + edgeId);
                 if (tmpEdges.empty()) {
                     //This one excludes reverse relation, but now we are including them.
-                    tmpEdges = self.cy.edges("#" + reverseEdgeId);
+                    //#identifier selector doesnt seem to always work
+                    tmpEdges = self.cy.edges("[id='" + reverseEdgeId + "']");//self.cy.edges("#" + reverseEdgeId);
                     if (tmpEdges.empty()) {
                         elements.push(edges[j]);
                     }

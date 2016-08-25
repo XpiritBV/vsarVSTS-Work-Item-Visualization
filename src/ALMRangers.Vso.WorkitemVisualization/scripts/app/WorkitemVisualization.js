@@ -197,7 +197,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                         //Skip items which do not go to a work item (i.e. changesets and hyperlinks and documents)
                         if (self.getLinkType(wit.relations[i].rel) === "workItemLink") {
                             workItemIdArray.push(tempId[0]);
-                            var link = graph.createNodeEdgeData("W" + id, "W" + tempId[0], self.getLinkTypeName(wit.relations[i].rel));
+                            var link = graph.createNodeEdgeData("W" + id, "W" + tempId[0], self.getLinkText(wit.relations[i].rel));
                             workItemLinksArray.push(link);
 
                             /* This one creates forward direction
@@ -206,7 +206,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                             var relRefId = wit.relations[i].rel;
                             if (!relRefId.match("-Reverse$")) {//Endswith
                                 //We only add forward links, as the addElement function checks for links in both directions and only adds the first link between 2 workitems
-                                var link = graph.createNodeEdgeData(sourceId, targetId, self.getLinkTypeName(relRefId));
+                                var link = graph.createNodeEdgeData(sourceId, targetId, self.getLinkText(relRefId));
                                 workItemLinksArray.push(link);
                             }
                             */
@@ -214,14 +214,14 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                         } else {
                             var changeType = self.isChangeset(wit.relations[i].url);
                             if (changeType === "Changeset") {
-                                var link = graph.createNodeEdgeData("W" + id, "C" + tempId[0], self.getLinkTypeName(wit.relations[i].rel));
+                                var link = graph.createNodeEdgeData("W" + id, "C" + tempId[0], self.getLinkText(wit.relations[i].rel));
                                 //Process the changsets now. All information is already available as we only
                                 //use the changeset id
                                 storage.getChangesetDetails(tempId[0], self.addChangesetNode.bind(this), link);
 
                             } else if (changeType === "Commit") {
                                 var commitInfo = tempId[0].toLowerCase().split("%2f");
-                                var link = graph.createNodeEdgeData("W" + id, "G" + commitInfo[2], self.getLinkTypeName(wit.relations[i].rel));
+                                var link = graph.createNodeEdgeData("W" + id, "G" + commitInfo[2], self.getLinkText(wit.relations[i].rel));
 
                                 storage.getCommitDetails(commitInfo[2], commitInfo[1], self.addCommitNode.bind(this), { commitId: commitInfo[2], repo: commitInfo[1], edge: link });
                             }
@@ -257,7 +257,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
 
                 for (var i = 0; i < wits.length; i++) {
                     workItemIdArray.push(wits[i].id);
-                    var link = graph.createNodeEdgeData("C" + id, "W" + wits[i].id, self.getLinkTypeName("ArtifactLink"));
+                    var link = graph.createNodeEdgeData("C" + id, "W" + wits[i].id, self.getLinkText("ArtifactLink"));
 
                     workItemLinksArray.push(link);
                 }
@@ -276,7 +276,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
 
                     var node = graph.createFileNodeData(change, id);
                     nodes.push(node);
-                    var edge = graph.createNodeEdgeData("C" + id, node.data.id, self.getLinkTypeName("ArtifactLink"));
+                    var edge = graph.createNodeEdgeData("C" + id, node.data.id, self.getLinkText("ArtifactLink"));
                     edges.push(edge);
                 }
 
@@ -292,7 +292,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                 for (var i = 0; i < commit.changes.length; i++) {
                     var node = graph.createCommitFileNodeData(commit.changes[i], data);
                     nodes.push(node);
-                    var edge = graph.createNodeEdgeData("G" + data.id, node.data.id, self.getLinkTypeName("ArtifactLink"));
+                    var edge = graph.createNodeEdgeData("G" + data.id, node.data.id, self.getLinkText("ArtifactLink"));
                     edges.push(edge);
                 }
 
@@ -316,7 +316,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                     var newNode = graph.createCommitNodeData(commits[i], commits[i].url.substr(start, 36));
                     nodes.push(newNode);
 
-                    var edge = graph.createNodeEdgeData(data.id, newNode.data.id, self.getLinkTypeName("ArtifactLink"));
+                    var edge = graph.createNodeEdgeData(data.id, newNode.data.id, self.getLinkText("ArtifactLink"));
 
                     edges.push(edge);
                 }
@@ -335,7 +335,7 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                     var newNode = graph.createChangesetNodeData(changesets[i]);
                     nodes.push(newNode);
 
-                    var edge = graph.createNodeEdgeData(data.id, newNode.data.id, self.getLinkTypeName("ArtifactLink"));
+                    var edge = graph.createNodeEdgeData(data.id, newNode.data.id, self.getLinkText("ArtifactLink"));
 
                     edges.push(edge);
                 }
@@ -397,6 +397,47 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                         return linkTypes[i].name;
                     }
                 }
+                return null;
+            }
+
+            //TODO: This allows to show both Child / Parent link text on the label on edge
+            WorkitemVisualization.prototype.getLinkText = function (rel) {
+                //Create the reverse directional link url based on the given rel
+                var forward = "Forward", reverse = "Reverse";
+                var forwardRel = rel;
+                var reverseRel = "";
+                if (rel.endsWith(forward))
+                {
+                    reverseRel = rel.replace(forward, reverse);
+
+                }
+                else if (rel.endsWith(reverse))
+                {
+                    reverseRel = rel;
+                    forwardRel = rel.replace(reverse, forward);
+                }
+
+                var linkForwardText = "";
+                var linkReverseText = "";
+                for (var i = 0; i < linkTypes.length; i++) {
+                    if (forwardRel === linkTypes[i].referenceName) {
+                        linkForwardText = linkTypes[i].name;
+                    }
+                    else if (reverseRel !== "" && reverseRel === linkTypes[i].referenceName) {
+                        linkReverseText = " / " + linkTypes[i].name;
+                    }
+
+                    //We are done when both texts are not empty or the forward has text and reverse shouldnt
+                    if ((linkForwardText !== "" && linkReverseText !== "") || (linkForwardText !== "" && reverseRel === ""))
+                    {
+                        return linkForwardText + linkReverseText;
+                    }
+                }
+
+                //Safety in case there is a scenario with custom link types where same naming is not used. Always return based on the forward then.
+                if (linkForwardText !== "")
+                    return linkForwardText;
+
                 return null;
             }
 

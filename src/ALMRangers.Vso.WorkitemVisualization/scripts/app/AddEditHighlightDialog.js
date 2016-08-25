@@ -28,7 +28,7 @@ define(
                 self.context = context;
             }
             AddEditHighlightDialog.prototype.start = function (data) {
-                TelemetryClient.getClient().trackEvent("AddHiglight");
+                TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.showAddHighlightDialog");
 
                 var self = this;
                 var workItemTypesHtml;

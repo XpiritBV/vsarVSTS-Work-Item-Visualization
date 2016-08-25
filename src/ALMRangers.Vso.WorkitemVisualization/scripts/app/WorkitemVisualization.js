@@ -112,16 +112,16 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
 
                 switch (id.substring(0, 1)) {
                     case "W":
-                        TelemetryClient.getClient().trackEvent("expandWorkItem");
+                        TelemetryClient.getClient().trackEvent("Visualization.expandWorkItem");
                         storage.getWorkItemWithLinks(originalId, self.addWorkitem.bind(this));
                         break;
                     case "C":
-                        TelemetryClient.getClient().trackEvent("expandChangeset");
+                        TelemetryClient.getClient().trackEvent("Visualization.expandChangeset");
                         storage.getChangesetWorkitems(originalId, self.addChangesetWorkitems.bind(this), { id: originalId });
                         storage.getChangesetChanges(originalId, self.addChangesetChanges.bind(this), { id: originalId });
                         break;
                     case "G":
-                        TelemetryClient.getClient().trackEvent("expandCommit");
+                        TelemetryClient.getClient().trackEvent("Visualization.expandCommit");
                         var repo = node.data("repo");
                         storage.getCommitChanges({ id: originalId, repo: repo }, self.addCommitChanges.bind(this));
                         break;
@@ -129,11 +129,11 @@ define(["require", "exports", "VSS/Controls", "VSS/Controls/Menus", "VSS/Control
                         {
                             var objectType = node.data("objectType");
                             if (objectType === "File") {
-                                TelemetryClient.getClient().trackEvent("expandTfvcFile");
+                                TelemetryClient.getClient().trackEvent("Visualization.expandTfvcFile");
                                 //This is tfvc
                                 storage.getTfvcFileLinks(originalId, self.addTfvcFileLinks.bind(this), { id: id, origId: originalId });
                             } else {
-                                TelemetryClient.getClient().trackEvent("expandGitFile");
+                                TelemetryClient.getClient().trackEvent("Visualization.expandGitFile");
                                 //This is git
                                 var repo = node.data("repo");
                                 var path = node.data("path");

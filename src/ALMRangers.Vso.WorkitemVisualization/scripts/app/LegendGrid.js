@@ -1,9 +1,9 @@
 ﻿/*---------------------------------------------------------------------
 // <copyright file="LegendGrid.js">
 //    This code is licensed under the MIT License.
-//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF 
-//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED 
-//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A 
+//    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+//    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+//    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
 //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
 // </copyright>
  // <summary>
@@ -66,7 +66,7 @@ define(["require", "exports", "VSS/Utils/Core",
             if (!found) {
                 this._gridData.push([nodeId, row.Field, row]);
             }
-            
+
             this._grid.setDataSource(this._gridData, null, this._getColumns());
         }
 
@@ -123,7 +123,7 @@ define(["require", "exports", "VSS/Utils/Core",
         };
 
         /**
-         *   Initialize called for each control.  Parse the passed in build nodes looking for work items.  Then pass those to 
+         *   Initialize called for each control.  Parse the passed in build nodes looking for work items.  Then pass those to
          *   grid to render.
          */
         LegendGrid.prototype.initialize = function () {
@@ -195,6 +195,7 @@ define(["require", "exports", "VSS/Utils/Core",
         }
 
         LegendGrid.prototype._removeItem = function (index) {
+            TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.removeHighlightRule");
             //first, get the node so we can remove the formatting
             var node = this._getDefaultNodeForIndex(index);
 
@@ -235,6 +236,7 @@ define(["require", "exports", "VSS/Utils/Core",
             }
 
             function saveHighlight(result) {
+                TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.saveHighlightRule");
                 var node = {};
                 //Initialize
                 node.TextApply = false;
@@ -311,7 +313,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 var mergedBackground = null;
                 var mergedStroke=null;
                 var mergedText=null;
-            
+
                 for (var i = 0; i < this._gridData.length; i++) {
                     var node = this._gridData[i][2];
                     if ((n.data("workItemType") === node.Field) || (n.data("category") === node.Field) || (n.data("state") === node.Field) || (n.data("assignedTo") === node.Field) || (n.data("outcome") === node.Field)) {
@@ -363,7 +365,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 }
                 //We made it here so the item can be added, but we need to check
                 //and see if there is already an entry in the legend for it
-                for (var i = 0; i < this._gridData.length; i++) {  
+                for (var i = 0; i < this._gridData.length; i++) {
                     if (this._gridData[i][2].Field === item) {
                         foundAgain = true;
                         break;

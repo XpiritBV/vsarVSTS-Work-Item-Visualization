@@ -114,7 +114,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Fit the graph to the current window size
          */
         ItemsView.prototype._fitTo = function () {
-            TelemetryClient.getClient().trackEvent("fitTo");
+            TelemetryClient.getClient().trackEvent("MainMenu.fitTo");
             if (!$("#fit-to").hasClass("disabled")) {
                 this._graph.fitTo();
             }
@@ -124,7 +124,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Zoom the diagram in one unit
          */
         ItemsView.prototype._zoomIn = function () {
-            TelemetryClient.getClient().trackEvent("zoomIn");
+            TelemetryClient.getClient().trackEvent("MainMenu.zoomIn");
             if (!$("#zoom-in").hasClass("disabled")) {
                 this._graph.zoomIn();
             }
@@ -134,7 +134,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Zoom the diagram out one unit
          */
         ItemsView.prototype._zoomOut = function () {
-            TelemetryClient.getClient().trackEvent("zoomOut");
+            TelemetryClient.getClient().trackEvent("MainMenu.zoomOut");
             if (!$("#zoom-out").hasClass("disabled")) {
                 this._graph.zoomOut();
             }
@@ -144,14 +144,14 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Set the diagram to 100%
          */
         ItemsView.prototype._zoom100 = function () {
-            TelemetryClient.getClient().trackEvent("zoom100");
+            TelemetryClient.getClient().trackEvent("MainMenu.zoom100");
             if (!$("#zoom-100").hasClass("disabled")) {
                 this._graph.zoomTo100();
             }
         };
 
         ItemsView.prototype.ResetOverview = function () {
-            TelemetryClient.getClient().trackEvent("ResetOverview");
+            TelemetryClient.getClient().trackEvent("MainMenu.ResetOverview");
             this._graph.resetMinimap();
         }
 
@@ -159,7 +159,7 @@ define(["require", "exports", "VSS/Utils/Core",
          *  Show or hide the minimap
          */
         ItemsView.prototype._toggleMiniMap = function () {
-            TelemetryClient.getClient().trackEvent("toggleMinimap");
+            TelemetryClient.getClient().trackEvent("MainMenu.toggleMinimap");
             this._graph.toggleMinimap();
         }
 
@@ -170,12 +170,12 @@ define(["require", "exports", "VSS/Utils/Core",
             if (this._graph != null) {
                 switch (e) {
                     case "left-to-right":
-                        TelemetryClient.getClient().trackEvent("reOrder.Left2Right");
+                        TelemetryClient.getClient().trackEvent("MainMenu.reOrder.Left2Right");
                         this._graph.direction = 'LR';
                         this._graph.refreshLayout();
                         break;
                     case "top-to-bottom":
-                        TelemetryClient.getClient().trackEvent("reOrder.Top2Bottom");
+                        TelemetryClient.getClient().trackEvent("MainMenu.reOrder.Top2Bottom");
                         this._graph.direction = 'TB';
                         this._graph.refreshLayout();
                         break;
@@ -196,17 +196,20 @@ define(["require", "exports", "VSS/Utils/Core",
             };
 
             ItemsView.prototype._addNote = function () {
+                TelemetryClient.getClient().trackEvent("MainMenu.showAnnotationFormDialog");
                 //Prompt user for name and type
                 var frm = AnnotationForm.annotationForm;
                 var witviz = WorkitemVisualization.witviz;
 
                 var node = frm.showAnnotationForm(this, null, this._graph.getNodes("[category != 'Annotation']"), function (title, txt, shapeType, size, linkedToId) {
+                    TelemetryClient.getClient().trackEvent("AnnotationFormDialog.addNote");
                     var node = witviz.addNote(_notes.length, title, txt, shapeType, size, null, linkedToId);
                     _notes.push(node);
                 });
             }
 
             ItemsView.prototype._addFavorit = function () {
+                TelemetryClient.getClient().trackEvent("MainMenu.showSaveSharedVisualisationDialog");
                 //Prompt user for name and type
                 var view = this;
                 var extensionContext = VSS.getExtensionContext();
@@ -224,7 +227,7 @@ define(["require", "exports", "VSS/Utils/Core",
                     content: dlgContent,
                     okCallback: function(result) {
                         //Fetch IDs
-
+                        TelemetryClient.getClient().trackEvent("SaveSharedVisualizationDialog.saveVisualization");
                         _favoritesList.push({ name: dlgContent.find("#FavoriteName")[0].value, elements: view._graph.cy.json().elements });
                         view._SaveFavorites2Settings(_favoritesList, "Account")
                         view._RebuildFavoritesMenu();
@@ -237,6 +240,7 @@ define(["require", "exports", "VSS/Utils/Core",
             }
 
             ItemsView.prototype._LoadFavorite = function (favorite) {
+                TelemetryClient.getClient().trackEvent("MainMenu.loadSelectedSharedVisualization");
                 var self = this;
 
                 _selectedFavorite = favorite;
@@ -277,6 +281,7 @@ define(["require", "exports", "VSS/Utils/Core",
                 VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService) {
                     dataService.getDocument(VSS.getWebContext().project.name, "ProjectShared").then(function (doc) {
                         //_favoritesList = docs.filter(function (i) { return i.id == "ProjectShared"; })[0].List;
+                        TelemetryClient.getClient().trackEvent("MainMenu.loadSharedVisualizationsFromProject", null, { sharedVisualizationCount: doc.List.length });
                         _favoritesList = doc.List;
                         self._RebuildFavoritesMenu();
                     },
@@ -358,11 +363,11 @@ define(["require", "exports", "VSS/Utils/Core",
         };
 
         ItemsView.prototype._exportGraph = function () {
-            TelemetryClient.getClient().trackEvent("ExportGraph");
+            TelemetryClient.getClient().trackEvent("MainMenu.exportGraph");
 
             var self = this;
             if (self.detectIE()) {
-                TelemetryClient.getClient().trackEvent("ExportGraph.IESecurityError");
+                TelemetryClient.getClient().trackEvent("MainMenu.exportGraph.IESecurityError");
                 var options = { buttons: null, title: "Can not export in IE", contentText: "Export does not work in IE due to SVG toDataUrl throwing SecurityError. Try Edge, FireFox, Chrome, or other browsers." };
                 Dialogs.show(Dialogs.ModalDialog, options);
                 return;
@@ -424,7 +429,7 @@ define(["require", "exports", "VSS/Utils/Core",
         }
 
         ItemsView.prototype._findWorkItem = function () {
-            TelemetryClient.getClient().trackEvent("FindWorkItem");
+            TelemetryClient.getClient().trackEvent("MainMenu.showFindWorkItemDialog");
 
             var self = this;
 
@@ -447,14 +452,15 @@ define(["require", "exports", "VSS/Utils/Core",
                         height: 150,
                         cancelText: "Cancel",
                         okText: "Find",
-                        getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null
-                },
+                        getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },
                         okCallback: function (result) {
-                        if (parseInt(result.id) !== NaN && result.id !== "")
-                            self._graph.findAndHighlight(result.id, result.category);
-                },
+                            if (parseInt(result.id) !== NaN && result.id !== "") {
+                                TelemetryClient.getClient().trackEvent("FindWorkItemDialog.findAndHighlight");
+                                self._graph.findAndHighlight(result.id, result.category);
+                            }
+                        },
                         title: "Find on visualization"
-            };
+                };
 
                 dlg.openDialog(VSS.getExtensionContext().publisherId + "." +VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
                     dialog.updateOkButton(true);

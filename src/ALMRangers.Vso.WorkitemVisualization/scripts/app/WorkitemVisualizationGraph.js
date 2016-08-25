@@ -208,7 +208,7 @@ define(["require", "exports",
         }
 
         WorkitemVisualizationGraph.prototype.openWorkitem = function (node) {
-            TelemetryClient.getClient().trackEvent("openWorkItem");
+            TelemetryClient.getClient().trackEvent("Visualization.openWorkItem");
 
             var id = node.data("origId");
             var vsoContext = VSS.getWebContext();
@@ -240,7 +240,7 @@ define(["require", "exports",
         }
 
         WorkitemVisualizationGraph.prototype.openCheckin = function (node) {
-            TelemetryClient.getClient().trackEvent("openCheckin");
+            TelemetryClient.getClient().trackEvent("Visualization.openCheckin");
             var id = node.data("origId");
             var category = node.data("category");
             var vsoContext = VSS.getWebContext();
@@ -252,17 +252,17 @@ define(["require", "exports",
             }
 
             if (category === "Commit") {
-                TelemetryClient.getClient().trackEvent("openGitCommit");
+                TelemetryClient.getClient().trackEvent("Visualization.openGitCommit");
                 location = node.data("url");
             } else {
-                TelemetryClient.getClient().trackEvent("openTfvcChangeset");
+                TelemetryClient.getClient().trackEvent("Visualization.openTfvcChangeset");
                 location += vsoContext.project.name + "/_versionControl/changeset/" + id;
             }
 
             navigateTo(location);
         }
         WorkitemVisualizationGraph.prototype.openFile = function (node) {
-            TelemetryClient.getClient().trackEvent("openFile");
+            TelemetryClient.getClient().trackEvent("Visualization.openFile");
             //BUG: If commit or file is from different project, then it would not go to right location!
             var objectType = node.data("objectType");
             //Full path
@@ -275,7 +275,7 @@ define(["require", "exports",
             }
 
             if (objectType !== "File") {
-                TelemetryClient.getClient().trackEvent("openGitFile");
+                TelemetryClient.getClient().trackEvent("Visualization.openGitFile");
                 //Need this url combined - http://taavik-devbox:8080/tfs/DevCollection/Scrum.Demo/_git/953e95e1-c6b8-4ce3-8b61-33c3dcbb2485/commit/2829c8597f5731c3dbee625b04d29600018e1c6b
                 var repo = node.data("repo");
                 var commitId = node.data("commitId");
@@ -284,7 +284,7 @@ define(["require", "exports",
                 //This means it's a git file
                 location += remoteUrl + "?path=" + path + "&_a=contents";
             } else {
-                TelemetryClient.getClient().trackEvent("openTfvcFile");
+                TelemetryClient.getClient().trackEvent("Visualization.openTfvcFile");
                 //It's a tfvc file
                 var origId = node.data("origId");
                 var changesetId = node.data("changesetId");

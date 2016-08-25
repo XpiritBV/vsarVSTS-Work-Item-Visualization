@@ -20,16 +20,34 @@ Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to 
 
 ![Orient](images/image2.png)
 
-### Export for offline viewing (Currently only supported on VSTS) ###
+### Export for offline viewing ###
 Export your chart visualization for offline viewing or printing. 
 
 ![Export](images/image5.png)
+
+### Add annotations to items on visulization (new) ###
+We have now added possibility to add additional annotations to the visualizations and pin them to the items on visualization. 
+**This is an early version with limited functionality. Please provide feedback. **
+
+![Export](images/annotations.png)
+
+### Save visualizations on project level to share (new) ###
+We have now added possibility to save and share visualizations on project level.  
+**This is an early version with limited functionality. Please provide feedback. **
+
+![Export](images/shareVisualization.png)
+
+### Find on visualiation (new) ###
+Previously the find on visualization allowed to enter and id and start visualization from it. Since we have visualization possible from all contexts now we deemed this unnecessary and thought it may be more useful to allow searching items on the visualization instead.  
+**This is an early version with limited functionality. Please provide feedback. **
+
+![Export](images/findOnVisualization.png)
 
 ## Quick steps to get started ##
 
 ![Orient](images/image6.png)
 
-- **Visualize**
+- **Visualize from Work Item form or Board**
 	1. Select a work item. 
 		- If you are using the classic WI item form, select `Visualize` on the toolbar.
 		- Otherwise click on `...` and select `Visualize`.
@@ -37,8 +55,8 @@ Export your chart visualization for offline viewing or printing.
 	1. Left click on the card on the graph to expand its links.
 	1. Right click on a card on the graph to open the item in a new window.
 	1. Click on `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To icons` on the toolbar to re-size.
-- **Visualize from Query**
-	1. Create or Open a Query.
+- **Visualize from Query or Backlog items view**
+	1. Open backlog or Create / Open a Query.
 	2. Select one or many work items.
 	3. Right Click and open context menu, select `Visualize`.
 ![Visualize from Query](images/VisualizeFromQuery.png)	

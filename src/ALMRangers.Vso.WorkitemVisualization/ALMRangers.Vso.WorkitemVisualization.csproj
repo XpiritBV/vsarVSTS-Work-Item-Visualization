@@ -40,7 +40,9 @@
   <ItemGroup>
     <Content Include="css\app.css" />
     <Content Include="css\cytoscape.js-navigator.css" />
+    <Content Include="images\annotations.png" />
     <Content Include="images\Export.png" />
+    <Content Include="images\findOnVisualization.png" />
     <Content Include="images\FitTo.png" />
     <Content Include="images\image1.png" />
     <Content Include="images\image2.png" />
@@ -53,6 +55,7 @@
     <Content Include="images\map-magnify-icon.png" />
     <Content Include="images\Refresh.png" />
     <Content Include="images\ResetZoom.png" />
+    <Content Include="images\shareVisualization.png" />
     <Content Include="images\TopToBottom.png" />
     <Content Include="images\VisualizeFromQuery.png" />
     <Content Include="images\WitVizShortIcon-16x16.png" />

@@ -98,13 +98,13 @@ define(["require", "exports", "VSS/Utils/Core",
                 items.push({ id: "direction", text: "Direction", title: "Direction", showText: false, icon: "icon-left-to-right-witviz", disabled: true, childItems: subItems2 });
 
                 items.push({ separator: true });
-                items.push({ id: "add-annotation", text: "Add Annotation", title: "Add Annotation", showText: false, disabled: false, icon: "bowtie-icon bowtie-comment icon-add-annotation-witviz" });
+                items.push({ id: "add-annotation", text: "Add Annotation", title: "Add Annotation", showText: false, disabled: true, icon: "bowtie-icon bowtie-comment icon-add-annotation-witviz" });
                 items.push({ id: "export-graph", text: "Export Visualization", title: "Export Visualization", showText: false, icon: "icon-export-witviz", disabled: true });
 
                 //Use reverse order for right align:
                 items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
-                items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: false, cssClass: "right-align" });
-                items.push({ id: "shared-visualizations", text: "Shared Visualizations", title: "Shared Visualizations", showText: false, icon: "icon-favorite-in icon-shared-visualization-witviz", disabled: false, childItems: favoritesMenu, cssClass: "right-align" });
+                items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: true, cssClass: "right-align" });
+                items.push({ id: "shared-visualizations", text: "Shared Visualizations", title: "Shared Visualizations", showText: false, icon: "icon-favorite-in icon-shared-visualization-witviz", disabled: true, childItems: favoritesMenu, cssClass: "right-align" });
                 items.push({ separator: true, cssClass: "right-align" });
 
                 return items;
@@ -507,7 +507,9 @@ define(["require", "exports", "VSS/Utils/Core",
                 { id: "force-directed", disabled: false },
                 { id: "find-work-item", disabled: false },
                 { id: "toggle-minimap", disabled: false },
-                { id: "export-graph", disabled: false }
+                { id: "export-graph", disabled: false },
+                { id: "add-annotation", disabled: false },
+                { id: "shared-visualizations", disabled: false }
             ]);
         }
 

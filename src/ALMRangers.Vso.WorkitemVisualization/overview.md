@@ -27,7 +27,7 @@ Export your chart visualization for offline viewing or printing.
 
 ### Add annotations to items on visulization
 
-> NEW - *This is an early version with limited functionality. Please provide feedback.*
+> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
 
 We have now added possibility to add additional annotations to the visualizations and pin them to the items on visualization. 
 
@@ -35,7 +35,7 @@ We have now added possibility to add additional annotations to the visualization
 
 ### Save visualizations on project level to share
 
-> NEW - *This is an early version with limited functionality. Please provide feedback.*
+> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
 
 We have now added possibility to save and share visualizations on project level.  
 
@@ -43,7 +43,7 @@ We have now added possibility to save and share visualizations on project level.
 
 ### Find on visualization
 
-> NEW - *This is an early version with limited functionality. Please provide feedback.*
+> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
 
 Previously the find on visualization allowed to enter and id and start visualization from it. Since we have visualization possible from all contexts now we deemed this unnecessary and thought it may be more useful to allow searching items on the visualization instead.  
 

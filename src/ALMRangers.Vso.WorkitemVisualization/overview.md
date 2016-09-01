@@ -29,7 +29,7 @@ Export your chart visualization for offline viewing or printing.
 
 > **NEW** - *This is an early version with limited functionality. Please provide feedback.*
 
-We have now added possibility to add additional annotations to the visualizations and pin them to the items on visualization. 
+Add additional annotations to the visualizations and pin them to the items on visualization. 
 
 ![Export](images/annotations.png)
 
@@ -37,7 +37,7 @@ We have now added possibility to add additional annotations to the visualization
 
 > **NEW** - *This is an early version with limited functionality. Please provide feedback.*
 
-We have now added possibility to save and share visualizations on project level.  
+Save and share visualizations on project level.  
 
 ![Export](images/shareVisualization.png)
 

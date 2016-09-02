@@ -25,7 +25,7 @@ Export your chart visualization for offline viewing or printing.
 
 ![Export](images/image5.png)
 
-### Add annotations to items on visulization
+### Add annotations to items on visualization
 
 > **NEW** - *This is an early version with limited functionality. Please provide feedback.*
 

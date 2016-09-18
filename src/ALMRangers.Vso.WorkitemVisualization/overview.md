@@ -1,49 +1,55 @@
-## Visualize work item relationships ##
+## Visualize work item relationships
 
 [![Demo](images/wvizdemo.png)](https://channel9.msdn.com/Series/Visual-Studio-ALM-Rangers-Demos/VS-Team-Services-Work-Item-Visualization-Extension) In Visual Studio Team Services you can add, edit and display work items in query results and various boards. With this extension you can visualize these work items from within the work item form. 
 
 ![Visualize](images/image1.png)
 
-### Drill-down in your chart and even visualize commits ###
+### Drill-down in your chart and even visualize commits
 
 You can visually see how work items relate to each other, as well as code, tests, test results, builds and external artifacts. Even drill into your commits to explore the changeset details.
 
 ![Commit](images/image4.png)
 
-### Highlight what's important ###
+### Highlight what's important
 Use colors to highlight important work item types within your visualization.
 
 ![Highlight](images/image3.png)
 
-### Focus on what's important ###
+### Focus on what's important
 Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to zoom in and out of your chart. Switch the orientation of your chart between `horizontal` and `vertical` view.
 
 ![Orient](images/image2.png)
 
-### Export for offline viewing ###
+### Export for offline viewing
 Export your chart visualization for offline viewing or printing. 
 
 ![Export](images/image5.png)
 
-### Add annotations to items on visulization (new) ###
-We have now added possibility to add additional annotations to the visualizations and pin them to the items on visualization. 
-**This is an early version with limited functionality. Please provide feedback. **
+### Add annotations to items on visualization
+
+> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
+
+Add additional annotations to the visualizations and pin them to the items on visualization. 
 
 ![Export](images/annotations.png)
 
-### Save visualizations on project level to share (new) ###
-We have now added possibility to save and share visualizations on project level.  
-**This is an early version with limited functionality. Please provide feedback. **
+### Save visualizations on project level to share
+
+> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
+
+Save and share visualizations on project level.  
 
 ![Export](images/shareVisualization.png)
 
-### Find on visualiation (new) ###
+### Find on visualization
+
+> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
+
 Previously the find on visualization allowed to enter and id and start visualization from it. Since we have visualization possible from all contexts now we deemed this unnecessary and thought it may be more useful to allow searching items on the visualization instead.  
-**This is an early version with limited functionality. Please provide feedback. **
 
 ![Export](images/findOnVisualization.png)
 
-## Quick steps to get started ##
+## Quick steps to get started
 
 ![Orient](images/image6.png)
 
@@ -70,15 +76,15 @@ Previously the find on visualization allowed to enter and id and start visualiza
 
 > Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.
 
-### TFS On-Prem ###
+### TFS On-Prem
 
 We recommend TFS 2015 Update 3 when running this extension.
 
-## Contributors ##
+## Contributors
 
 We thank the following contributor(s) for this extension: **Jeff Levinson, Taavi Koosaar and Mattias Sköld**.
 
-## Feedback ##
+## Feedback
 
 We need your feedback! Here are some of the ways to connect with us:
 

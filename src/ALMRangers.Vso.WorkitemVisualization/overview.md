@@ -70,13 +70,13 @@ Previously the find on visualization allowed to enter and id and start visualiza
 
 > Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.
 
-### TFS On-Premis ###
+### TFS On-Prem ###
 
 We recommend TFS 2015 Update 3 when running this extension.
 
 ## Contributors ##
 
-We thank the following contributor(s) for this extension: Taavi Koosaar and Mattias Sköld.
+We thank the following contributor(s) for this extension: **Jeff Levinson, Taavi Koosaar and Mattias Sköld**.
 
 ## Feedback ##
 

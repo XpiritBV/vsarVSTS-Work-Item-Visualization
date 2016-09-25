@@ -23,7 +23,7 @@ define(["require", "exports", "scripts/lib/ai.0.22.9-build00167"],
                 try {
                     var snippet = {
                         config: {
-                            instrumentationKey: "8a6fff69-1bed-4711-afb9-bdb4395ca8ea",
+                            instrumentationKey: "__INSTRUMENTATIONKEY__",
                         }
                     };
                     var x = VSS.getExtensionContext();

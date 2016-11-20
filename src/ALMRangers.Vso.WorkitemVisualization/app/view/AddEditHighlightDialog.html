@@ -1,0 +1,80 @@
+﻿<!--
+ //---------------------------------------------------------------------
+ // <copyright file="AddEditHighlightDialog.html">
+ //    This code is licensed under the MIT License.
+ //    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF
+ //    ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED
+ //    TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A
+ //    PARTICULAR PURPOSE AND NONINFRINGEMENT.
+ // </copyright>
+ // <summary>
+ //   Part of the Work Item Visualization extension by the
+ //     ALM Rangers.  This file displays the view to add or edit highlight.
+ //  </summary>
+ //---------------------------------------------------------------------
+-->
+
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Add/Edit highlight</title>
+    <meta charset="utf-8"/>
+    <link rel="stylesheet" href="../../css/app.css" type="text/css" />
+    <script src="../../app/js/AppInsightPageViewsTelemetry.js"></script>
+    <script src="../../lib/VSS.SDK.js"></script>
+    <script src="../../lib/ai.0.22.9-build00167.js"></script>
+</head>
+<body>
+<div id="message"></div>
+
+<div id="loader">
+    <!-- Show for Add-->
+    <div id="addForm" style="display: none">
+        <label for="itemType">Apply legend to</label>
+        <select name="itemType" id="itemType" style="width: 150px">
+            <option value=""></option>
+            <option value="Work Item Type">Work Item Type</option>
+            <option value="Category">Category</option>
+            <option value="State">State</option>
+        </select>
+        <select name="selectItemType" id="selectItemType" style="width: 150px"><option value=""></option></select>
+    </div>
+    <!-- Use table temporarily based on original code-->
+    <table>
+        <tr>
+            <td style="padding-top: 20px; padding-bottom: 20px; padding-right: 20px">Sample Text:</td>
+            <td style="padding-bottom: 3px; height: 20px">
+                <span id="sampleLegend" class="legend" style="border-width: thin; padding: 5px; border-style: solid"> Text </span>
+            </td>
+        </tr>
+        <tr>
+            <td>Text:</td><td>
+                <input type="color" id="textcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>Background:</td><td>
+                <input type="color" id="bgcolor">
+            </td>
+        </tr>
+        <tr>
+            <td>Border:</td><td>
+                <input type="color" id="bordercolor">
+            </td>
+        </tr>
+    </table>
+</div>
+    <script>
+    VSS.init({
+        explicitNotifyLoaded: true
+    });
+    VSS.require(["app/js/AddEditHighlightDialog"], function (app) {
+        VSS.register("work-item-visualization-add-edit-highlight-dialog", function (context) {
+            return new app.AddEditHighlightDialog(context);
+        });
+        VSS.notifyLoadSucceeded();
+    });
+    </script>
+</body>
+</html>

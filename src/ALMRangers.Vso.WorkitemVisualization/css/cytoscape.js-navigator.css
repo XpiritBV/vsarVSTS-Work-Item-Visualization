@@ -3,12 +3,14 @@
 	border: 1px solid #000;
 	background: #fff;
 	z-index: 99999;
-	width: 200px;
-	height: 100px;
-	/*bottom: 0;
+	/*width: 400px;
+	height: 400px;
+	bottom: 0;
 	right: 0;*/
-    left: 10px;
-    top: 82px;
+	width: 250px;
+	height: 150px;
+	left: 10px;
+    top: 48px;
 	overflow: hidden;
 }
 

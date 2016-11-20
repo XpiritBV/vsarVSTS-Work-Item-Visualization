@@ -1,0 +1,8 @@
+{
+  "id": "WorkItemVisualization-devlocal",
+  "name": "Work Item Visualization (Local Uri)",
+  "publisher": "taavi-koosaar",
+  "baseUri": "https://localhost:44301/",
+  "public": false,
+  "version": "1.4.0"
+}

@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "id": "WorkItemVisualization",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "name": "Work Item Visualization",
   "description": "Visualize relationships between work items from within the work item form.",
   "public": true,
@@ -40,7 +40,7 @@
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],
       "properties": {
-        "uri": "WorkitemVisualization.html"
+        "uri": "app/view/WorkitemVisualization.html"
       }
     },
     {
@@ -55,7 +55,7 @@
         "title": "Visualize this workitem",
         "toolbarText": "Visualize",
         "icon": "images/WitVizShortIcon-16x16.png",
-        "uri": "VisualizeWitButton.html",
+        "uri": "app/view/VisualizeWitButton.html",
         "registeredObjectId": "visualize-work-item-action"
       }
     },
@@ -64,7 +64,7 @@
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],
       "properties": {
-        "uri": "FindWitDialog.html"
+        "uri": "app/view/FindWitDialog.html"
       }
     },
     {
@@ -72,7 +72,7 @@
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],
       "properties": {
-        "uri": "AddEditHighlightDialog.html"
+        "uri": "app/view/AddEditHighlightDialog.html"
       }
     },
     {
@@ -80,7 +80,7 @@
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],
       "properties": {
-        "uri": "PrintGraph.html"
+        "uri": "app/view/PrintGraph.html"
       }
     }
   ],
@@ -102,27 +102,11 @@
       "addressable": true
     },
     {
-      "path": "scripts",
+      "path": "app",
       "addressable": true
     },
     {
-      "path": "AddEditHighlightDialog.html",
-      "addressable": true
-    },
-    {
-      "path": "FindWitDialog.html",
-      "addressable": true
-    },
-    {
-      "path": "PrintGraph.html",
-      "addressable": true
-    },
-    {
-      "path": "VisualizeWitButton.html",
-      "addressable": true
-    },
-    {
-      "path": "WorkitemVisualization.html",
+      "path": "lib",
       "addressable": true
     },
     {

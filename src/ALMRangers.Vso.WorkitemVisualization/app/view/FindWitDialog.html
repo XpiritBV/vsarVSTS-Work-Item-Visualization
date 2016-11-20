@@ -37,9 +37,9 @@
     VSS.init({
         explicitNotifyLoaded: true
     });
-    VSS.require(["app/js/FindWitDialog"], function (app) {
+    VSS.require(["app/js/WorkItemVisualization"], function (app) {
         VSS.register("work-item-visualization-find-wit-dialog", function (context) {
-            return new app.FindWitDialog(context);
+            return app.FindWitDialog(context);
         });
         VSS.notifyLoadSucceeded();
     });

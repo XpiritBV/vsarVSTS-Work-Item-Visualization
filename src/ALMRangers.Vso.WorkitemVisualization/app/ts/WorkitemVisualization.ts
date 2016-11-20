@@ -28,6 +28,11 @@ import * as TelemetryClient from "./TelemetryClient"
 import * as WorkitemVisualizationGraph from "./WorkitemVisualizationGraph"
 import * as NodeData from "./Node"
 
+import * as HighlightDlg from "./AddEditHighlightDialog"
+import * as FindDlg from "./FindWitDialog"
+import * as PrntGraph from "./PrintGraph"
+
+
 export class WorkitemVisualization
 {
     private linkTypes : any;
@@ -43,7 +48,7 @@ export class WorkitemVisualization
         this.nodeDataFactory = new NodeData.NodeDataFactory();  
     }
 
-    start () {
+    public start () {
                 var self = this;
 
                 self.mainMenu = Controls.Enhancement.enhance(MainMenu.MainMenu, $(".hub-view"), {});
@@ -518,4 +523,17 @@ export class WorkitemVisualization
             }
 
 }
+
+export function PrintGraph(context) {
+    return new PrntGraph.PrintGraph(context);
+}
+
+export function AddEditHighlightDialog(context){
+    return new HighlightDlg.AddEditHighlightDialog(context);
+}
+
+export function FindWitDialog(context){
+    return new  FindDlg.FindWitDialog(context);
+}
+
 export let witviz = new WorkitemVisualization();

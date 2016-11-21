@@ -19,14 +19,15 @@ module.exports = function (grunt) {
             }
         },
         ts: {
-            options: {
-                "target": "es5",
-                "module": "amd",
-                "outDir": "app/js",
-                "sourceMap": true
-            },
             default : {
-                src: ["typings/tsd.d.ts", "app/ts/*.ts", "!node_modules/**/*.ts"]
+                src: ["typings/tsd.d.ts", "app/ts/*.ts", "!node_modules/**/*.ts"],
+                outDir: "app/js",
+                options: {
+                    target: "es5",
+                    module: "amd",
+                    sourceMap: true
+                }
+                
             }
         },
         

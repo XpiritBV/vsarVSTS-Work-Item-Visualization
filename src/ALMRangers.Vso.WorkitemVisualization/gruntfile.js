@@ -18,7 +18,13 @@ module.exports = function (grunt) {
                 stderr: true
             }
         },
-         ts: {
+        ts: {
+            options: {
+                "target": "es5",
+                "module": "amd",
+                "outDir": "app/js",
+                "sourceMap": true}
+            ,
             default : {
                 src: ["app/ts/*.ts", "!node_modules/**/*.ts"]
             }
@@ -73,6 +79,7 @@ module.exports = function (grunt) {
     });
 
     grunt.loadNpmTasks("grunt-exec");
+    grunt.loadNpmTasks("grunt-ts");
     grunt.loadNpmTasks("grunt-contrib-jasmine");
     grunt.loadNpmTasks('grunt-contrib-uglify');
     grunt.loadNpmTasks('grunt-contrib-concat');

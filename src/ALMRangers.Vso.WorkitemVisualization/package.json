@@ -27,6 +27,7 @@
     "vss-web-extension-sdk": "^1.106.0",
     "tsd": "^0.6.5",
     "typescript": "^2.0.6",
+    "grunt-ts":"^5.5.1",
     "grunt-contrib-concat": "^0.4.0",
     "grunt-contrib-uglify": "^2.0.0",
     "cytoscape": "^2.7.10",

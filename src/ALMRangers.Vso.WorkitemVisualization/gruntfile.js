@@ -18,6 +18,12 @@ module.exports = function (grunt) {
                 stderr: true
             }
         },
+         ts: {
+            default : {
+                src: ["app/ts/*.ts", "!node_modules/**/*.ts"]
+            }
+        },
+        
         jasmine: {
             src: ["scripts/**/*.js", "sdk/**/*.js"],
             specs: "test/**/*[sS]pec.js",

@@ -23,10 +23,10 @@ module.exports = function (grunt) {
                 "target": "es5",
                 "module": "amd",
                 "outDir": "app/js",
-                "sourceMap": true}
-            ,
+                "sourceMap": true
+            },
             default : {
-                src: ["app/ts/*.ts", "!node_modules/**/*.ts"]
+                src: ["typings/tsd.d.ts", "app/ts/*.ts", "!node_modules/**/*.ts"]
             }
         },
         

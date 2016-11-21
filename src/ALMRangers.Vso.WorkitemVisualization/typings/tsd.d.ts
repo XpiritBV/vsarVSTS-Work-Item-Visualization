@@ -7,3 +7,4 @@
 /// <reference path="../node_modules/vss-web-extension-sdk/typings/tfs.d.ts" />
 /// <reference path="ai/ai.0.22.9-build00167.d.ts" />
 /// <reference path="cytoscape/cytoscape.d.ts" />
+/// <reference path="react/react.d.ts" />

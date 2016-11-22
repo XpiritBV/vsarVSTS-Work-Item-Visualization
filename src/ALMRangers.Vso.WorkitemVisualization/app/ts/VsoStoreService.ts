@@ -26,10 +26,10 @@ import Tfs_Vc_Contracts = require("TFS/VersionControl/Contracts")
  */
 export class VsoStoreService {
     private vsoContext : WebContext;
-    private witClient : Tfs_Wit_Client.WorkItemTrackingHttpClient2_3;
-    private coreClient : Tfs_Core_Client.CoreHttpClient2_3;
-    private gitClient : Tfs_Git_Client.GitHttpClient2_3;
-    private tfvcClient : Tfs_Tfvc_Client.TfvcHttpClient2_3;
+    private witClient : Tfs_Wit_Client.WorkItemTrackingHttpClient2_2;
+    private coreClient : Tfs_Core_Client.CoreHttpClient2_2;
+    private gitClient : Tfs_Git_Client.GitHttpClient2_2;
+    private tfvcClient : Tfs_Tfvc_Client.TfvcHttpClient3;
     constructor() {
                     this.vsoContext = VSS.getWebContext();
 

@@ -69,7 +69,7 @@
     VSS.init({
         explicitNotifyLoaded: true
     });
-    VSS.require(["app/js/AddEditHighlightDialog"], function (app) {
+    VSS.require(["app/js/WorkItemVisualization"], function (app) {
         VSS.register("work-item-visualization-add-edit-highlight-dialog", function (context) {
             return new app.AddEditHighlightDialog(context);
         });

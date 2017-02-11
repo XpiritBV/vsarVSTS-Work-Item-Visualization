@@ -27,7 +27,7 @@ module.exports = function (grunt) {
                     module: "amd",
                     moduleResolution: "classic",
                     sourceMap: true,
-                    tsconfig: true,                    
+                    //tsconfig: true,                    
                 }
                 
             }

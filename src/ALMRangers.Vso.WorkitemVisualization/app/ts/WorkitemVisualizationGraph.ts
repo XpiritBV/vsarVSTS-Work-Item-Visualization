@@ -36,18 +36,17 @@ export class WorkitemVisualizationGraph {
     private _contextMenus: any;
     private _currentFilter: Common.FilterTypes;
     private _hideCategoryList: Array<string>;
+    private _showCategoryList: Array<string>;
 
     constructor(container, cytoscape) {
         this._container = container;
         this.direction = 'LR';
         this.cytoscape = cytoscape;
         this.cy = null;
+        //TODO: Separate out the default filter and hide category list
         this._currentFilter = Common.FilterTypes.WorkItemOnly;
-        this._hideCategoryList = new Array<string>();
-        this._hideCategoryList.push(Common.Categories.Changeset);
-        this._hideCategoryList.push(Common.Categories.Commit);
-        this._hideCategoryList.push(Common.Categories.File);
-        this._hideCategoryList.push(Common.Categories.PullRequest);
+        this._hideCategoryList = this.getHideCategories(this._currentFilter);
+        this._showCategoryList = this.getShowCategories(this._currentFilter);
     }
 
 
@@ -150,70 +149,19 @@ export class WorkitemVisualizationGraph {
                 self.cy.minZoom(0.1);
                 self.cy.maxZoom(5);
                 self.cy.userZoomingEnabled(false);
+                self.cy.boxSelectionEnabled(false);
                 self.cy.zoom(1);
 
                 self.cy.viewUtilities();
 
-                var expandItem = function (e) {
-                    e.preventDefault();
-
-                    var expanded = e.cyTarget.data("expanded");
-
-                    //Load and add elements if no expanded metadata on the node
-                    if (expanded === null || expanded === undefined) {
-                        self._expandNodeCallback(e.cyTarget);
-                    }
-                    //Expand if its currently Expanded = false
-                    else if (expanded === false) {
-                        e.cyTarget.successors().showEles();
-                        e.cyTarget.data("expanded", true);
-                        self.refreshLayout();
-                    }
-                }
-
-                var collapseItem = function (e) {
-                    e.preventDefault();
-
-                    var expanded = e.cyTarget.data("expanded");
-                    //Collapse if its currently Expanded = true
-                    if (expanded === true) {
-                        e.cyTarget.successors().hideEles();
-                        e.cyTarget.data("expanded", false);
-                        self.refreshLayout();
-                    }
-                }
-
                 self.cy.on('tap', 'node', function (e) {
-                    expandItem(e);
+                    TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.Tap.Expand");
+                    self.expandItem(e);
                 });
 
                 callback();
 
-                var onRightClick = function (e) {
-                    e.preventDefault();
-
-                    var category = e.cyTarget.data("category");
-                    switch (category) {
-                        case "Work Item":
-                            self.openWorkitem(e.cyTarget);
-                            break;
-                        case "Changeset":
-                        case "Commit":
-                            self.openCheckin(e.cyTarget);
-                            break;
-                        case "File":
-                            self.openFile(e.cyTarget);
-                            break;
-                        case "Pull Request":
-                            self.openPullRequest(e.cyTarget);
-                            break;
-                        case "Annotation":
-                            self.openAnnotation(e.cyTarget);
-                            break;
-                    }
-                }
-
-                this._contextMenus = self.cy.contextMenus({
+                self._contextMenus = self.cy.contextMenus({
                     menuItems: [
                         {
                             id: 'openInNewWindow', // ID of menu item
@@ -221,7 +169,7 @@ export class WorkitemVisualizationGraph {
                             // Filters the elements to have this menu item on cxttap
                             // If the selector is not truthy no elements will have this menu item on cxttap
                             selector: 'node[category!="Annotation"]', //category: "Annotation",
-                            onClickFunction: onRightClick,
+                            onClickFunction: self.openInNewWindow.bind(self),
                             disabled: false, // Whether the item will be created as disabled
                             hasTrailingDivider: true, // Whether the item will have a trailing divider
                             coreAsWell: false // Whether core instance have this item on cxttap
@@ -232,7 +180,7 @@ export class WorkitemVisualizationGraph {
                             // Filters the elements to have this menu item on cxttap
                             // If the selector is not truthy no elements will have this menu item on cxttap
                             selector: "node[!expanded][category!='Annotation']",
-                            onClickFunction: expandItem,
+                            onClickFunction: self.expandItemFromContextMenu.bind(self),
                             disabled: false, // Whether the item will be created as disabled
                             hasTrailingDivider: true, // Whether the item will have a trailing divider
                             coreAsWell: false // Whether core instance have this item on cxttap
@@ -243,7 +191,18 @@ export class WorkitemVisualizationGraph {
                             // Filters the elements to have this menu item on cxttap
                             // If the selector is not truthy no elements will have this menu item on cxttap
                             selector: "node[?expanded][category!='Annotation']",
-                            onClickFunction: collapseItem,
+                            onClickFunction: self.collapseItem.bind(self),
+                            disabled: false, // Whether the item will be created as disabled
+                            hasTrailingDivider: true, // Whether the item will have a trailing divider
+                            coreAsWell: false // Whether core instance have this item on cxttap
+                        },
+                        {
+                            id: 'removeAnnotationNode', // ID of menu item
+                            title: 'remove', // Title of menu item
+                            // Filters the elements to have this menu item on cxttap
+                            // If the selector is not truthy no elements will have this menu item on cxttap
+                            selector: "node[category='Annotation']",
+                            onClickFunction: self.removeAnnotationNode.bind(self),
                             disabled: false, // Whether the item will be created as disabled
                             hasTrailingDivider: true, // Whether the item will have a trailing divider
                             coreAsWell: false // Whether core instance have this item on cxttap
@@ -256,6 +215,77 @@ export class WorkitemVisualizationGraph {
                 });
             }
         });
+    }
+
+    expandItemFromContextMenu(e) {
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ContenxtMenu.Expand");
+        this.expandItem(e);
+    }
+
+    expandItem(e) {
+        e.preventDefault();
+        var self = this;
+        var expanded = e.cyTarget.data("expanded");
+
+        //Load and add elements if no expanded metadata on the node
+        if (expanded === null || expanded === undefined) {
+            self._expandNodeCallback(e.cyTarget);
+        }
+        //Expand if its currently Expanded = false
+        else if (expanded === false) {
+            var showFilter = self.getCategoryFilter(self._hideCategoryList, false, '@!=');
+            e.cyTarget.successors(showFilter).show();
+            e.cyTarget.data("expanded", true);
+            self.refreshLayout();
+        }
+    }
+
+    collapseItem(e) {
+        e.preventDefault();
+        var self = this;
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ContenxtMenu.Collapse");
+        var expanded = e.cyTarget.data("expanded");
+        //Collapse if its currently Expanded = true
+        if (expanded === true) {
+            e.cyTarget.successors().hide();
+            e.cyTarget.data("expanded", false);
+            self.refreshLayout();
+        }
+    }
+
+    openInNewWindow(e) {
+        e.preventDefault();
+        var self = this;
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ContenxtMenu.OpenInNewWindow");
+        var category = e.cyTarget.data("category");
+        switch (category) {
+            case "Work Item":
+                self.openWorkitem(e.cyTarget);
+                break;
+            case "Changeset":
+            case "Commit":
+                self.openCheckin(e.cyTarget);
+                break;
+            case "File":
+                self.openFile(e.cyTarget);
+                break;
+            case "Pull Request":
+                self.openPullRequest(e.cyTarget);
+                break;
+            case "Annotation":
+                self.openAnnotation(e.cyTarget);
+                break;
+        }
+    }
+
+    removeAnnotationNode(e: any) {
+        e.preventDefault();
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ContextMenu.RemoveAnnotationNode");
+
+        var self = this;
+        var incomers = e.cyTarget.incomers();
+        e.cyTarget.remove();
+        incomers.remove();
     }
 
     openWorkitem(node) {
@@ -400,68 +430,106 @@ export class WorkitemVisualizationGraph {
         return matchingElements;
     }
 
-    public filterWIVisualizationGraph(newFilterValue: Common.FilterTypes) {
-        var self = this;
+    getHideCategories(newFilterValue: Common.FilterTypes): Array<string> {
         var hideCategoryList = new Array<string>();
-        var showCategoryList = new Array<string>();
-
-        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ChangedFilter");
-        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ChangeFilterTo:"+Common.FilterTypes[newFilterValue]);
-
-        self._currentFilter = newFilterValue;
 
         //Show all nodes
         if (newFilterValue == Common.FilterTypes.All) {
-            self._hideCategoryList = hideCategoryList;
-            //Currently hidden elements, show
-            self.cy.elements(":hidden").show();
-            self.refreshLayout();
-            return;
+            return hideCategoryList;
         }
         else if (newFilterValue == Common.FilterTypes.WorkItemOnly) {
             hideCategoryList.push(Common.Categories.Changeset);
             hideCategoryList.push(Common.Categories.Commit);
             hideCategoryList.push(Common.Categories.File);
             hideCategoryList.push(Common.Categories.PullRequest);
-
-            showCategoryList.push(Common.Categories.Annotation);
-            showCategoryList.push(Common.Categories.WorkItem);
-
         }
         else if (newFilterValue == Common.FilterTypes.WorkItemWithChanges) {
             hideCategoryList.push(Common.Categories.File);
             hideCategoryList.push(Common.Categories.PullRequest);
-
-            showCategoryList.push(Common.Categories.Annotation);
-            showCategoryList.push(Common.Categories.WorkItem);
-            showCategoryList.push(Common.Categories.Changeset);
-            showCategoryList.push(Common.Categories.Commit);
         }
         else if (newFilterValue == Common.FilterTypes.WorkItemWithChangesAndFiles) {
             hideCategoryList.push(Common.Categories.PullRequest);
+        }
+        return hideCategoryList;
+    }
 
+    getShowCategories(newFilterValue: Common.FilterTypes): Array<string> {
+        var showCategoryList = new Array<string>();
+
+        //Show all nodes
+        if (newFilterValue == Common.FilterTypes.All) {
+            showCategoryList.push(Common.Categories.PullRequest);
             showCategoryList.push(Common.Categories.Annotation);
             showCategoryList.push(Common.Categories.WorkItem);
             showCategoryList.push(Common.Categories.Changeset);
             showCategoryList.push(Common.Categories.Commit);
             showCategoryList.push(Common.Categories.File);
         }
+        else if (newFilterValue == Common.FilterTypes.WorkItemOnly) {
+            showCategoryList.push(Common.Categories.Annotation);
+            showCategoryList.push(Common.Categories.WorkItem);
+        }
+        else if (newFilterValue == Common.FilterTypes.WorkItemWithChanges) {
+            showCategoryList.push(Common.Categories.Annotation);
+            showCategoryList.push(Common.Categories.WorkItem);
+            showCategoryList.push(Common.Categories.Changeset);
+            showCategoryList.push(Common.Categories.Commit);
+        }
+        else if (newFilterValue == Common.FilterTypes.WorkItemWithChangesAndFiles) {
+            showCategoryList.push(Common.Categories.Annotation);
+            showCategoryList.push(Common.Categories.WorkItem);
+            showCategoryList.push(Common.Categories.Changeset);
+            showCategoryList.push(Common.Categories.Commit);
+            showCategoryList.push(Common.Categories.File);
+        }
+        return showCategoryList;
+    }
+
+    getCategoryFilter(categoryList:Array<string>, useOr:boolean, comparisonOperator:string)
+    {
+        var filter = '';
+        //default comparisonOperator is used when nothing is supplied
+        if (!comparisonOperator)
+        {
+            //case insensitive data attribute comparison
+            comparisonOperator = "@=";
+        }
+        for (var i = 0; i < categoryList.length; i++) {
+            //This will look something like [category @= "Work Item"]
+            filter += '[category '+ comparisonOperator +' "' + categoryList[i] + '"]';
+            if (useOr && i != categoryList.length - 1)
+                filter += ',';
+        }
+        return filter;
+    }
+
+    public filterWIVisualizationGraph(newFilterValue: Common.FilterTypes) {
+        var self = this;
+
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ChangedFilter");
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ChangeFilterTo:" + Common.FilterTypes[newFilterValue]);
+
+        //TODO: Separate out the logic to get the current show / hide category lists
+        var hideCategoryList = self.getHideCategories(newFilterValue);
+        var showCategoryList = self.getShowCategories(newFilterValue);
+
+        //store state on graph
+        self._currentFilter = newFilterValue;
         self._hideCategoryList = hideCategoryList;
-        //var hideFilter = 'node[:visible]';
-        var hideFilter = '';
-        for (var i = 0; i < hideCategoryList.length; i++) {
-            hideFilter += '[category @= "' + hideCategoryList[i] + '"]';
-            if (i != hideCategoryList.length - 1)
-                hideFilter += ',';
+        self._showCategoryList = showCategoryList;
+
+        //Show all nodes
+        if (newFilterValue == Common.FilterTypes.All) {
+            //Currently hidden elements, show
+            self.cy.elements(":hidden").show();
+            self.refreshLayout();
+            return;
         }
 
-        //var showFilter = 'node[:hidden]';
-        var showFilter = '';
-        for (var i = 0; i < showCategoryList.length; i++) {
-            showFilter += '[category @= "' + showCategoryList[i] + '"]';
-            if (i != showCategoryList.length - 1)
-                showFilter += ',';
-        }
+        //var hideFilter = 'node[:visible]'; style: display : element / none
+        var hideFilter = self.getCategoryFilter(hideCategoryList, true, null); 
+        //var showFilter = 'node[:hidden]'; style: display : element / none
+        var showFilter = self.getCategoryFilter(showCategoryList, true, null);
 
         self.cy.elements(showFilter).show();
         self.cy.elements(hideFilter).hide();

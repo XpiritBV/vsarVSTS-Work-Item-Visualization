@@ -3,8 +3,12 @@
     "compilerOptions": {
         "target": "es5",
         "module": "amd",
+        "moduleResolution": "classic",
         "outDir": "app/js",
         "sourceMap": true,
         "watch": true
-    }
+    },
+    "exclude": [
+        "node_modules"
+    ]
 }

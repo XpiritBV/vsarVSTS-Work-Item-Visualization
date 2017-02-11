@@ -17,7 +17,7 @@
         try {
             var snippet: any = {
                 config: {
-                    instrumentationKey: "__INSTRUMENTATIONKEY__",//8a6fff69-1bed-4711-afb9-bdb4395ca8ea
+                    instrumentationKey: "__INSTRUMENTATIONKEY__",//__INSTRUMENTATIONKEY__ = -afb9-bdb4395ca8ea
                 }
             };
             var x = VSS.getExtensionContext();

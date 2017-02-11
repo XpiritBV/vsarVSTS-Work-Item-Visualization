@@ -24,7 +24,6 @@
     <link href="../../css/cytoscape.js-navigator.css" rel="stylesheet" />
     <link href="../../css/cytoscape-context-menus.css" rel="stylesheet" />
     <script src="../../app/js/AppInsightPageViewsTelemetry.js"></script>
-    <script src="../../lib/VSS.SDK.js"></script>
     <script src="../../lib/jquery.min.js"></script>
     <script src="../../lib/cytoscape.js"></script>
     <script src="../../lib/dagre.js"></script>
@@ -33,6 +32,7 @@
     <script src="../../lib/cytoscape-context-menus.js"></script>
     <script src="../../lib/cytoscape-view-utilities.js"></script>
     <script src="../../lib/ai.0.22.9-build00167.js"></script>
+    <script src="../../lib/VSS.SDK.js"></script>
 </head>
 <body>
     <div id="createFavoriteDlg" style="display:none">
@@ -67,8 +67,16 @@
                         </div>-->
                         <div class="pivot-hub-content" style="width: 100%; height: 100%;">
                             <div class="main-content" style="width: 100%; height: 100%;">
+                                <div class="hub-pivot">
+                                    <div class="filters filter-container"></div>
+                                </div>
                                 <div class="toolbar hub-pivot-toolbar">
                                 </div>
+                                <!--<div class="filter-container" style="display: none;">
+                                    <input type="hidden" id="selectedNodeTypes" />
+                                    <input type="hidden" id="selectedLinkTypes" />
+                                    <div class="filter-container-content"></div>
+                                </div>-->
                                 <div id="message"></div>
                                 <div id="cy" class="cy"></div>
                                 <div id="cytoscape-navigator" class="cytoscape-navigator" style="display: none">
@@ -98,8 +106,9 @@
         <script type="text/javascript">
             VSS.init({
                 // Our extension will explicitly notify the host when we're done loading
-                explicitNotifyLoaded: true
-
+                explicitNotifyLoaded: true,
+                usePlatformScripts: true,
+                usePlatformStyles: true
             });
 
         // Wait for the SDK to be initialized

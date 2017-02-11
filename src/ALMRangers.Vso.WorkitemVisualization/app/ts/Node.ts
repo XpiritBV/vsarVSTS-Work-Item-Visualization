@@ -3,6 +3,11 @@ import * as NodeTemplate from "./NodeTemplate"
 class GraphItem<T> {
     public group : string;
     public data : T;
+    public style : Style;
+}
+
+class Style{
+    public display: string;
 }
 
 abstract class NodeData {
@@ -108,7 +113,7 @@ class NodeDataFactory {
             assignedTo: assigned,
             url: wit.url
         };
-        return { group: 'nodes', data: newNode };
+        return { group: 'nodes', data: newNode, style: { display: 'element'} };
     }
 
     createChangesetNodeData(cs) : GraphItem<ChangesetNodeData> {
@@ -126,7 +131,7 @@ class NodeDataFactory {
             comment: cs.comment,
             url: cs.url
         }
-        return { group: 'nodes', data: newNode };
+        return { group: 'nodes', data: newNode, style: { display: 'element'} };
     }
 
     createPullRequestNodeData(pr) : GraphItem<PRNodeData> {
@@ -145,7 +150,7 @@ class NodeDataFactory {
             url: pr.url,
             comment: ""
         }
-        return { group: 'nodes', data: newNode };
+        return { group: 'nodes', data: newNode, style: { display: 'element'} };
     }
 
     createCommitNodeData(commit, repo) : GraphItem<CommitNodeData> {
@@ -165,7 +170,7 @@ class NodeDataFactory {
             comment: commit.comment,
             url: commit.remoteUrl
         }
-        return { group: 'nodes', data: newNode };
+        return { group: 'nodes', data: newNode, style: { display: 'element'} };
     }
 
     createFileNodeData(change, changesetId) : GraphItem<CsFileNodeData> {
@@ -188,7 +193,7 @@ class NodeDataFactory {
             content: cardText
         };
 
-        return { group: 'nodes', data: newNode };
+        return { group: 'nodes', data: newNode, style: { display: 'element'} };
     }
 
     createCommitFileNodeData(change, data) : GraphItem<CommitFileNodeData>{
@@ -213,7 +218,7 @@ class NodeDataFactory {
             content: cardText
         };
 
-        return { group: 'nodes', data: newNode };
+        return { group: 'nodes', data: newNode, style: { display: 'element'} };
     }
 
     createNoteData(id, title, txt, shapeType, size, backgroundColor, linkedtoId) : GraphItem<NoteNodeData> {
@@ -233,7 +238,7 @@ class NodeDataFactory {
             bgImage: this._nodeTempladeFactory.getNoteBackground(title, txt, shapeType, size, backgroundColor, borderColor, undefined),
         };
 
-        return { group: 'nodes', data: newNode };
+        return { group: 'nodes', data: newNode, style: { display: 'element'} };
     }
 
     createNodeEdgeData(source, target, name) : GraphItem<EdgeData> {
@@ -244,7 +249,8 @@ class NodeDataFactory {
                 source: source,
                 target: target,
                 name: name
-            }
+            },
+            style: { display: 'element'}
         };
     }
 }

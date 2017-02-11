@@ -17,9 +17,10 @@
 import * as AnnotationForm from "./AnnotationForm"
 import * as TelemetryClient from "./TelemetryClient"
 import * as NodeData from "./Node"
+import * as Common from "./Common"
 
-declare function unescape(s:string): string;
-interface IHostNavigationService { openNewWindow : any; }
+declare function unescape(s: string): string;
+interface IHostNavigationService { openNewWindow: any; }
 
 export class WorkitemVisualizationGraph {
     private _navigator = null;
@@ -32,19 +33,27 @@ export class WorkitemVisualizationGraph {
     public direction = 'LR';
     private cy: any;
     private cytoscape: any; // turn into real types once we upgrade cytoscape to be npm package
-    private _contextMenus : any;
+    private _contextMenus: any;
+    private _currentFilter: Common.FilterTypes;
+    private _hideCategoryList: Array<string>;
 
     constructor(container, cytoscape) {
         this._container = container;
         this.direction = 'LR';
         this.cytoscape = cytoscape;
         this.cy = null;
+        this._currentFilter = Common.FilterTypes.WorkItemOnly;
+        this._hideCategoryList = new Array<string>();
+        this._hideCategoryList.push(Common.Categories.Changeset);
+        this._hideCategoryList.push(Common.Categories.Commit);
+        this._hideCategoryList.push(Common.Categories.File);
+        this._hideCategoryList.push(Common.Categories.PullRequest);
     }
 
 
     navigateTo = (url): void => {
         // Get navigation service
-        VSS.getService(VSS.ServiceIds.Navigation).then(function (navigationService : IHostNavigationService) {
+        VSS.getService(VSS.ServiceIds.Navigation).then(function (navigationService: IHostNavigationService) {
             //Check if openNewWindow is available
             if (navigationService.openNewWindow) {
                 navigationService.openNewWindow(url, "");
@@ -145,28 +154,24 @@ export class WorkitemVisualizationGraph {
 
                 self.cy.viewUtilities();
 
-                var expandItem = function(e)
-                {
+                var expandItem = function (e) {
                     e.preventDefault();
 
                     var expanded = e.cyTarget.data("expanded");
 
                     //Load and add elements if no expanded metadata on the node
-                    if (expanded === null || expanded === undefined)
-                    {
+                    if (expanded === null || expanded === undefined) {
                         self._expandNodeCallback(e.cyTarget);
                     }
                     //Expand if its currently Expanded = false
-                    else if (expanded === false)
-                    {
+                    else if (expanded === false) {
                         e.cyTarget.successors().showEles();
                         e.cyTarget.data("expanded", true);
                         self.refreshLayout();
                     }
                 }
 
-                var collapseItem = function(e)
-                {
+                var collapseItem = function (e) {
                     e.preventDefault();
 
                     var expanded = e.cyTarget.data("expanded");
@@ -237,7 +242,7 @@ export class WorkitemVisualizationGraph {
                             title: 'collapse', // Title of menu item
                             // Filters the elements to have this menu item on cxttap
                             // If the selector is not truthy no elements will have this menu item on cxttap
-                            selector: "node[?expanded][category!='Annotation']", 
+                            selector: "node[?expanded][category!='Annotation']",
                             onClickFunction: collapseItem,
                             disabled: false, // Whether the item will be created as disabled
                             hasTrailingDivider: true, // Whether the item will have a trailing divider
@@ -364,8 +369,8 @@ export class WorkitemVisualizationGraph {
     findBySelector(selector) {
         return this.cy.$(selector);
     }
-
-    findAndHighlight(id, category) {
+    //TODO: Define types on parameters
+    findByIdAndCategory(id, category) {
         var self = this;
 
         var filter = '';
@@ -380,12 +385,89 @@ export class WorkitemVisualizationGraph {
         else if (category === "File") {
             filter = 'node[file @*= "' + id + '"][category @= "' + category + '"]';
         }
-
+        //TODO: Use getNodes(filter)
         var matchingElements = self.cy.elements(filter);
+        return matchingElements;
+    }
+    //TODO: Define types
+    findAndHighlight(id, category) {
+        var self = this;
+
+        var matchingElements = self.findByIdAndCategory(id, category);
+
         self.cy.elements(":selected").unselect();
         matchingElements.select();
         return matchingElements;
     }
+
+    public filterWIVisualizationGraph(newFilterValue: Common.FilterTypes) {
+        var self = this;
+        var hideCategoryList = new Array<string>();
+        var showCategoryList = new Array<string>();
+
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ChangedFilter");
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ChangeFilterTo:"+Common.FilterTypes[newFilterValue]);
+
+        self._currentFilter = newFilterValue;
+
+        //Show all nodes
+        if (newFilterValue == Common.FilterTypes.All) {
+            self._hideCategoryList = hideCategoryList;
+            //Currently hidden elements, show
+            self.cy.elements(":hidden").show();
+            self.refreshLayout();
+            return;
+        }
+        else if (newFilterValue == Common.FilterTypes.WorkItemOnly) {
+            hideCategoryList.push(Common.Categories.Changeset);
+            hideCategoryList.push(Common.Categories.Commit);
+            hideCategoryList.push(Common.Categories.File);
+            hideCategoryList.push(Common.Categories.PullRequest);
+
+            showCategoryList.push(Common.Categories.Annotation);
+            showCategoryList.push(Common.Categories.WorkItem);
+
+        }
+        else if (newFilterValue == Common.FilterTypes.WorkItemWithChanges) {
+            hideCategoryList.push(Common.Categories.File);
+            hideCategoryList.push(Common.Categories.PullRequest);
+
+            showCategoryList.push(Common.Categories.Annotation);
+            showCategoryList.push(Common.Categories.WorkItem);
+            showCategoryList.push(Common.Categories.Changeset);
+            showCategoryList.push(Common.Categories.Commit);
+        }
+        else if (newFilterValue == Common.FilterTypes.WorkItemWithChangesAndFiles) {
+            hideCategoryList.push(Common.Categories.PullRequest);
+
+            showCategoryList.push(Common.Categories.Annotation);
+            showCategoryList.push(Common.Categories.WorkItem);
+            showCategoryList.push(Common.Categories.Changeset);
+            showCategoryList.push(Common.Categories.Commit);
+            showCategoryList.push(Common.Categories.File);
+        }
+        self._hideCategoryList = hideCategoryList;
+        //var hideFilter = 'node[:visible]';
+        var hideFilter = '';
+        for (var i = 0; i < hideCategoryList.length; i++) {
+            hideFilter += '[category @= "' + hideCategoryList[i] + '"]';
+            if (i != hideCategoryList.length - 1)
+                hideFilter += ',';
+        }
+
+        //var showFilter = 'node[:hidden]';
+        var showFilter = '';
+        for (var i = 0; i < showCategoryList.length; i++) {
+            showFilter += '[category @= "' + showCategoryList[i] + '"]';
+            if (i != showCategoryList.length - 1)
+                showFilter += ',';
+        }
+
+        self.cy.elements(showFilter).show();
+        self.cy.elements(hideFilter).hide();
+        self.refreshLayout();
+    }
+
 
     fitTo() {
         this.cy.fit();
@@ -410,7 +492,7 @@ export class WorkitemVisualizationGraph {
         var self = this;
         if (this._navigator === null) {
             //initialize
-            this._navigator = this.cy.navigator({ 
+            this._navigator = this.cy.navigator({
                 //this._container.cytoscapeNavigator({
                 // options go here
                 container: $('#cytoscape-navigator')
@@ -470,6 +552,10 @@ export class WorkitemVisualizationGraph {
         for (var i = 0; i < nodes.length; i++) {
             var node = self.cy.getElementById(nodes[i].data.origId);
             if (node.empty()) {
+                //if the category should be hidden, then hide it
+                if (self._hideCategoryList.indexOf(nodes[i].data.category) > -1) {
+                    nodes[i].style.display = 'none';
+                }
                 elements.push(nodes[i]);
             }
         }
@@ -516,13 +602,11 @@ export class WorkitemVisualizationGraph {
             });
     }
 
-    load(elements)
-    {
+    load(elements) {
         this.cy.load(elements);
     }
 
-    json()
-    {
+    json() {
         return this.cy.json();
     }
 
@@ -534,4 +618,4 @@ export class WorkitemVisualizationGraph {
     }
 }
 
-export let graph =  new WorkitemVisualizationGraph($("#cy"), cytoscape);
+export let graph = new WorkitemVisualizationGraph($("#cy"), cytoscape);

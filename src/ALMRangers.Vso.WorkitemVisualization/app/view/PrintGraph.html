@@ -36,9 +36,9 @@
     VSS.init({
         explicitNotifyLoaded: true
     });
-    VSS.require(["app/js/WorkItemVisualization"], function(app) {
+    VSS.require(["app/js/PrintGraph"], function(app) {
         VSS.register("work-item-visualization-print-graph-dialog", function (context) {
-            return app.PrintGraph(context);
+            return new app.PrintGraph(context);
         });
         VSS.notifyLoadSucceeded();
     });

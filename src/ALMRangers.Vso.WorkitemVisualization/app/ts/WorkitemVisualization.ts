@@ -523,17 +523,7 @@ export class WorkitemVisualization {
     }
 
 }
-
-export function PrintGraph(context) {
-    return new PrntGraph.PrintGraph(context);
-}
-
-export function AddEditHighlightDialog(context) {
-    return new HighlightDlg.AddEditHighlightDialog(context);
-}
-
-export function FindWitDialog(context) {
-    return new FindDlg.FindWitDialog(context);
-}
-
+// export function PrintGraph(context) {
+//     return new PrntGraph.PrintGraph(context);
+// }
 export let witviz = new WorkitemVisualization();

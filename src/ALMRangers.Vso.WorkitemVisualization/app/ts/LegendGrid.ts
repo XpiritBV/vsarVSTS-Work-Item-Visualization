@@ -20,6 +20,7 @@ import * as WorkitemVisualizationGraph from "./WorkitemVisualizationGraph"
 import * as TelemetryClient from "./TelemetryClient"
 import * as NodeTemplate from "./NodeTemplate"
 import * as Node from "./Node"
+import * as AddEditHighlightDialog from "./AddEditHighlightDialog"
 
 //White: #ffffff
 //Black: #000000
@@ -176,6 +177,7 @@ export class LegendGrid extends UIControls.BaseControl //TODO: use builtin grid 
     }
 
     _resetItem(index) {
+        TelemetryClient.TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.resetHighlightRule");
         //first, get the node so we can remove the formatting
         var node = this._getDefaultNodeForIndex(index);
 
@@ -214,26 +216,14 @@ export class LegendGrid extends UIControls.BaseControl //TODO: use builtin grid 
      */
     ShowLegend(dialogTitle) {
         var self = this;
-        //Get the categories (first, as a test)
-        var workItemTypeArray = [];
-        var categoryArray = [];
-        var stateArray = [];
 
-        var nodes = self._graph.getAllNodes();
-        for (var i = 0; i < nodes.length; i++) {
-            //Just do work item types right now
-            this._addItem(nodes[i].data("workItemType"), workItemTypeArray);
-            this._addItem(nodes[i].data("category"), categoryArray);
-            this._addItem(nodes[i].data("state"), stateArray);
-        }
+        var workItemTypeArray = self._graph.getVisibleNodesWorkItemTypes();
+        var categoryArray = self._graph.getVisibleNodesCategories();
+        var stateArray = self._graph.getVisibleNodesStates();
 
         function saveHighlight(result) {
             TelemetryClient.TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.saveHighlightRule");
             var nodeStyle = new NodeStyling();
-            //Initialize
-            nodeStyle.TextApply = false;
-            nodeStyle.BackgroundApply = false;
-            nodeStyle.StrokeApply = false;
 
             if (self.tempSample) {
                 nodeStyle.Field = self._nodeBeingEdited;
@@ -244,9 +234,9 @@ export class LegendGrid extends UIControls.BaseControl //TODO: use builtin grid 
             else {
                 nodeStyle.Field = result.selectedField;
                 //These are the default values for a node
-                if (result.sampleColor !== "black") { nodeStyle.TextApply = true; }
-                if (result.sampleBgColor !== "white") { nodeStyle.BackgroundApply = true; }
-                if (result.sampleBorderColor !== "gray") { nodeStyle.StrokeApply = true; }
+                if (result.textColor !== "#000000") { nodeStyle.TextApply = true; }
+                if (result.bgColor !== "#ffffff") { nodeStyle.BackgroundApply = true; }
+                if (result.borderColor !== "#808080") { nodeStyle.StrokeApply = true; }
             }
 
             nodeStyle.Text = result.textColor;
@@ -257,28 +247,13 @@ export class LegendGrid extends UIControls.BaseControl //TODO: use builtin grid 
             self.tempSample = null;
         }
 
+        var cancelCallback = function(result) {
+            TelemetryClient.TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.CancelAddOrEditHighlight");
+            self.tempSample = null;
+        };
 
-        VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg : IHostDialogService) {
-            var addEditHighlightDialog;
-            var opts = {
-                width: 450,
-                height: 265,
-                cancelText: "Cancel",
-                okText: "Save",
-                getDialogResult: function () { return addEditHighlightDialog ? addEditHighlightDialog.getData() : null },
-                okCallback: saveHighlight,
-                title: dialogTitle
-            };
-            dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-add-edit-highlight-dialog", opts).then(function (dialog) {
-                dialog.updateOkButton(true);
-                dialog.getContributionInstance("work-item-visualization-add-edit-highlight-dialog").then(function (ci) {
-                    addEditHighlightDialog = ci;
-                    addEditHighlightDialog.start({ workItemTypeArray: workItemTypeArray, categoryArray: categoryArray, stateArray: stateArray, editNode: self._nodeBeingEdited, tempSample: self.tempSample });
-                }, function (err) {
-                    alert(err.message);
-                });
-            });
-        });
+        var form = AddEditHighlightDialog.AddEditHighlightDialog;
+        form.showAddEditHighlightDialog(dialogTitle, workItemTypeArray, categoryArray, stateArray, self.tempSample, saveHighlight, cancelCallback);        
     }
 
     _updateLegend(node) {
@@ -297,7 +272,8 @@ export class LegendGrid extends UIControls.BaseControl //TODO: use builtin grid 
             }
         }
     }
-
+    //TODO: We shouldnt resolve the merged style for every node, just once per reapply is enough.
+    //TODO: We should have common logic to resolve merged style
     ApplyLegendToNode(graphNode) {
         //Find the node
         var n = graphNode;
@@ -378,6 +354,7 @@ export class LegendGrid extends UIControls.BaseControl //TODO: use builtin grid 
      *   adds it. This is used to iterate over the nodes and get
      *   the properties a user can use to set a legend for
      */
+    //TODO: IndexOf is already implemented on arrays.
     _addItem(item, itemArray) {
         var found = false;
         var foundAgain = false;

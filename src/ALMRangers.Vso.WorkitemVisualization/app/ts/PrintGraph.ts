@@ -14,6 +14,35 @@
 
 import Dialogs = require("VSS/Controls/Dialogs");
 
+// export class PrintGraph {
+
+//     static showPrintGraphForm(img: string, witType: string, witId: string) {
+
+//         var self = this;
+
+//         var extensionContext = VSS.getExtensionContext();
+
+//         var dlgContent = $("#createPrintGraphDlg").clone();
+
+
+//         var d = new Date();
+//         dlgContent.find("#printTitle").text("Visualization of " + witType + " " + witId);
+//         dlgContent.find("#printDateTime").text("Generated " + d.toLocaleDateString());
+//         dlgContent.find("#graphImage").attr("src", img);
+
+//         dlgContent.show();
+//         var opts = {
+//             width: window.screen.width,
+//             height: window.screen.height,
+//             title: "Export Work Item Visualization",
+//             buttons: null,
+//             content: dlgContent
+//         };
+
+//         var dialog = Dialogs.show(Dialogs.ModalDialog, opts);
+//     }
+// }
+
 export class PrintGraph extends Dialogs.ModalDialog {
     constructor(context: any) {
         super(context);

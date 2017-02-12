@@ -12,110 +12,133 @@
  //  </summary>
 //---------------------------------------------------------------------*/
 
-import Dialogs = require("VSS/Controls/Dialogs");
+import Controls = require("VSS/Controls")
+import CboControls = require("VSS/Controls/Combos")
+import Dialogs = require("VSS/Controls/Dialogs")
+
 import * as TelemetryClient from "./TelemetryClient"
 
-export class AddEditHighlightDialog extends Dialogs.ModalDialog {
-    private context: any;
-    constructor(context: any) {
-        super(context);
-        this.context = context;
-    }
+export class AddEditHighlightDialog {
 
-    start(data: any) {
+    static ItemTypes = ['Work Item Type', 'Category', 'State'];
+    static showAddEditHighlightDialog(title, workItemTypeArray, categoryArray, stateArray, tempSample, saveHighlightCallback, cancelCallback) {
+        var self = this;
+        var dialog;
+
         TelemetryClient.TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.showAddHighlightDialog");
 
-        var self = this;
-        var workItemTypesHtml;
-        var categoryHtml;
-        var stateHtml;
-        var workItemTypeArray = data.workItemTypeArray;
-        var categoryArray = data.categoryArray;
-        var stateArray = data.stateArray;
-        var tempSample = data.tempSample;
+        var extensionContext = VSS.getExtensionContext();
 
-        //During these loops we have to strip out existing values so that they don't create
-        //a new legend item for an existing one (for which we haven't retrieved the formating for
-        //since we want them to edit it
-        for (var i = 0; i < workItemTypeArray.length; i++) {
-            if (workItemTypeArray[i] != null) {
-                workItemTypesHtml += "<option value=" + workItemTypeArray[i] + ">" + workItemTypeArray[i] + "</option>";
-            }
-        }
+        var dlgContent = $("#createAddHighlightDlg").clone();
+        dlgContent.show();
 
-        for (var i = 0; i < categoryArray.length; i++) {
-            if (categoryArray[i] != null) {
-                categoryHtml += "<option value=" + categoryArray[i] + ">" + categoryArray[i] + "</option>";
+        var cboAvailableSubTypesOptions: CboControls.IComboOptions = {
+            mode: "drop",
+            allowEdit: false,
+            source: new Array<string>(),//initially empty
+            indexChanged: function (index: number) {
+                dialog.updateOkButton(true);
+                dialog.setDialogResult(true);
             }
-        }
+        };
 
-        for (var i = 0; i < stateArray.length; i++) {
-            if (stateArray[i] != null) {
-                stateHtml += "<option value=" + stateArray[i] + ">" + stateArray[i] + "</option>";
-            }
-        }
+        var cboAvailableSubTypes = Controls.create(CboControls.Combo, dlgContent.find("#cboAvailableSubTypes"), cboAvailableSubTypesOptions);
+
+        var cboItemTypeOptions: CboControls.IComboOptions = {
+            mode: "drop",
+            allowEdit: false,
+            source: AddEditHighlightDialog.ItemTypes,
+            indexChanged: function (index: number) {
+                var item = AddEditHighlightDialog.ItemTypes[index];
+                dialog.updateOkButton(false);
+                dialog.setDialogResult(false);
+                cboAvailableSubTypes.setText("");
+                switch (item) {
+                    case "Work Item Type":
+                        cboAvailableSubTypes.setSource(workItemTypeArray);
+                        break;
+                    case "Category":
+                        cboAvailableSubTypes.setSource(categoryArray);
+                        break;
+                    case "State":
+                        cboAvailableSubTypes.setSource(stateArray);
+                        break;
+                    default:
+                        break;
+                }
+            },
+        };
+
+        var cboItemType = Controls.create(CboControls.Combo, dlgContent.find("#cboItemType"), cboItemTypeOptions);
 
         if (tempSample) {
             //We're editing an existing item
-            $("#sampleLegend").css("color", tempSample.Text);
-            $("#sampleLegend").css("background-color", tempSample.Background);
-            $("#sampleLegend").css("border-color", tempSample.Stroke);
-
-            $('#textcolor').attr("value", tempSample.Text);
-            $("#bgcolor").attr("value", tempSample.Background);
-            $("#bordercolor").attr("value", tempSample.Stroke);
-            $("#addForm").hide();
+            dlgContent.find("#sampleLegend").css("color", tempSample.Text);
+            dlgContent.find("#sampleLegend").css("background-color", tempSample.Background);
+            dlgContent.find("#sampleLegend").css("border-color", tempSample.Stroke);
+            dlgContent.find('#textColor').attr("value", tempSample.Text);
+            dlgContent.find("#bgColor").attr("value", tempSample.Background);
+            dlgContent.find("#borderColor").attr("value", tempSample.Stroke);
+            dlgContent.find("#addForm").hide();
         }
         else {
-            $("#addForm").show();
-            $("#sampleLegend").css("color", "#000000");
-            $("#sampleLegend").css("background-color", "#ffffff");
-            $("#sampleLegend").css("border-top-color", "#808080");
-
-            $('#textcolor').attr("value", "#000000");
-            $("#bgcolor").attr("value", "#ffffff");
-            $("#bordercolor").attr("value", "#808080");
+            dlgContent.find("#addForm").show();
+            dlgContent.find("#sampleLegend").css("color", "#000000");
+            dlgContent.find("#sampleLegend").css("background-color", "#ffffff");
+            dlgContent.find("#sampleLegend").css("border-top-color", "#808080");
+            dlgContent.find('#textColor').attr("value", "#000000");
+            dlgContent.find("#bgColor").attr("value", "#ffffff");
+            dlgContent.find("#borderColor").attr("value", "#808080");
         }
 
-        $('#textcolor').change(function () {
-            $("#sampleLegend").css("color", $("#textcolor").val());
-            $("#sampleLegend").css("border-color", $("#bordercolor").val());
+        dlgContent.find('#textColor').change(function () {
+            dlgContent.find("#sampleLegend").css("color", dlgContent.find("#textColor").val());
+            dlgContent.find("#sampleLegend").css("border-color", dlgContent.find("#borderColor").val());
         });
 
-        $('#bgcolor').change(function () {
-            $("#sampleLegend").css("background-color", $("#bgcolor").val());
+        dlgContent.find('#bgColor').change(function () {
+            dlgContent.find("#sampleLegend").css("background-color", dlgContent.find("#bgColor").val());
         });
 
-        $('#bordercolor').change(function () {
-            $("#sampleLegend").css("border-color", $("#bordercolor").val());
+        dlgContent.find('#borderColor').change(function () {
+            dlgContent.find("#sampleLegend").css("border-color", dlgContent.find("#borderColor").val());
         });
 
-        $("#itemType").change(function () {
-            switch ($("#itemType").val()) {
-                case "Work Item Type":
-                    $("#selectItemType").html(workItemTypesHtml);
-                    break;
-                case "Category":
-                    $("#selectItemType").html(categoryHtml);
-                    break;
-                case "State":
-                    $("#selectItemType").html(stateHtml);
-                    break;
-                default:
-                    break;
-            }
-        });
-    }
+        dlgContent.show();       
 
-    getData() {
-        return {
-            textColor: $('#textcolor').val(),
-            bgColor: $("#bgcolor").val(),
-            borderColor: $("#bordercolor").val(),
-            selectedField: $("#selectItemType").find('option:selected').text(),
-            sampleColor: $("#sampleLegend").css("color"),
-            sampleBgColor: $("#sampleLegend").css("background-color"),
-            sampleBorderColor: $("#sampleLegend").css("border-top-color")
+        var opts = {
+            width: 450,
+            height: 350,
+            cancelText: "Cancel",
+            okText: "Save",
+            okCallback: function(result) {                
+                var data = {
+                    textColor: dlgContent.find('#textColor').val(),
+                    bgColor: dlgContent.find("#bgColor").val(),
+                    borderColor: dlgContent.find("#borderColor").val(),
+                    selectedField: cboAvailableSubTypes.getText(),
+                    sampleColor: dlgContent.find("#sampleLegend").css("color"),
+                    sampleBgColor: dlgContent.find("#sampleLegend").css("background-color"),
+                    sampleBorderColor: dlgContent.find("#sampleLegend").css("border-top-color")
+                };
+
+                if ((tempSample || data.selectedField) && (data.textColor || data.bgColor || data.borderColor))
+                {
+                    saveHighlightCallback(data);
+                }
+                else {
+                    TelemetryClient.TelemetryClient.getClient().trackEvent("AddEditHighlightDialog.InvalidDataNoSave");
+                }                
+            },
+            cancelCallback : cancelCallback,
+            title: title,
+            content: dlgContent
+        };
+        dialog = Dialogs.show(Dialogs.ModalDialog, opts);
+        if (tempSample)
+        {
+            dialog.updateOkButton(true);
+            dialog.setDialogResult(true);
         }
     }
 }

@@ -59,23 +59,7 @@
         "registeredObjectId": "visualize-work-item-action"
       }
     },
-    {
-      "id": "work-item-visualization-find-wit-dialog",
-      "type": "ms.vss-web.control",
-      "targets": [ ".controls" ],
-      "properties": {
-        "uri": "app/view/FindWitDialog.html"
-      }
-    },
-    {
-      "id": "work-item-visualization-add-edit-highlight-dialog",
-      "type": "ms.vss-web.control",
-      "targets": [ ".controls" ],
-      "properties": {
-        "uri": "app/view/AddEditHighlightDialog.html"
-      }
-    },
-    {
+      {
       "id": "work-item-visualization-print-graph-dialog",
       "type": "ms.vss-web.control",
       "targets": [ ".controls" ],

@@ -21,6 +21,8 @@ import Dialogs = require("VSS/Controls/Dialogs")
 import Navigation = require("VSS/Controls/Navigation")
 import Context = require("VSS/Context")
 
+//import * as PrintGraph from "./PrintGraph"
+import * as FindWitDialog from "./FindWitDialog"
 import * as AnnotationForm from "./AnnotationForm"
 import * as WorkitemVisualization from "./WorkitemVisualization"
 import * as Storage from "./VsoStoreService"
@@ -93,6 +95,11 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
         }) as MenuControls.MenuBar;
         MenuControls.menuManager.attachExecuteCommand(Core.delegate(this, this._onToolbarItemClick));
         this._splitter = Controls.Enhancement.ensureEnhancement(Splitter.Splitter, $(".right-hub-splitter"));
+        //TODO: Use the correct splitter thing
+        // var options : Splitter.ISplitterOptions = {
+        //     initialSize: 358
+        // };
+        // this._splitter = Controls.create(Splitter.Splitter, $(".right-hub-splitter"), options);
 
         this._splitter.noSplit();
         this._splitterPaneOnOff = "off";
@@ -184,6 +191,13 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
      */
     _toggleMiniMap() {
         TelemetryClient.TelemetryClient.getClient().trackEvent("MainMenu.toggleMinimap");
+        var self = this;
+        if (self.detectIE()) {
+            TelemetryClient.TelemetryClient.getClient().trackEvent("MainMenu.toggleMiniMap.IESecurityError");
+            var options = { buttons: null, title: "Can not show minimap in IE", contentText: "Minimap uses SVG toDataUrl which in IE11 and before throws SecurityError. Try Edge, FireFox, Chrome, or other browsers." };
+            Dialogs.show(Dialogs.ModalDialog, options);
+            return;
+        }
         this._graph.toggleMinimap();
     }
 
@@ -226,7 +240,10 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
         var frm = AnnotationForm.AnnotationForm;
         var witviz = WorkitemVisualization.witviz;
 
-        var node = frm.showAnnotationForm(this, null, this._graph.getNodes("[category != 'Annotation']"), function (title, txt, shapeType, size, linkedToId) {
+        var hiddenCategoriesFilter = self._graph.getCategoryFilter(self._graph.getHideCategories(null), false, '@!=')
+        var nodes = self._graph.getNodes("[category @!= 'Annotation']"+hiddenCategoriesFilter);
+
+        var node = frm.showAnnotationForm(this, null, nodes, function (title, txt, shapeType, size, linkedToId) {
             TelemetryClient.TelemetryClient.getClient().trackEvent("AnnotationFormDialog.addNote");
             var node = witviz.addNote(self._notes.length, title, txt, shapeType, size, null, linkedToId);
             self._notes.push(node);
@@ -409,18 +426,21 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
             witId = rootNodes[0].data("origId");
         }
 
+        // var form = PrintGraph.PrintGraph;
+        // form.showPrintGraphForm(png, witType, witId);
+
         VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg: IHostDialogService) {
             var printGraphDialog;
-
-            //TODO: later make dialog same size as window and offer full screen option
-            var opts = {
+            var extensionCtx = VSS.getExtensionContext();
+            var contributionId = extensionCtx.publisherId + "." + extensionCtx.extensionId + ".work-item-visualization-print-graph-dialog";
+            var opts: IHostDialogOptions = {
                 width: window.screen.width,
                 height: window.screen.height,
                 title: "Export Work Item Visualization",
                 buttons: null
             };
-
-            dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-print-graph-dialog", opts).then(function (dialog) {
+            //TODO: later make dialog same size as window and offer full screen option
+            dlg.openDialog(contributionId, opts).then(function (dialog) {
                 dialog.getContributionInstance("work-item-visualization-print-graph-dialog").then(function (ci) {
                     printGraphDialog = ci;
                     printGraphDialog.start(png, witType, witId);
@@ -460,44 +480,12 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
 
         var self = this;
 
-        var categoryArray = {};
+        var categoryArray = self._graph.getVisibleNodesCategories();
 
-        var nodes = self._graph.getAllNodes();
-        for (var i = 0; i < nodes.length; i++) {
-            if (!categoryArray[nodes[i].data("category")]) {
-                categoryArray[nodes[i].data("category")] = nodes[i].data("category");
-            }
-        }
-
-        var vsoStore = new Storage.VsoStoreService();
-
-        VSS.getService(VSS.ServiceIds.Dialog).then(function (dlg: IHostDialogService) {
-            var findWorkItemDialog;
-
-            var opts = {
-                width: 200,
-                height: 150,
-                cancelText: "Cancel",
-                okText: "Find",
-                getDialogResult: function () { return findWorkItemDialog ? findWorkItemDialog.getSearchedId() : null },
-                okCallback: function (result) {
-                    if (parseInt(result.id) !== NaN && result.id !== "") {
-                        TelemetryClient.TelemetryClient.getClient().trackEvent("FindWorkItemDialog.findAndHighlight");
-                        self._graph.findAndHighlight(result.id, result.category);
-                    }
-                },
-                title: "Find on visualization"
-            };
-
-            dlg.openDialog(VSS.getExtensionContext().publisherId + "." + VSS.getExtensionContext().extensionId + ".work-item-visualization-find-wit-dialog", opts).then(function (dialog) {
-                dialog.updateOkButton(true);
-                dialog.getContributionInstance("work-item-visualization-find-wit-dialog").then(function (ci) {
-                    findWorkItemDialog = ci;
-                    findWorkItemDialog.start(categoryArray);
-                }, function (err) {
-                    alert(err.message);
-                });
-            });
+        var form = FindWitDialog.FindWitDialog;
+        form.showFindWitForm(categoryArray, function (searchText: string, category: string) {
+            TelemetryClient.TelemetryClient.getClient().trackEvent("FindWorkItemDialog.findAndHighlight");
+            self._graph.findAndHighlight(searchText, category);
         });
     }
 

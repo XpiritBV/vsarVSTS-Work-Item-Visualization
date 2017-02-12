@@ -37,16 +37,22 @@ export class WorkitemVisualizationGraph {
     private _currentFilter: Common.FilterTypes;
     private _hideCategoryList: Array<string>;
     private _showCategoryList: Array<string>;
+    public _nodeCategoriesOnVisualization: Array<string>;
+    public _nodeStatesOnVisualization: Array<string>;
+    public _nodeWorkItemTypesOnVisualization: Array<string>;
 
     constructor(container, cytoscape) {
         this._container = container;
         this.direction = 'LR';
         this.cytoscape = cytoscape;
         this.cy = null;
-        //TODO: Separate out the default filter and hide category list
+
         this._currentFilter = Common.FilterTypes.WorkItemOnly;
         this._hideCategoryList = this.getHideCategories(this._currentFilter);
         this._showCategoryList = this.getShowCategories(this._currentFilter);
+        this._nodeCategoriesOnVisualization = new Array<string>();
+        this._nodeStatesOnVisualization = new Array<string>();
+        this._nodeWorkItemTypesOnVisualization = new Array<string>();
     }
 
 
@@ -72,11 +78,11 @@ export class WorkitemVisualizationGraph {
             .replace(/'/g, '&apos;');
     }
 
-    setExpandNodeCallback(callback) {
+    public setExpandNodeCallback(callback) {
         this._expandNodeCallback = callback;
     }
 
-    create(nodes, edges, callback) {
+    public create(nodes, edges, callback) {
         var self = this;
         self.cytoscape({
             container: self._container[0],
@@ -404,15 +410,15 @@ export class WorkitemVisualizationGraph {
         var self = this;
 
         var filter = '';
-        if (category === "Work Item" || category === "Changeset") {
+        if (category === Common.Categories.WorkItem || category === Common.Categories.Changeset) {
             id = category.substring(0, 1) + id;
             filter = 'node[id = "' + id + '"][category @= "' + category + '"]';
         }
-        else if (category === "Commit") {
+        else if (category === Common.Categories.Commit) {
             id = "G" + id;
             filter = 'node[id @^= "' + id + '"][category @= "' + category + '"]';
         }
-        else if (category === "File") {
+        else if (category === Common.Categories.File) {
             filter = 'node[file @*= "' + id + '"][category @= "' + category + '"]';
         }
         //TODO: Use getNodes(filter)
@@ -430,8 +436,11 @@ export class WorkitemVisualizationGraph {
         return matchingElements;
     }
 
-    getHideCategories(newFilterValue: Common.FilterTypes): Array<string> {
+    public getHideCategories(newFilterValue: Common.FilterTypes): Array<string> {
         var hideCategoryList = new Array<string>();
+
+        if (!newFilterValue)
+            newFilterValue = this._currentFilter;
 
         //Show all nodes
         if (newFilterValue == Common.FilterTypes.All) {
@@ -453,9 +462,10 @@ export class WorkitemVisualizationGraph {
         return hideCategoryList;
     }
 
-    getShowCategories(newFilterValue: Common.FilterTypes): Array<string> {
+    public getShowCategories(newFilterValue: Common.FilterTypes): Array<string> {
         var showCategoryList = new Array<string>();
-
+        if (!newFilterValue)
+            newFilterValue = this._currentFilter;
         //Show all nodes
         if (newFilterValue == Common.FilterTypes.All) {
             showCategoryList.push(Common.Categories.PullRequest);
@@ -485,7 +495,7 @@ export class WorkitemVisualizationGraph {
         return showCategoryList;
     }
 
-    getCategoryFilter(categoryList:Array<string>, useOr:boolean, comparisonOperator:string)
+    public getCategoryFilter(categoryList:Array<string>, useOr:boolean, comparisonOperator:string)
     {
         var filter = '';
         //default comparisonOperator is used when nothing is supplied
@@ -536,6 +546,34 @@ export class WorkitemVisualizationGraph {
         self.refreshLayout();
     }
 
+    public getVisibleNodesCategories() : Array<string>
+    {
+        var self = this;
+
+        var isVisible = function(value:string, index:number) {
+            return self._showCategoryList.indexOf(value) > -1;
+          };
+        var result = self._nodeCategoriesOnVisualization.filter(isVisible);
+        return result;
+    }
+
+    public getVisibleNodesStates() : Array<string>
+    {
+        //TODO: known bug by design, wont check if node is visible or not. Just showing the list that is maintained by add.
+        //It should be additionally maintained by show / hide
+        var self = this;
+
+        return self._nodeStatesOnVisualization;
+    }
+
+    public getVisibleNodesWorkItemTypes() : Array<string>
+    {
+        //TODO: known bug by design, wont check if node is visible or not. Just showing the list that is maintained by add.
+        //It should be additionally maintained by show / hide
+        var self = this;
+
+        return self._nodeWorkItemTypesOnVisualization;
+    }
 
     fitTo() {
         this.cy.fit();
@@ -558,10 +596,10 @@ export class WorkitemVisualizationGraph {
     toggleMinimap() {
 
         var self = this;
-        if (this._navigator === null) {
+        if (self._navigator === null) {
             //initialize
             this._navigator = this.cy.navigator({
-                //this._container.cytoscapeNavigator({
+            //self._navigator = self._container.cytoscapeNavigator({
                 // options go here
                 container: $('#cytoscape-navigator')
             });
@@ -610,19 +648,34 @@ export class WorkitemVisualizationGraph {
         edges.push(edge);
         return this.addElements(nodes, edges);
     }
-
+    //TODO: define correct NodeData types here and cast?
     addElements(nodes, edges) {
         var self = this;
         var newElements = self.cy.collection();
         var elements = new Array();
 
-
         for (var i = 0; i < nodes.length; i++) {
             var node = self.cy.getElementById(nodes[i].data.origId);
+            //Node is not on visualization yet, so put it into list to add
             if (node.empty()) {
                 //if the category should be hidden, then hide it
                 if (self._hideCategoryList.indexOf(nodes[i].data.category) > -1) {
                     nodes[i].style.display = 'none';
+                }
+                //maintain a list of categories for nodes that are on visualization. So if its not in list, yet - then add the category.
+                //Saves to have to loop through all nodes to find categories.
+                if (self._nodeCategoriesOnVisualization.indexOf(nodes[i].data.category) == -1) {
+                    self._nodeCategoriesOnVisualization.push(nodes[i].data.category);
+                }
+                //maintain a list of states for nodes that are on visualization (only work items). So if its not in list, yet - then add the state.
+                //Saves to have to loop through all nodes to find states.
+                if (nodes[i].data.state && self._nodeStatesOnVisualization.indexOf(nodes[i].data.state) == -1) {
+                    self._nodeStatesOnVisualization.push(nodes[i].data.state);
+                }
+                //maintain a list of work item types for nodes that are on visualization. So if its not in list, yet - then add the work item types.
+                //Saves to have to loop through all nodes to find work item types.
+                if (nodes[i].data.workItemType && self._nodeWorkItemTypesOnVisualization.indexOf(nodes[i].data.workItemType) == -1) {
+                    self._nodeWorkItemTypesOnVisualization.push(nodes[i].data.workItemType);
                 }
                 elements.push(nodes[i]);
             }

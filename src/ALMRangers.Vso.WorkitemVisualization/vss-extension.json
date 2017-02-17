@@ -86,7 +86,11 @@
       "addressable": true
     },
     {
-      "path": "app",
+      "path": "app/js",
+      "addressable": true
+    },
+    {
+      "path": "app/view",
       "addressable": true
     },
     {

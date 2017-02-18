@@ -407,6 +407,7 @@ export class WorkitemVisualization {
     }
 
     refreshWorkItemNodes() {
+        //TODO: Review, why does it refresh work item nodes, and none of the other ones ?
         var self = this;
         var lstWI = self.graph.getAllNodes();
         var lstWorkItemId = lstWI.filter(function (f) {

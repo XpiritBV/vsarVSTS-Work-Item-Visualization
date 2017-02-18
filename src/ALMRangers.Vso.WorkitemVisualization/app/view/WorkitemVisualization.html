@@ -87,9 +87,19 @@
         </div>
     </div>
     <div id="createFavoriteDlg" style="display:none">
-        <div class="input-text-box">
+        <div>
+            <label>Enter new name or select existing:</label>
+            <div id="cboFavoritesToSave"></div>            
+        </div>
+        <!--<div class="input-text-box">
             <input type="text" id="FavoriteName" placeholder="Enter name for shared visualization" title="Enter name for shared visualization"
             />
+        </div>-->
+    </div>
+    <div id="deleteFavoriteDlg" style="display:none">
+        <div>
+            <label>Saved visualization to delete:</label>
+            <div id="cboFavoritesToDelete"></div>            
         </div>
     </div>
     <div id="createNoteDlg" style="display:none">

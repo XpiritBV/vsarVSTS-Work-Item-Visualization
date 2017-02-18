@@ -23,6 +23,7 @@ import Context = require("VSS/Context")
 
 //import * as PrintGraph from "./PrintGraph"
 import * as FindWitDialog from "./FindWitDialog"
+import * as NSFavoritesDialogs from "./FavoritesDialogs"
 import * as AnnotationForm from "./AnnotationForm"
 import * as WorkitemVisualization from "./WorkitemVisualization"
 import * as Storage from "./VsoStoreService"
@@ -84,7 +85,7 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
             ],
             change: function (item) {
                 var newValue = item.value;
-                self._graph.filterWIVisualizationGraph(newValue);
+                self._graph.changeFilter(newValue);
             }
         });
     }
@@ -241,7 +242,7 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
         var witviz = WorkitemVisualization.witviz;
 
         var hiddenCategoriesFilter = self._graph.getCategoryFilter(self._graph.getHideCategories(null), false, '@!=')
-        var nodes = self._graph.getNodes("[category @!= 'Annotation']"+hiddenCategoriesFilter);
+        var nodes = self._graph.getNodes("[category @!= 'Annotation']" + hiddenCategoriesFilter);
 
         var node = frm.showAnnotationForm(this, null, nodes, function (title, txt, shapeType, size, linkedToId) {
             TelemetryClient.TelemetryClient.getClient().trackEvent("AnnotationFormDialog.addNote");
@@ -251,44 +252,99 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
     }
 
     _addFavorit() {
-        TelemetryClient.TelemetryClient.getClient().trackEvent("MainMenu.showSaveSharedVisualisationDialog");
         //Prompt user for name and type
-        var view = this;
-        var extensionContext = VSS.getExtensionContext();
+        var self = this;
 
-        var dlgContent = $("#createFavoriteDlg").clone();
-        dlgContent.show();
-        dlgContent.find("#createFavoriteDlg").show();
+        var saveFavoriteCallback = function (text: string) {
+            var selectedIndex = -1;
 
-        var options = {
-            width: 300,
-            height: 150,
-            cancelText: "Cancel",
-            okText: "Save",
-            title: "Save as shared visualization",
-            content: dlgContent,
-            okCallback: function (result) {
-                //Fetch IDs
-                TelemetryClient.TelemetryClient.getClient().trackEvent("SaveSharedVisualizationDialog.saveVisualization");
-                view._favoritesList.push({ name: (dlgContent.find("#FavoriteName")[0] as HTMLInputElement).value, elements: view._graph.json().elements });
-                view._SaveFavorites2Settings(view._favoritesList, "Account")
-                view._RebuildFavoritesMenu();
+            var findIndexAndItem = function (item, index) {
+                if (item.name === text) {
+                    selectedIndex = index;
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
-        };
 
-        var dialog = Dialogs.show(Dialogs.ModalDialog, options);
-        dialog.updateOkButton(true);
-        dialog.setDialogResult(true);
+            var selectedItems = self._favoritesList.filter(findIndexAndItem);
+            //update existing
+            if (selectedItems.length > 0 && selectedIndex > -1) {
+                TelemetryClient.TelemetryClient.getClient().trackEvent("SaveSharedVisualizationDialog.updateSavedVisualization");
+                var item = selectedItems[0];
+                item.elements = self._graph.json().elements;
+            }
+            //new item
+            else{
+                TelemetryClient.TelemetryClient.getClient().trackEvent("SaveSharedVisualizationDialog.saveVisualization");
+                self._favoritesList.push({ name: text, elements: self._graph.json().elements });
+            }
+            
+            self._SaveFavoritesToSettings(self._favoritesList, "Account")
+            self._RebuildFavoritesMenu();
+        }
+
+        var tempFavoritesList = Array<string>();
+        self._favoritesList.forEach(function (n) {
+            tempFavoritesList.push(n.name);
+        });
+
+        NSFavoritesDialogs.FavoritesDialogs.showAddFavoriteDialog(tempFavoritesList, saveFavoriteCallback);
     }
 
+    _removeFavorite() {
+        var self = this;
+
+        var removeFavoriteCallback = function (selectedFavorite: string) {
+            //Fetch IDs
+            var selectedIndex = -1;
+
+            var findIndexAndItem = function (item, index) {
+                if (item.name === selectedFavorite) {
+                    selectedIndex = index;
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+
+            var selectedItems = self._favoritesList.filter(findIndexAndItem);
+            if (selectedItems.length > 0 && selectedIndex > -1) {
+                TelemetryClient.TelemetryClient.getClient().trackEvent("SaveSharedVisualizationDialog.removedSavedVisualization");
+                self._favoritesList.splice(selectedIndex, 1);
+                self._SaveFavoritesToSettings(self._favoritesList, "Account")
+                self._RebuildFavoritesMenu();
+            }
+        }
+
+        var tempFavoritesList = Array<string>();
+        self._favoritesList.forEach(function (n) {
+            tempFavoritesList.push(n.name);
+        });
+
+        NSFavoritesDialogs.FavoritesDialogs.showDeleteFavoriteDialog(tempFavoritesList, removeFavoriteCallback);
+    }
+
+    //TODO: Review load and refresh
     _LoadFavorite(favorite) {
         TelemetryClient.TelemetryClient.getClient().trackEvent("MainMenu.loadSelectedSharedVisualization");
         var self = this;
 
         self._selectedFavorite = favorite;
-
+        
+        //TODO: This is better done by changing state before the load!
         self._graph.load(favorite.elements);
-        self._graph.fitTo();
+        
+        //Take filter into account 
+        self._graph.filterWIVisualizationGraph();
+
+        //Take collapse into account
+        //THIs is tricky, since also nodes that have never been expanded are 
+        self._graph.hideCollapsedNodes();    
+        
+        self._graph.zoomTo100();
 
         var witviz = WorkitemVisualization.witviz;
         witviz.refreshWorkItemNodes();
@@ -301,9 +357,7 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
     _RebuildFavoritesMenu() {
         // Get an account-scoped document in a collection
         var self = this;
-        self.favoritesMenu = [];
-        self.favoritesMenu.push({ id: "favorites-add", text: "Save as shared", title: "Save as shared visualization", showText: true, icon: "bowtie-icon bowtie-math-plus" });
-        self.favoritesMenu.push({ separator: true });
+        self.favoritesMenu = self.getInitialFavoriteMenu();
 
         self._favoritesList.forEach(function (n) {
             self.favoritesMenu.push({ id: "select-favorit-" + n.name, text: n.name, title: n.name, showText: true });
@@ -311,15 +365,12 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
 
         self._menu.updateItems(self._createToolbarItems());
     }
-
+    //TODO: Move to separate data service class?    
     _LoadFavoritesFromSettings() {
         // Get an account-scoped document in a collection
         var self = this;
-        self.favoritesMenu = [];
-        self.favoritesMenu.push({
-            id: "favorites-add", text: "Save as shared", title: "Save as shared visualization", showText: true, icon: "bowtie-icon bowtie-math-plus"
-        });
-        self.favoritesMenu.push({ separator: true });
+        self.favoritesMenu = self.getInitialFavoriteMenu();
+
         VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService: IExtensionDataService) {
             dataService.getDocument(VSS.getWebContext().project.name, "ProjectShared").then(function (doc) {
                 //_favoritesList = docs.filter(function (i) { return i.id == "ProjectShared"; })[0].List;
@@ -333,7 +384,17 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
         });
     }
 
-    _SaveFavorites2Settings(favoList, scopeType) {
+    private getInitialFavoriteMenu(): string[] {
+        var tempFavoritesMenu = [];
+        tempFavoritesMenu.push({ id: "favorites-add", text: "Save", title: "Save visualization", showText: true, icon: "bowtie-icon bowtie-math-plus" });
+        tempFavoritesMenu.push({ id: "favorites-remove", text: "Remove", title: "Remove saved visualization", showText: true, icon: "bowtie-icon bowtie-edit-delete" });
+        tempFavoritesMenu.push({ separator: true });
+        return tempFavoritesMenu;
+    }
+    //menu-item-icon bowtie-icon bowtie-edit-delete
+
+    //TODO: Move to separate data service class?
+    _SaveFavoritesToSettings(favoList, scopeType) {
 
         VSS.getService(VSS.ServiceIds.ExtensionData).then(function (dataService: IExtensionDataService) {
             // Set a user-scoped preference
@@ -381,6 +442,9 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
                 break;
             case "favorites-add":
                 this._addFavorit();
+                break;
+            case "favorites-remove":
+                this._removeFavorite();
                 break;
             case "add-annotation":
                 this._addNote();

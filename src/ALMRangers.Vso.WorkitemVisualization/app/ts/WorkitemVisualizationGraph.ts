@@ -259,6 +259,15 @@ export class WorkitemVisualizationGraph {
         }
     }
 
+    //TODO: Temp, later shouldnt need. Hides nodes that are not expanded and only used for favorites load scenario
+    public hideCollapsedNodes() {
+        var self = this;
+        //Must have expanded defined as data attribute and currently have value false (collapsed) and be visible
+        var collapsedNodes = self.getNodes('[expanded][!expanded]');
+        collapsedNodes.successors().hide();
+        self.refreshLayout();
+    }
+
     openInNewWindow(e) {
         e.preventDefault();
         var self = this;
@@ -495,25 +504,28 @@ export class WorkitemVisualizationGraph {
         return showCategoryList;
     }
 
-    public getCategoryFilter(categoryList:Array<string>, useOr:boolean, comparisonOperator:string)
-    {
+    public getCategoryFilter(categoryList: Array<string>, useOr: boolean, comparisonOperator: string) {
         var filter = '';
         //default comparisonOperator is used when nothing is supplied
-        if (!comparisonOperator)
-        {
+        if (!comparisonOperator) {
             //case insensitive data attribute comparison
             comparisonOperator = "@=";
         }
         for (var i = 0; i < categoryList.length; i++) {
             //This will look something like [category @= "Work Item"]
-            filter += '[category '+ comparisonOperator +' "' + categoryList[i] + '"]';
+            filter += '[category ' + comparisonOperator + ' "' + categoryList[i] + '"]';
             if (useOr && i != categoryList.length - 1)
                 filter += ',';
         }
         return filter;
     }
 
-    public filterWIVisualizationGraph(newFilterValue: Common.FilterTypes) {
+    public filterWIVisualizationGraph() {
+        var self = this;
+        self.changeFilter(self._currentFilter);
+    }
+
+    public changeFilter(newFilterValue: Common.FilterTypes) {
         var self = this;
 
         TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ChangedFilter");
@@ -537,7 +549,7 @@ export class WorkitemVisualizationGraph {
         }
 
         //var hideFilter = 'node[:visible]'; style: display : element / none
-        var hideFilter = self.getCategoryFilter(hideCategoryList, true, null); 
+        var hideFilter = self.getCategoryFilter(hideCategoryList, true, null);
         //var showFilter = 'node[:hidden]'; style: display : element / none
         var showFilter = self.getCategoryFilter(showCategoryList, true, null);
 
@@ -546,19 +558,17 @@ export class WorkitemVisualizationGraph {
         self.refreshLayout();
     }
 
-    public getVisibleNodesCategories() : Array<string>
-    {
+    public getVisibleNodesCategories(): Array<string> {
         var self = this;
 
-        var isVisible = function(value:string, index:number) {
+        var isVisible = function (value: string, index: number) {
             return self._showCategoryList.indexOf(value) > -1;
-          };
+        };
         var result = self._nodeCategoriesOnVisualization.filter(isVisible);
         return result;
     }
 
-    public getVisibleNodesStates() : Array<string>
-    {
+    public getVisibleNodesStates(): Array<string> {
         //TODO: known bug by design, wont check if node is visible or not. Just showing the list that is maintained by add.
         //It should be additionally maintained by show / hide
         var self = this;
@@ -566,8 +576,7 @@ export class WorkitemVisualizationGraph {
         return self._nodeStatesOnVisualization;
     }
 
-    public getVisibleNodesWorkItemTypes() : Array<string>
-    {
+    public getVisibleNodesWorkItemTypes(): Array<string> {
         //TODO: known bug by design, wont check if node is visible or not. Just showing the list that is maintained by add.
         //It should be additionally maintained by show / hide
         var self = this;
@@ -599,7 +608,7 @@ export class WorkitemVisualizationGraph {
         if (self._navigator === null) {
             //initialize
             this._navigator = this.cy.navigator({
-            //self._navigator = self._container.cytoscapeNavigator({
+                //self._navigator = self._container.cytoscapeNavigator({
                 // options go here
                 container: $('#cytoscape-navigator')
             });

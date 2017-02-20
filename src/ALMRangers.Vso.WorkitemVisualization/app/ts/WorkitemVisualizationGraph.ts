@@ -448,7 +448,7 @@ export class WorkitemVisualizationGraph {
     public getHideCategories(newFilterValue: Common.FilterTypes): Array<string> {
         var hideCategoryList = new Array<string>();
 
-        if (!newFilterValue)
+        if (!newFilterValue && newFilterValue != Common.FilterTypes.All)
             newFilterValue = this._currentFilter;
 
         //Show all nodes
@@ -473,7 +473,7 @@ export class WorkitemVisualizationGraph {
 
     public getShowCategories(newFilterValue: Common.FilterTypes): Array<string> {
         var showCategoryList = new Array<string>();
-        if (!newFilterValue)
+        if (!newFilterValue && newFilterValue != Common.FilterTypes.All)
             newFilterValue = this._currentFilter;
         //Show all nodes
         if (newFilterValue == Common.FilterTypes.All) {
@@ -713,6 +713,7 @@ export class WorkitemVisualizationGraph {
 
         if (elements.length > 0) {
             newElements = self.cy.add(elements);
+            //self.zoomTo100(); - Test auto-zoom on expand or collapse
             self.refreshLayout();
         }
         return newElements;
@@ -724,7 +725,7 @@ export class WorkitemVisualizationGraph {
             {
                 name: 'dagre',
                 rankDir: self.direction,
-                minLen: function (edge) { return 4; },
+                minLen: function (edge) { return 3; },
                 fit: false,
                 animate: true,
                 animationDuration: 500,

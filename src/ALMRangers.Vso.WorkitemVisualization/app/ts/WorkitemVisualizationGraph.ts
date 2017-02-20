@@ -154,8 +154,8 @@ export class WorkitemVisualizationGraph {
 
                 self.cy.minZoom(0.1);
                 self.cy.maxZoom(5);
-                self.cy.userZoomingEnabled(false);
-                self.cy.boxSelectionEnabled(false);
+                self.cy.userZoomingEnabled(true);
+                self.cy.boxSelectionEnabled(true);
                 self.cy.zoom(1);
 
                 self.cy.viewUtilities();

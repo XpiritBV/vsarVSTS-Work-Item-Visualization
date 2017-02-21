@@ -27,27 +27,50 @@ Export your chart visualization for offline viewing or printing.
 
 ### Add annotations to items on visualization
 
-> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
-
 Add additional annotations to the visualizations and pin them to the items on visualization. 
 
 ![Export](images/annotations.png)
 
+Remove annotations through context menu.
+
+![Export](images/removeAnnotation.png)
+
 ### Save visualizations on project level to share
 
-> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
+> **Updated** - *This is an early version with limited functionality. Please provide feedback.*
 
-Save and share visualizations on project level.  
+Save a new visualization or update existing saved visualizations on project level.  
 
 ![Export](images/shareVisualization.png)
 
-### Find on visualization
+> **New** - *This is an early version with limited functionality. Please provide feedback.*
 
-> **NEW** - *This is an early version with limited functionality. Please provide feedback.*
+You can now also remove saved visualization.
+
+![Export](images/removeSavedVisualization.png)
+
+### Find on visualization
 
 Previously the find on visualization allowed to enter and id and start visualization from it. Since we have visualization possible from all contexts now we deemed this unnecessary and thought it may be more useful to allow searching items on the visualization instead.  
 
 ![Export](images/findOnVisualization.png)
+
+### Filter on visualization
+
+> **New** - *This is an early version with limited functionality. Please provide feedback.*
+
+We now support filtering items on visualization by All, Work Items Only, Work Items with Changes and Work Items with Changes and Files.
+
+![Export](images/filterVisualization.png)
+
+### Collapse / Expand
+
+> **New** - *This is an early version with limited functionality. Please provide feedback.*
+
+We now support Collapse / Expand actions on items.
+
+![Export](images/contextMenu_collapse_expand.png)
+
 
 ## Quick steps to get started
 

@@ -20,7 +20,7 @@ Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to 
 
 ![Orient](images/image2.png)
 
-### Export for offline viewing
+### Export for offline viewing (Except in IE)
 Export your chart visualization for offline viewing or printing. 
 
 ![Export](images/image5.png)
@@ -71,6 +71,9 @@ We now support Collapse / Expand actions on items.
 
 ![Export](images/contextMenu_collapse_expand.png)
 
+> **New** - *You can now Zoom by scrolling or pinching (touch). You can also do box selection with ctrl + mouse.*
+
+![Export](images/ctrl_select_many.png)
 
 ## Quick steps to get started
 

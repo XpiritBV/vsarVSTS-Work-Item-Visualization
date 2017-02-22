@@ -116,10 +116,12 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
         subItems2.push({ id: "left-to-right", text: "Left to Right", title: "Left to Right", showText: true, icon: "icon-left-to-right-witviz" });
         subItems2.push({ id: "top-to-bottom", text: "Top to Bottom", title: "Top to Bottom", showText: true, icon: "icon-top-to-bottom-witviz" });
 
-        items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap-witviz", disabled: true });
-
-        items.push({ separator: true });
-
+        //Dont add for IE, since it doesnt work
+        if (!this.detectIE())
+        {
+            items.push({ id: "toggle-minimap", text: "Show/hide the overview map", title: "Show/hide the overview map", showText: false, icon: "icon-minimap-witviz", disabled: true });
+            items.push({ separator: true });
+        }
         items.push({ id: "zoom-in", text: "Zoom In", title: "Zoom In", showText: false, icon: "icon-zoom-in-witviz", disabled: true });
         items.push({ id: "zoom-out", text: "Zoom Out", title: "Zoom Out", showText: false, icon: "icon-zoom-out-witviz", disabled: true });
         items.push({ id: "zoom-100", text: "Zoom 100%", title: "Zoom to 100%", showText: false, icon: "icon-zoom-100-witviz", disabled: true });
@@ -131,8 +133,12 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
 
         items.push({ separator: true });
         items.push({ id: "add-annotation", text: "Add Annotation", title: "Add Annotation", showText: false, disabled: true, icon: "bowtie-icon bowtie-comment icon-add-annotation-witviz" });
-        items.push({ id: "export-graph", text: "Export Visualization", title: "Export Visualization", showText: false, icon: "icon-export-witviz", disabled: true });
-
+        
+        //Dont add for IE, since it doesnt work
+        if (!this.detectIE())
+        {
+            items.push({ id: "export-graph", text: "Export Visualization", title: "Export Visualization", showText: false, icon: "icon-export-witviz", disabled: true });
+        }
         //Use reverse order for right align:
         items.push({ id: "toggle-legend-pane", text: "Toggle Legend Pane on/off", title: "Toggle Legend Pane on/off", showText: false, icon: "icon-legend-pane-witviz", disabled: false, cssClass: "right-align" });
         items.push({ id: "find-work-item", text: "Find Work Item", title: "Find Work Item", showText: false, icon: "icon-find-witviz", disabled: true, cssClass: "right-align" });

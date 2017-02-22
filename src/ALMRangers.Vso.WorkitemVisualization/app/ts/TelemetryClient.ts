@@ -74,7 +74,7 @@ export class TelemetryClient {
     public trackPageView(name?: string, url?: string, properties?: Object, measurements?: Object, duration?: number) {
         try {
             if (this.appInsightsClient != null) {
-                this.appInsightsClient.trackPageView("TCExplorer." + name, url, properties, measurements, duration);        
+                this.appInsightsClient.trackPageView(name, url, properties, measurements, duration);        
             }
         }
         catch (e) {
@@ -85,7 +85,7 @@ export class TelemetryClient {
     public trackEvent(name: string, properties?: Object, measurements?: Object) {
         try {
             if (this.appInsightsClient != null) {
-                this.appInsightsClient.trackEvent("TCExplorer." + name, properties, measurements);
+                this.appInsightsClient.trackEvent(name, properties, measurements);
                 this.appInsightsClient.flush();
             }
         }
@@ -109,7 +109,7 @@ export class TelemetryClient {
     public trackMetric(name: string, average: number, sampleCount?: number, min?: number, max?: number, properties?: Object) {
         try {
             if (this.appInsightsClient != null) {
-                this.appInsightsClient.trackMetric("TCExplorer." + name, average, sampleCount, min, max, properties);
+                this.appInsightsClient.trackMetric(name, average, sampleCount, min, max, properties);
                 this.appInsightsClient.flush();
             }
         }

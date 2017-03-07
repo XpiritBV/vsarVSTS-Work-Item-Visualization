@@ -4,76 +4,17 @@
 
 ![Visualize](images/image1.png)
 
-### Drill-down in your chart and even visualize commits
+----------
 
-You can visually see how work items relate to each other, as well as code, tests, test results, builds and external artifacts. Even drill into your commits to explore the changeset details.
+## What's new?
 
-![Commit](images/image4.png)
+- Share and remove visualizations
+- Filter visualizations
+- Expand/collapse selected nodes
+- Zoom by scrolling or pinching (touch)
+- Box selection with ctrl + mouse
 
-### Highlight what's important
-Use colors to highlight important work item types within your visualization.
-
-![Highlight](images/image3.png)
-
-### Focus on what's important
-Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to zoom in and out of your chart. Switch the orientation of your chart between `horizontal` and `vertical` view.
-
-![Orient](images/image2.png)
-
-### Export for offline viewing (Except in IE)
-Export your chart visualization for offline viewing or printing. 
-
-![Export](images/image5.png)
-
-### Add annotations to items on visualization
-
-Add additional annotations to the visualizations and pin them to the items on visualization. 
-
-![Export](images/annotations.png)
-
-Remove annotations through context menu.
-
-![Export](images/removeAnnotation.png)
-
-### Save visualizations on project level to share
-
-> **Updated** - *This is an early version with limited functionality. Please provide feedback.*
-
-Save a new visualization or update existing saved visualizations on project level.  
-
-![Export](images/shareVisualization.png)
-
-> **New** - *This is an early version with limited functionality. Please provide feedback.*
-
-You can now also remove saved visualization.
-
-![Export](images/removeSavedVisualization.png)
-
-### Find on visualization
-
-Previously the find on visualization allowed to enter and id and start visualization from it. Since we have visualization possible from all contexts now we deemed this unnecessary and thought it may be more useful to allow searching items on the visualization instead.  
-
-![Export](images/findOnVisualization.png)
-
-### Filter on visualization
-
-> **New** - *This is an early version with limited functionality. Please provide feedback.*
-
-We now support filtering items on visualization by All, Work Items Only, Work Items with Changes and Work Items with Changes and Files.
-
-![Export](images/filterVisualization.png)
-
-### Collapse / Expand
-
-> **New** - *This is an early version with limited functionality. Please provide feedback.*
-
-We now support Collapse / Expand actions on items.
-
-![Export](images/contextMenu_collapse_expand.png)
-
-> **New** - *You can now Zoom by scrolling or pinching (touch). You can also do box selection with ctrl + mouse.*
-
-![Export](images/ctrl_select_many.png)
+----------
 
 ## Quick steps to get started
 
@@ -98,17 +39,98 @@ We now support Collapse / Expand actions on items.
 	3. Select `Work Item Type`, `Feature`, and enter `color` (ie. red) in text color. 
 	4. Click `Save` to apply the highlighting.
 
+
+----------
+
+## Key features
+
+### Drill-down in your chart and even visualize commits
+
+You can visually see how work items relate to each other, as well as code, tests, test results, builds and external artifacts. Even drill into your commits to explore the changeset details.
+
+![Commit](images/image4.png)
+
+### Highlight what's important
+Use colors to highlight important work item types within your visualization.
+
+![Highlight](images/image3.png)
+
+### Focus on what's important
+Use `Zoom In`, `Zoom Out`, `Zoom to original size` or `Fit To` toolbar icons to zoom in and out of your chart. Switch the orientation of your chart between `horizontal` and `vertical` view.
+
+![Orient](images/image2.png)
+
+### Export for offline viewing
+
+> NOT supported with Internet Explorer (IE)
+
+Export your chart visualization for offline viewing or printing. 
+
+![Export](images/image5.png)
+
+### Add annotations to items on visualization
+
+Add additional annotations to the visualizations and pin them to the items on visualization. 
+
+![Add annotation](images/annotations.png)
+
+Remove annotations through context menu.
+
+![Remove annotation](images/removeAnnotation.png)
+
+### Save visualizations on project level to share
+
+> **Updated** - *This is an early version with limited functionality. Please provide feedback.*
+
+Save a new visualization or update existing saved visualizations on project level.  
+
+![Share visualization](images/shareVisualization.png)
+
+> **New** - *This is an early version with limited functionality. Please provide feedback.*
+
+You can now also remove saved visualization.
+
+![Remove saved visualization](images/removeSavedVisualization.png)
+
+### Find on visualization
+
+Previously the find on visualization allowed to enter and id and start visualization from it. Since we have visualization possible from all contexts now we deemed this unnecessary and thought it may be more useful to allow searching items on the visualization instead.  
+
+![Find on visualization](images/findOnVisualization.png)
+
+### Filter on visualization
+
+> **New** - *This is an early version with limited functionality. Please provide feedback.*
+
+We now support filtering items on visualization by All, Work Items Only, Work Items with Changes and Work Items with Changes and Files.
+
+![Filter visualization](images/filterVisualization.png)
+
+### Collapse / Expand
+
+> **New** - *This is an early version with limited functionality. Please provide feedback.*
+c
+
+![Collapse Expand](images/contextMenu_collapse_expand.png)
+
+> **New** - *You can now Zoom by scrolling or pinching (touch). You can also do box selection with ctrl + mouse.*
+
+![Select many](images/ctrl_select_many.png)
+
+----------
+
 [View Notices](https://marketplace.visualstudio.com/_apis/public/gallery/publisher/ms-devlabs/extension/WorkitemVisualization/latest/assetbyname/ThirdPartyNotice.txt) for third party software included in this extension.
 
 > Microsoft DevLabs is an outlet for experiments from Microsoft, experiments that represent some of the latest ideas around developer tools. Solutions in this category are designed for broad usage, and you are encouraged to use and provide feedback on them; however, these extensions are not supported nor are any commitments made as to their longevity.
 
-### TFS On-Prem
+## Prerequisites
 
-We recommend TFS 2015 Update 3 when running this extension.
+- Team Services
+- Team Foundation Server 2015 Update 3, or higher 
 
 ## Contributors
 
-We thank the following contributor(s) for this extension: **Jeff Levinson, Taavi Koosaar and Mattias Sköld**.
+We thank the following contributor(s) for this extension: Jeff Levinson, [Taavi Koosaar](https://blogs.msdn.microsoft.com/visualstudioalmrangers/2012/03/22/introducing-the-visual-studio-alm-rangers-taavi-koosaar/) and [Mattias Sköld](https://blogs.msdn.microsoft.com/willy-peter_schaub/2011/03/28/introducing-the-visual-studio-alm-rangers-mattias-skld/).
 
 ## Feedback
 

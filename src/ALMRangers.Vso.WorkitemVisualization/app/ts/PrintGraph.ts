@@ -52,11 +52,10 @@ export class PrintGraph extends Dialogs.ModalDialog {
         var d = new Date();
 
         $("#printTitle").text("Visualization of " + witType + " " + witId + " | Generated "+ d.toLocaleDateString());
-        //$("#printDateTime").text("Generated " + d.toLocaleDateString());
         $("#printInstruction").text("Instruction: Right Click on Image + Save Picture OR Right Click + Print");
 
+        //Calculate size based on real image and windows inner size subtracting header sizes
         var headerSize = 33+24+21;//Text sizes from header to discount from height
-        //Calculate size
         var windowWidth = window.innerWidth;
         var windowHeight = window.innerHeight-headerSize;
 

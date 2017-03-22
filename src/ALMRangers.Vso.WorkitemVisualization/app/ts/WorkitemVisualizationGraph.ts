@@ -152,6 +152,21 @@ export class WorkitemVisualizationGraph {
                 self.cy = this;
                 self.graphLoaded = true;
 
+                //make sure that the root (first added elements are also tracked)
+                for (var i = 0; i < nodes.length; i++) {
+                    var node = nodes[i];
+                    //Node is not on visualization yet, so put it into list to add
+                    //maintain a list of categories for nodes that are on visualization. So if its not in list, yet - then add the category.
+                    //Saves to have to loop through all nodes to find categories.
+                    self.addCategoryOnVisualization(node.data.category);
+                    //maintain a list of states for nodes that are on visualization (only work items). So if its not in list, yet - then add the state.
+                    //Saves to have to loop through all nodes to find states.
+                    self.addStateOnVisualizationOnVisualization(node.data.state);
+                    //maintain a list of work item types for nodes that are on visualization. So if its not in list, yet - then add the work item types.
+                    //Saves to have to loop through all nodes to find work item types.
+                    self.addWorkItemTypeOnVisualization(node.data.workItemType);
+                }
+
                 self.cy.minZoom(0.1);
                 self.cy.maxZoom(5);
                 self.cy.userZoomingEnabled(true);
@@ -673,19 +688,13 @@ export class WorkitemVisualizationGraph {
                 }
                 //maintain a list of categories for nodes that are on visualization. So if its not in list, yet - then add the category.
                 //Saves to have to loop through all nodes to find categories.
-                if (self._nodeCategoriesOnVisualization.indexOf(nodes[i].data.category) == -1) {
-                    self._nodeCategoriesOnVisualization.push(nodes[i].data.category);
-                }
+                self.addCategoryOnVisualization(nodes[i].data.category);
                 //maintain a list of states for nodes that are on visualization (only work items). So if its not in list, yet - then add the state.
                 //Saves to have to loop through all nodes to find states.
-                if (nodes[i].data.state && self._nodeStatesOnVisualization.indexOf(nodes[i].data.state) == -1) {
-                    self._nodeStatesOnVisualization.push(nodes[i].data.state);
-                }
+                self.addStateOnVisualizationOnVisualization(nodes[i].data.state);
                 //maintain a list of work item types for nodes that are on visualization. So if its not in list, yet - then add the work item types.
                 //Saves to have to loop through all nodes to find work item types.
-                if (nodes[i].data.workItemType && self._nodeWorkItemTypesOnVisualization.indexOf(nodes[i].data.workItemType) == -1) {
-                    self._nodeWorkItemTypesOnVisualization.push(nodes[i].data.workItemType);
-                }
+                self.addWorkItemTypeOnVisualization(nodes[i].data.workItemType);
                 elements.push(nodes[i]);
             }
         }
@@ -717,6 +726,33 @@ export class WorkitemVisualizationGraph {
             self.refreshLayout();
         }
         return newElements;
+    }
+
+    addCategoryOnVisualization(category: string) {
+        var self = this;
+        //maintain a list of categories for nodes that are on visualization. So if its not in list, yet - then add the category.
+        //Saves to have to loop through all nodes to find categories.
+        if (self._nodeCategoriesOnVisualization.indexOf(category) == -1) {
+            self._nodeCategoriesOnVisualization.push(category);
+        }
+    }
+
+    addWorkItemTypeOnVisualization(workItemType: string) {
+        var self = this;
+        //maintain a list of work item types for nodes that are on visualization. So if its not in list, yet - then add the work item types.
+        //Saves to have to loop through all nodes to find work item types.
+        if (workItemType && self._nodeWorkItemTypesOnVisualization.indexOf(workItemType) == -1) {
+            self._nodeWorkItemTypesOnVisualization.push(workItemType);
+        }
+    }
+
+    addStateOnVisualizationOnVisualization(state: string) {
+        var self = this;
+        //maintain a list of states for nodes that are on visualization (only work items). So if its not in list, yet - then add the state.
+        //Saves to have to loop through all nodes to find states.
+        if (state && self._nodeStatesOnVisualization.indexOf(state) == -1) {
+            self._nodeStatesOnVisualization.push(state);
+        }
     }
 
     refreshLayout() {

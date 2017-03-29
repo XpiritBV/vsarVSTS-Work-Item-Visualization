@@ -42,6 +42,27 @@ export class AnnotationForm {
             allowEdit: false,
             source: AnnotationForm.ShapeTable
         };
+        /*
+             {
+        id: {string},
+        type: {string},
+        mode: {string},
+        value: {string},//	Sets the initial value for the combo.
+        label: {string},
+        source: {any[]},
+        enabled: {boolean},
+        allowEdit: {boolean},
+        cssClass: {string},
+        iconCss: {string},
+        inputCss: {string},
+        invalidCss: {string},
+        disabledCss: {string},
+        dropButtonHoverCss: {string},
+        disableTextSelectOnFocus: {boolean},
+        change: {(): any},
+        indexChanged: {(index: number): void}
+    }
+        */
 
         var cboShape = Controls.create(CboControls.Combo, dlgContent.find("#cboShape"), cboShapeOptions);
 

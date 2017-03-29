@@ -272,7 +272,6 @@ export class WorkitemVisualization {
         var node = self.nodeDataFactory.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
         var edges = { group: 'edges', data: {} };
         if (linkedToId != null) {
-            //TODO: use the node edge data factory method - self.nodeDataFactory.createNodeEdgeData
             edges = self.nodeDataFactory.createNodeEdgeData(
                 node.data.id,
                 linkedToId,

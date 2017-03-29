@@ -44,7 +44,7 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
 
     private _favoritesList = [];
     private favoritesMenu = [];
-    private _notes = [];
+    private _notes = []; //TODO: Check why this is here and if its used anywhere. Notes are on graph and dont really need separate holder?
     private _menu: MenuControls.MenuBar;
     private _graph: WorkitemVisualizationGraph.WorkitemVisualizationGraph;
 

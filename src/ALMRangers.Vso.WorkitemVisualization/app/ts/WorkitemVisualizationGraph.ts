@@ -210,6 +210,17 @@ export class WorkitemVisualizationGraph {
                             selector: "node[category='Annotation']",
                             onClickFunction: self.removeAnnotationNode.bind(self),
                             disabled: false, // Whether the item will be created as disabled
+                            hasTrailingDivider: false, // Whether the item will have a trailing divider
+                            coreAsWell: false // Whether core instance have this item on cxttap
+                        },
+                        {
+                            id: 'editAnnotationNode', // ID of menu item
+                            title: 'edit', // Title of menu item
+                            // Filters the elements to have this menu item on cxttap
+                            // If the selector is not truthy no elements will have this menu item on cxttap
+                            selector: "node[category='Annotation']",
+                            onClickFunction: self.editAnnotationNode.bind(self),
+                            disabled: false, // Whether the item will be created as disabled
                             hasTrailingDivider: true, // Whether the item will have a trailing divider
                             coreAsWell: false // Whether core instance have this item on cxttap
                         },
@@ -301,6 +312,41 @@ export class WorkitemVisualizationGraph {
         var incomers = e.cyTarget.incomers();
         e.cyTarget.remove();
         incomers.remove();
+    }
+
+    editAnnotationNode(e:any)
+    {
+        e.preventDefault();
+        var self = this;
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ContextMenu.EditAnnotationNode");
+
+        //Prompt user for name and type
+        var frm = AnnotationForm.AnnotationForm;
+
+        var hiddenCategoriesFilter = self.getCategoryFilter(self.getHideCategories(null), false, '@!=')
+        var nodes = self.getNodes("[category @!= 'Annotation']" + hiddenCategoriesFilter);
+        var node = { 
+            title : e.cyTarget.data("title"), 
+            content: e.cyTarget.data("content"), 
+            shapeType: e.cyTarget.data("shapeType"), 
+            size: e.cyTarget.data("size"), 
+            linkedToId: e.cyTarget.data("linkedToId")
+        };
+        frm.showAnnotationForm(this, node, nodes, function (title, txt, shapeType, size, linkedToId) {
+            TelemetryClient.TelemetryClient.getClient().trackEvent("AnnotationFormDialog.editNote");
+            
+            e.cyTarget.data("title", title);
+            e.cyTarget.data("content", txt);
+            e.cyTarget.data("size", size);
+            e.cyTarget.data("shapeType", shapeType);
+            e.cyTarget.data("linkedToId", linkedToId);
+
+            //TODO: Update edge if linkedToId changed!
+            var edges = e.cyTarget.connectedEdges(); //should be one
+            //TODO: Remove and add new if it changed? WHats alternative, need to update ID and also the target. 
+
+            //Dont render everything, just animate new elements.
+        });
     }
 
     openWorkitem(node) {
@@ -642,7 +688,7 @@ export class WorkitemVisualizationGraph {
     }
 
 
-    getNodes(filter) {
+    getNodes(filter:string) {
         return this.cy.nodes(filter);
     }
 

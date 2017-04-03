@@ -219,7 +219,7 @@ export class WorkitemVisualizationGraph {
                             // Filters the elements to have this menu item on cxttap
                             // If the selector is not truthy no elements will have this menu item on cxttap
                             selector: "node[category='Annotation']",
-                            onClickFunction: self.editAnnotationNode.bind(self),
+                            onClickFunction: self.openAnnotation.bind(self), //self.editAnnotationNode.bind(self),
                             disabled: false, // Whether the item will be created as disabled
                             hasTrailingDivider: true, // Whether the item will have a trailing divider
                             coreAsWell: false // Whether core instance have this item on cxttap
@@ -299,7 +299,7 @@ export class WorkitemVisualizationGraph {
                 self.openPullRequest(e.cyTarget);
                 break;
             case "Annotation":
-                self.openAnnotation(e.cyTarget);
+                self.openAnnotation(e);
                 break;
         }
     }
@@ -332,7 +332,7 @@ export class WorkitemVisualizationGraph {
             size: e.cyTarget.data("size"), 
             linkedToId: e.cyTarget.data("linkedToId")
         };
-        frm.showAnnotationForm(this, node, nodes, function (title, txt, shapeType, size, linkedToId) {
+        frm.showAnnotationForm(this, node, nodes, "Save", "Edit Annotation", function (title, txt, shapeType, size, linkedToId) {
             TelemetryClient.TelemetryClient.getClient().trackEvent("AnnotationFormDialog.editNote");
             
             e.cyTarget.data("title", title);
@@ -378,13 +378,21 @@ export class WorkitemVisualizationGraph {
         this.navigateTo(location);
     }
 
-    openAnnotation(node) {
+    openAnnotation(e) {
+        
+        e.preventDefault();
         var self = this;
+        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ContextMenu.EditAnnotationNode");
+
+        var node = e.cyTarget;
 
         var id = node.data("origId");
         var frm = AnnotationForm.AnnotationForm;
 
-        frm.showAnnotationForm(this, node.data(), this.getAllNodes(), function (title, txt, shapeType, size, linkedToId) {
+        var hiddenCategoriesFilter = self.getCategoryFilter(self.getHideCategories(null), false, '@!=')
+        var nodes = self.getNodes("[category @!= 'Annotation']" + hiddenCategoriesFilter);
+
+        frm.showAnnotationForm(this, node.data(), nodes, "Save", "Edit Annotation", function (title, txt, shapeType, size, linkedToId) {
             //let n2 = self.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
             let nodeDataFactory = new NodeData.NodeDataFactory();
             let n2 = nodeDataFactory.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
@@ -393,6 +401,10 @@ export class WorkitemVisualizationGraph {
             node.data("linkedToId", n2.data.linkedToId);
             node.data("shapeType", n2.data.shapeType);
             node.data("bgImage", n2.data.bgImage);
+
+            
+            //TODO: What avout changing link?
+            //TODO: updating whole layout may be too much. 
 
             self.refreshLayout();
         });

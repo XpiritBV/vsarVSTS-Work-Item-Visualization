@@ -21,7 +21,7 @@ export class AnnotationForm {
     static SizeTable = ['Small', 'Medium', 'Large'];
     static ShapeTable = ['Text', 'Yellow Note', 'Red Note', 'Yellow Arrow', 'Red Arrow', 'Green Arrow'];
 
-    static showAnnotationForm (view, node, lstNodes, callbackFunction) {
+    static showAnnotationForm (view, node, lstNodes, okText : string, title : string, callbackFunction) {
         var self = this;
 
         var extensionContext = VSS.getExtensionContext();
@@ -102,8 +102,8 @@ export class AnnotationForm {
             width: 404,
             height: 350,
             cancelText: "Cancel",
-            okText: "Add",
-            title: "Add Annotation",
+            okText: okText,
+            title: title,
             content: dlgContent,
             okCallback: function (result) {
                 //Fetch IDs

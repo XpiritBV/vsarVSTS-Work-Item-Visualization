@@ -250,7 +250,7 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
         var hiddenCategoriesFilter = self._graph.getCategoryFilter(self._graph.getHideCategories(null), false, '@!=')
         var nodes = self._graph.getNodes("[category @!= 'Annotation']" + hiddenCategoriesFilter);
 
-        var node = frm.showAnnotationForm(this, null, nodes, function (title, txt, shapeType, size, linkedToId) {
+        var node = frm.showAnnotationForm(this, null, nodes,"Add", "Add Annotation", function (title, txt, shapeType, size, linkedToId) {
             TelemetryClient.TelemetryClient.getClient().trackEvent("AnnotationFormDialog.addNote");
             var node = witviz.addNote(self._notes.length, title, txt, shapeType, size, null, linkedToId);
             self._notes.push(node);

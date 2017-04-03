@@ -203,17 +203,6 @@ export class WorkitemVisualizationGraph {
                             coreAsWell: false // Whether core instance have this item on cxttap
                         },
                         {
-                            id: 'removeAnnotationNode', // ID of menu item
-                            title: 'remove', // Title of menu item
-                            // Filters the elements to have this menu item on cxttap
-                            // If the selector is not truthy no elements will have this menu item on cxttap
-                            selector: "node[category='Annotation']",
-                            onClickFunction: self.removeAnnotationNode.bind(self),
-                            disabled: false, // Whether the item will be created as disabled
-                            hasTrailingDivider: false, // Whether the item will have a trailing divider
-                            coreAsWell: false // Whether core instance have this item on cxttap
-                        },
-                        {
                             id: 'editAnnotationNode', // ID of menu item
                             title: 'edit', // Title of menu item
                             // Filters the elements to have this menu item on cxttap
@@ -222,6 +211,17 @@ export class WorkitemVisualizationGraph {
                             onClickFunction: self.openAnnotation.bind(self), //self.editAnnotationNode.bind(self),
                             disabled: false, // Whether the item will be created as disabled
                             hasTrailingDivider: true, // Whether the item will have a trailing divider
+                            coreAsWell: false // Whether core instance have this item on cxttap
+                        },
+                        {
+                            id: 'removeAnnotationNode', // ID of menu item
+                            title: 'remove', // Title of menu item
+                            // Filters the elements to have this menu item on cxttap
+                            // If the selector is not truthy no elements will have this menu item on cxttap
+                            selector: "node[category='Annotation']",
+                            onClickFunction: self.removeAnnotationNode.bind(self),
+                            disabled: false, // Whether the item will be created as disabled
+                            hasTrailingDivider: false, // Whether the item will have a trailing divider
                             coreAsWell: false // Whether core instance have this item on cxttap
                         },
                     ]
@@ -314,41 +314,6 @@ export class WorkitemVisualizationGraph {
         incomers.remove();
     }
 
-    editAnnotationNode(e:any)
-    {
-        e.preventDefault();
-        var self = this;
-        TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.ContextMenu.EditAnnotationNode");
-
-        //Prompt user for name and type
-        var frm = AnnotationForm.AnnotationForm;
-
-        var hiddenCategoriesFilter = self.getCategoryFilter(self.getHideCategories(null), false, '@!=')
-        var nodes = self.getNodes("[category @!= 'Annotation']" + hiddenCategoriesFilter);
-        var node = { 
-            title : e.cyTarget.data("title"), 
-            content: e.cyTarget.data("content"), 
-            shapeType: e.cyTarget.data("shapeType"), 
-            size: e.cyTarget.data("size"), 
-            linkedToId: e.cyTarget.data("linkedToId")
-        };
-        frm.showAnnotationForm(this, node, nodes, "Save", "Edit Annotation", function (title, txt, shapeType, size, linkedToId) {
-            TelemetryClient.TelemetryClient.getClient().trackEvent("AnnotationFormDialog.editNote");
-            
-            e.cyTarget.data("title", title);
-            e.cyTarget.data("content", txt);
-            e.cyTarget.data("size", size);
-            e.cyTarget.data("shapeType", shapeType);
-            e.cyTarget.data("linkedToId", linkedToId);
-
-            //TODO: Update edge if linkedToId changed!
-            var edges = e.cyTarget.connectedEdges(); //should be one
-            //TODO: Remove and add new if it changed? WHats alternative, need to update ID and also the target. 
-
-            //Dont render everything, just animate new elements.
-        });
-    }
-
     openWorkitem(node) {
         TelemetryClient.TelemetryClient.getClient().trackEvent("Visualization.openWorkItem");
 
@@ -395,17 +360,34 @@ export class WorkitemVisualizationGraph {
         frm.showAnnotationForm(this, node.data(), nodes, "Save", "Edit Annotation", function (title, txt, shapeType, size, linkedToId) {
             //let n2 = self.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
             let nodeDataFactory = new NodeData.NodeDataFactory();
-            let n2 = nodeDataFactory.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
-            node.data("title", n2.data.title);
-            node.data("content", n2.data.content);
-            node.data("linkedToId", n2.data.linkedToId);
-            node.data("shapeType", n2.data.shapeType);
-            node.data("bgImage", n2.data.bgImage);
-
             
-            //TODO: What avout changing link?
+            if (node.data("title") != title || node.data("content") != txt || node.data("shapeType") != shapeType || node.data("size") != size) {
+                let n2 = nodeDataFactory.createNoteData(id, title, txt, shapeType, size, null, linkedToId);
+                node.data("title", n2.data.title);
+                node.data("content", n2.data.content);
+                node.data("size", n2.data.size);
+                node.data("shapeType", n2.data.shapeType);
+                node.data("bgImage", n2.data.bgImage);
+            }
+            
             //TODO: updating whole layout may be too much. 
+            if (linkedToId && linkedToId != node.data("linkedToId")) {
+                node.data("linkedToId", linkedToId);
 
+                var edges = e.cyTarget.connectedEdges(); //should be one
+                var newEdge = nodeDataFactory.createNodeEdgeData(node.data("id"), linkedToId, "");
+                if (edges.length > 0 && linkedToId != edges[0].data("target")) {
+                    //change linked node
+                    var edge = edges[0];
+                    edge.data("id", newEdge.data.id);
+                    edge.data("target", newEdge.data.target); 
+                } 
+                //Add link
+                else if (edges.length == 0){
+                    self.addElement(null, newEdge);
+                }
+            }
+            //Dont render everything, just animate new elements.
             self.refreshLayout();
         });
     }
@@ -711,8 +693,10 @@ export class WorkitemVisualizationGraph {
     addElement(node, edge) {
         var nodes = new Array();
         var edges = new Array();
-        nodes.push(node);
-        edges.push(edge);
+        if (node)
+            nodes.push(node);
+        if (edge)
+            edges.push(edge);
         return this.addElements(nodes, edges);
     }
     //TODO: define correct NodeData types here and cast?

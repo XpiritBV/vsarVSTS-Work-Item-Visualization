@@ -95,7 +95,6 @@ export class WorkitemVisualization {
         var self = this;
         var witArray = [].concat(wit);
 
-
         var nodes = new Array();
 
         witArray.forEach(function (i) {

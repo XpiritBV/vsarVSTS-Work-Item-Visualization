@@ -298,9 +298,6 @@ export class WorkitemVisualizationGraph {
             case "Pull Request":
                 self.openPullRequest(e.cyTarget);
                 break;
-            case "Annotation":
-                self.openAnnotation(e);
-                break;
         }
     }
 
@@ -379,8 +376,8 @@ export class WorkitemVisualizationGraph {
                 if (edges.length > 0 && linkedToId != edges[0].data("target")) {
                     //change linked node
                     var edge = edges[0];
-                    edge.data("id", newEdge.data.id);
-                    edge.data("target", newEdge.data.target); 
+                    self.cy.remove(edge);
+                    self.addElement(null, newEdge);
                 } 
                 //Add link
                 else if (edges.length == 0){

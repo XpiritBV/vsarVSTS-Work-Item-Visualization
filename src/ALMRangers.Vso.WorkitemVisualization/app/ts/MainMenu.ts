@@ -44,7 +44,7 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
 
     private _favoritesList = [];
     private favoritesMenu = [];
-    private _notes = [];
+    private _notes = []; //TODO: Check why this is here and if its used anywhere. Notes are on graph and dont really need separate holder?
     private _menu: MenuControls.MenuBar;
     private _graph: WorkitemVisualizationGraph.WorkitemVisualizationGraph;
 
@@ -250,7 +250,7 @@ export class MainMenu extends Controls.BaseControl //TODO: use builtin grid inst
         var hiddenCategoriesFilter = self._graph.getCategoryFilter(self._graph.getHideCategories(null), false, '@!=')
         var nodes = self._graph.getNodes("[category @!= 'Annotation']" + hiddenCategoriesFilter);
 
-        var node = frm.showAnnotationForm(this, null, nodes, function (title, txt, shapeType, size, linkedToId) {
+        var node = frm.showAnnotationForm(this, null, nodes,"Add", "Add Annotation", function (title, txt, shapeType, size, linkedToId) {
             TelemetryClient.TelemetryClient.getClient().trackEvent("AnnotationFormDialog.addNote");
             var node = witviz.addNote(self._notes.length, title, txt, shapeType, size, null, linkedToId);
             self._notes.push(node);

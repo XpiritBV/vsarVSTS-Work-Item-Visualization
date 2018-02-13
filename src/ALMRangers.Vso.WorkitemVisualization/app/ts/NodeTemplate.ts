@@ -129,6 +129,7 @@ class NodeTemplateFactory {
 
         title = trim(title);
         title = this.xmlSafe(title);
+        assignedTo = this.xmlSafe(assignedTo);
 
         var words = title.split(" ");
         var line = "";
@@ -205,6 +206,7 @@ class NodeTemplateFactory {
     }
 
     getArtifactText(type, artifactId, createdDate, assignedTo) {
+        assignedTo = this.xmlSafe(assignedTo);
         var cardText = this.artifactTextTemplate.replace(/artifactType/g, type).replace(/artifactId/g, artifactId)
             .replace(/artifactDate/g, createdDate).replace(/artifactAssignedTo/g, assignedTo);
 

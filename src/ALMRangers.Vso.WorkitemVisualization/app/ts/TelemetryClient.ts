@@ -15,12 +15,15 @@
 
 export class TelemetryClient {
 
+    private static Enabled: boolean = false;
+
     private static telemetryClient: TelemetryClient;
     public static getClient(): TelemetryClient {
-
         if (!this.telemetryClient) {
             this.telemetryClient = new TelemetryClient();
-            this.telemetryClient.Init();
+            if (TelemetryClient.Enabled) {
+                this.telemetryClient.Init();
+            }
         }
 
         return this.telemetryClient;
